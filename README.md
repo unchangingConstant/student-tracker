@@ -14,13 +14,17 @@ The backend for an application that will allow Kumon center owners to track whic
 
 ## Getting Started
 
-### Dependencies
+To be written, project still in infancy
+
+## Contribute
+
+### Recommended tools for development environment
 
 * VSCode with the Devcontainers extension
 * Any sort of container tool, such as Podman or Docker.
 * The .devcontainer file which will be provided later on in this read me
 
-### Installing
+### Setting up development environment
 
 * Make sure your container engine is running in the background
 * Pull the repository from github
