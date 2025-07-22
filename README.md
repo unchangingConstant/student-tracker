@@ -28,7 +28,9 @@ To be written, project still in infancy
 
 * Make sure your container engine is running in the background
 * Pull the repository from github
-* Add the .devcontainer folder, found at the end of the README, to the root of the repository
+* Open repository in VSCode
+* Create a new folder at the root of the repository called `.devcontainer`
+* In that folder, create a new file called devcontainer.json and copy the info at the end of the read me into it. Save the file
 * In VSCode, press Ctrl + Shift + P and select "Open folder in container"
 
 ### Executing program
