@@ -1,2 +1,5 @@
 # Do not track devcontainer config
 .devcontainer/
+
+# Do not track generated files
+target
