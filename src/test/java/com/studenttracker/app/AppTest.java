@@ -1,4 +1,4 @@
-package com.bapurrdev.app;
+package com.studenttracker.app;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -1,4 +1,4 @@
-package com.bapurrdev.app;
+package com.studenttracker.app;
 
 /**
  * Hello world!
