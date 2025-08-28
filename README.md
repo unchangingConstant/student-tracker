@@ -12,10 +12,6 @@ The backend for an application that will allow Kumon center owners to track whic
 * JavaFX for frontend
 * JDBC/SQLite for database
 
-## Getting Started
-
-To be written, project still in infancy
-
 ## Contribute
 
 ### Recommended tools for development environment
@@ -32,10 +28,6 @@ To be written, project still in infancy
 * Create a new folder at the root of the repository called `.devcontainer`
 * In that folder, create a new file called devcontainer.json and copy the info at the end of the read me into it. Save the file
 * In VSCode, press Ctrl + Shift + P and select "Open folder in container"
-
-### Executing program
-
-To be written
 
 ## Help
 
