@@ -9,8 +9,8 @@ The backend for an application that will allow Kumon center owners to track whic
 ### Stack
 
 * Java Maven for project management
-* SQLite for database
-* API framework TBD (Likely Java Spark)
+* JavaFX for frontend
+* JDBC/SQLite for database
 
 ## Getting Started
 
