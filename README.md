@@ -4,7 +4,7 @@ An application that allows Kumon center owners to track which students are in th
 
 ## Description
 
-The backend for an application that will allow Kumon center owners to track which students are in their center and log the time they spent working there.
+An application that will allow Kumon center owners to track which students are in their center and log the time they spent working there.
 
 ### Stack
 
