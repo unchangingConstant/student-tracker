@@ -1,6 +1,6 @@
-# student-tracker-backend
+# student-tracker
 
-This project will serve as the backend for a java application called student-tracker.
+An application that allows Kumon center owners to track which students are in their center and log the time they spent working there.
 
 ## Description
 
