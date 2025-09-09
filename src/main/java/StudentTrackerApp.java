@@ -8,7 +8,8 @@ public class StudentTrackerApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("student_tracker.fxml"));
+        System.getProperty("java.class.path");
+        Parent root = FXMLLoader.load(getClass().getResource("pages/student_tracker.fxml"));
 
         Scene scene = new Scene(root, 300, 275);
 
