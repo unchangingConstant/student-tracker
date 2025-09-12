@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import viewmodels.impl.RootVM?>
+
+<GridPane fx:controller="viewmodels.impl.RootVM" 
+xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+    <Button text="Register"
+        onAction="#onRegisterButtonAction"
+        GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+    <Button text="Database"
+        onAction="#onDatabaseButtonAction"
+        GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+    <Pane fx:id="currentPage" 
+        GridPane.columnIndex="0" GridPane.rowIndex="1"> 
+        <fx:include source="pages/database.fxml" visible="false" fx:id="databasePage"/> 
+        <fx:include source="pages/register.fxml" fx:id="registerPage"/>
+    </Pane>
+
+    <Label fx:id="stateDisplay"
+        GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+</GridPane>
