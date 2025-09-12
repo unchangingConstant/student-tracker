@@ -2,8 +2,8 @@ package viewmodels;
 
 import models.Model;
 
-public interface ViewModel {
+public interface ViewModel<T> {
 
-    public void setModel(Model model);
+    public void setModel(Model<T> model);
 
 }

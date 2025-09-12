@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10" fx:controller="viewmodels.impl.RegisterVM">
 <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <Text text="Enter new student" 
@@ -16,7 +16,7 @@
     <Label text="Student Name:"
         GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-    <TextField 
+    <TextField fx:id="nameInput"
         GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
     <Label text="Subjects:"
@@ -25,5 +25,4 @@
     <TextField
         GridPane.columnIndex="1" GridPane.rowIndex="2"/>
         
-
 </GridPane>

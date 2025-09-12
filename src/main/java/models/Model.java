@@ -1,9 +1,12 @@
 package models;
 
-import viewmodels.ViewModel;
+import javafx.beans.property.ObjectProperty;
 
-public interface Model {
+/**
+ * Provides a means for ViewModels to observe it.
+ */
+public interface Model<T> {
 
-    public void addViewModel(ViewModel viewmodel);
+    public void bind(ObjectProperty<T> property);
 
 }

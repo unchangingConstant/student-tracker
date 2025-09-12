@@ -1,24 +1,26 @@
 package viewmodels.impl;
 
+import java.util.List;
+
+import javafx.beans.property.ObjectPropertyBase;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.ListView;
 import models.Model;
-import models.impl.StudentDatabaseModel;
+import models.impl.SQLModel;
 import viewmodels.ViewModel;
 
-public class DatabaseVM implements ViewModel {
+public class DatabaseVM implements ViewModel<ObservableList<String>> {
+
+    protected SQLModel model;
 
     @FXML
-    private TableColumn<StudentDatabaseModel, String> nameColumn;
-    @FXML
-    private TableColumn<StudentDatabaseModel, Short> subjectsColumn;
-
-    private StudentDatabaseModel model;
+    private ListView<String> studentList;
 
     @Override
-    public void setModel(Model model) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setModel'");
+    public void setModel(Model<ObservableList<String>> model) {
+        this.model = (SQLModel) model;
+        model.bind(studentList.itemsProperty());
     }
 
 }

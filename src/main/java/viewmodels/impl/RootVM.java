@@ -1,45 +1,44 @@
 package viewmodels.impl;
 
-import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import models.Model;
+import models.impl.SQLModel;
 import viewmodels.ViewModel;
-
-import java.io.IOException;
-import java.net.URL;
-
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 
-public class RootVM implements ViewModel {
+public class RootVM implements ViewModel<ObservableList<String>> {
+
+    private SQLModel model;
 
     @FXML
-    private Label stateDisplay;
+    protected Pane currentPage;
     @FXML
-    private Pane currentPage;
+    protected ListView<String> databasePage;
     @FXML
-    private TableView databasePage;
+    protected GridPane registerPage;
     @FXML
-    private GridPane registerPage;
+    protected DatabaseVM databasePageController;
+    @FXML
+    protected RegisterVM registerPageController;
 
-    public void onDatabaseButtonAction() {
-        stateDisplay.setText("Database!");
-        databasePage.setVisible(true);
-        registerPage.setVisible(false);
+    @Override
+    public void setModel(Model<ObservableList<String>> model) {
+        this.model = (SQLModel) model;
+        databasePageController.setModel(model);
+        registerPageController.setModel(model);
     }
 
     public void onRegisterButtonAction() {
-        stateDisplay.setText("Register!");
-        databasePage.setVisible(false);
-        registerPage.setVisible(true);
+        this.model.addRow(registerPageController.nameInput.getText());
     }
 
-    @Override
-    public void setModel(Model model) {
-        throw new IllegalStateException("This ViewModel doesn't observe a Model");
+    public void onDeleteButtonAction() {
+        this.model.deleteRow(0);
     }
 
 }

@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.impl.SQLModel;
+import viewmodels.impl.RootVM;
 
 public class StudentTrackerApp extends Application {
 
@@ -15,6 +17,7 @@ public class StudentTrackerApp extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
         Parent root = fxmlLoader.load();
+        ((RootVM) fxmlLoader.getController()).setModel(new SQLModel(null));
         Scene scene = new Scene(root, 300, 275);
 
         stage.setTitle("FXML Welcome");

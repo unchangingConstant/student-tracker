@@ -6,9 +6,5 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<TableView xmlns:fx="http://javafx.com/fxml">
-    <columns>
-        <TableColumn fx:id="nameColumn" text="Name"/>
-        <TableColumn fx:id="subjectsColumn" text="Subjects"/>
-    </columns>
-</TableView>
+<ListView xmlns:fx="http://javafx.com/fxml" fx:controller="viewmodels.impl.DatabaseVM" fx:id="studentList">
+</ListView>
