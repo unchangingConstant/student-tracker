@@ -1,25 +1,29 @@
 package models.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import dao.SQLAccess;
+import dao.SQLiteAccess;
 import models.Model;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class SQLModel implements Model<ObservableList<String>> {
 
     private SimpleListProperty<String> rows;
-    private SQLAccess database;
+    private SQLiteAccess database;
 
-    public SQLModel(SQLAccess database) {
-        this.rows = new SimpleListProperty<String>();
+    public SQLModel(SQLiteAccess database) {
+        List<String> initialData = database.getStudents(null);
+        System.out.println(initialData);
+        // This way. Otherwise the property has a null list
+        this.rows = new SimpleListProperty<String>(FXCollections.observableArrayList(initialData));
         this.database = database;
     }
 
     public void addRow(String row) {
+        System.out.println("we adding");
         rows.add(row);
     }
 
@@ -29,7 +33,7 @@ public class SQLModel implements Model<ObservableList<String>> {
 
     @Override
     public void bind(ObjectProperty<ObservableList<String>> property) {
-        rows.bind(property);
+        property.bind(rows);
     }
 
 }

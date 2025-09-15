@@ -1,5 +1,6 @@
 import java.net.URL;
 
+import dao.SQLiteAccess;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,8 +8,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.impl.SQLModel;
 import viewmodels.impl.RootVM;
+import org.sqlite.SQLiteDataSource;
 
 public class StudentTrackerApp extends Application {
+
+    private static String databaseLocation;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -16,16 +20,33 @@ public class StudentTrackerApp extends Application {
         URL location = getClass().getResource("fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        // figure out how to do this better. The URL needs to be set more reliably
+        dataSource.setUrl(String.format("jdbc:sqlite:%s", databaseLocation));
+        SQLiteAccess dao = new SQLiteAccess(dataSource);
+        SQLModel model = new SQLModel(dao);
         Parent root = fxmlLoader.load();
-        ((RootVM) fxmlLoader.getController()).setModel(new SQLModel(null));
-        Scene scene = new Scene(root, 300, 275);
+        ((RootVM) fxmlLoader.getController()).setModel(model);
 
-        stage.setTitle("FXML Welcome");
+        Scene scene = new Scene(root, 300, 275);
+        stage.setTitle("StudentTracker");
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
+        if (args.length == 0) {
+            throw new RuntimeException("Select a run mode for the application, 'dev' or 'prod'");
+        }
+        if (args[0].equals("dev")) {
+            databaseLocation = "database/database.db"; // TODO improve file path specification method
+        } else if (args[0].equals("prod")) {
+            System.out.println(System.getProperty("user.dir"));
+            throw new RuntimeException("prod environment not yet implemented");
+            // Set up .student-tracker folder and shih
+        } else {
+            throw new RuntimeException("No valid run mode has been set for the application");
+        }
         launch();
     }
 

@@ -15,7 +15,7 @@ public class DatabaseVM implements ViewModel<ObservableList<String>> {
     protected SQLModel model;
 
     @FXML
-    private ListView<String> studentList;
+    protected ListView<String> studentList;
 
     @Override
     public void setModel(Model<ObservableList<String>> model) {
