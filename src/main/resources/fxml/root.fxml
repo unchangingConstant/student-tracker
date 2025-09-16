@@ -13,13 +13,6 @@
 
     <fx:include source="pages/register.fxml" fx:id="registerPage"/>
 
-    <HBox>
-        <Button text="Register"
-            onAction="#onRegisterButtonAction"/>
-        <Button text="Delete"
-            onAction="#onDeleteButtonAction"/>
-    </HBox>
-
     <fx:include source="pages/database.fxml" fx:id="databasePage"/> 
 
 </VBox>

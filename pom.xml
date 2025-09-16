@@ -4,7 +4,7 @@
   <groupId>org.openjfx</groupId>
   <artifactId>student-tracker</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1-ALPHA</version>
   <name>demo</name>
   <url>http://maven.apache.org</url>
 
@@ -15,6 +15,7 @@
     <dbutils.version>1.7</dbutils.version>
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
+    <lombok.version>1.18.40</lombok.version>
     <environment>dev</environment>
   </properties>
 
@@ -35,12 +36,34 @@
       <version>${javafx.version}</version>
     </dependency>
     <dependency>
-      <groupId>commons-dbutils</groupId>
-      <artifactId>commons-dbutils</artifactId>
-    <version>${dbutils.version}</version>
-</dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- jdbi dependencies' versions are managed by jdbi3-bom -->
+    <dependency>
+        <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-sqlobject</artifactId>
+    </dependency>
   </dependencies>
-  
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jdbi</groupId>
+        <artifactId>jdbi3-bom</artifactId>
+        <version>3.49.5</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency> 
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -54,5 +77,4 @@
       </plugin>
     </plugins>
   </build>
-  
 </project>

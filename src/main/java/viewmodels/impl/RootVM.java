@@ -4,14 +4,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import models.Model;
-import models.impl.SQLModel;
+import models.impl.AttendanceDatabaseModel;
 import viewmodels.ViewModel;
+import domainentities.Student;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
-public class RootVM implements ViewModel<ObservableList<String>> {
+public class RootVM implements ViewModel<ObservableList<Student>> {
 
-    private SQLModel model;
+    private AttendanceDatabaseModel model;
 
     @FXML
     protected Pane currentPage;
@@ -25,18 +26,10 @@ public class RootVM implements ViewModel<ObservableList<String>> {
     protected RegisterVM registerPageController;
 
     @Override
-    public void setModel(Model<ObservableList<String>> model) {
-        this.model = (SQLModel) model;
+    public void setModel(Model<ObservableList<Student>> model) {
+        this.model = (AttendanceDatabaseModel) model;
         databasePageController.setModel(model);
         registerPageController.setModel(model);
-    }
-
-    public void onRegisterButtonAction() {
-        this.model.addRow(registerPageController.nameInput.getText());
-    }
-
-    public void onDeleteButtonAction() {
-        this.model.deleteRow(0);
     }
 
 }

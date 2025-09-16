@@ -1,25 +1,23 @@
 package viewmodels.impl;
 
-import java.util.List;
-
-import javafx.beans.property.ObjectPropertyBase;
+import domainentities.Student;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import models.Model;
-import models.impl.SQLModel;
+import models.impl.AttendanceDatabaseModel;
 import viewmodels.ViewModel;
 
-public class DatabaseVM implements ViewModel<ObservableList<String>> {
+public class DatabaseVM implements ViewModel<ObservableList<Student>> {
 
-    protected SQLModel model;
+    protected AttendanceDatabaseModel model;
 
     @FXML
-    protected ListView<String> studentList;
+    protected ListView<Student> studentList;
 
     @Override
-    public void setModel(Model<ObservableList<String>> model) {
-        this.model = (SQLModel) model;
+    public void setModel(Model<ObservableList<Student>> model) {
+        this.model = (AttendanceDatabaseModel) model;
         model.bind(studentList.itemsProperty());
     }
 

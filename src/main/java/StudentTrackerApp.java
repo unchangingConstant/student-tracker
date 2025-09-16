@@ -1,12 +1,12 @@
 import java.net.URL;
 
-import dao.SQLiteAccess;
+import dao.AttendanceDatabaseAccess;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import models.impl.SQLModel;
+import models.impl.AttendanceDatabaseModel;
 import viewmodels.impl.RootVM;
 import org.sqlite.SQLiteDataSource;
 
@@ -23,8 +23,8 @@ public class StudentTrackerApp extends Application {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         // figure out how to do this better. The URL needs to be set more reliably
         dataSource.setUrl(String.format("jdbc:sqlite:%s", databaseLocation));
-        SQLiteAccess dao = new SQLiteAccess(dataSource);
-        SQLModel model = new SQLModel(dao);
+        AttendanceDatabaseAccess dao = new AttendanceDatabaseAccess(dataSource);
+        AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
         Parent root = fxmlLoader.load();
         ((RootVM) fxmlLoader.getController()).setModel(model);
 
@@ -35,6 +35,7 @@ public class StudentTrackerApp extends Application {
     }
 
     public static void main(String[] args) {
+        // create setup-type method?
         if (args.length == 0) {
             throw new RuntimeException("Select a run mode for the application, 'dev' or 'prod'");
         }
@@ -48,6 +49,7 @@ public class StudentTrackerApp extends Application {
             throw new RuntimeException("No valid run mode has been set for the application");
         }
         launch();
+        // create cleanup-type method
     }
 
 }
