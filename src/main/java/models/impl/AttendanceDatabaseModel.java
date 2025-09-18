@@ -10,7 +10,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import mappers.impl.MapToStudentMapper;
 
 public class AttendanceDatabaseModel implements Model<ObjectProperty<ObservableList<Student>>> {
 
@@ -20,7 +19,6 @@ public class AttendanceDatabaseModel implements Model<ObjectProperty<ObservableL
     public AttendanceDatabaseModel(AttendanceDAO database) {
         List<Student> initialData = database.getAllStudents();
         // This way. Otherwise the property has a null list
-        MapToStudentMapper mapper = new MapToStudentMapper();
         this.students = new SimpleListProperty<Student>(FXCollections.observableArrayList());
         // initialData.forEach(row -> students.add(mapper.map(row)));
     }

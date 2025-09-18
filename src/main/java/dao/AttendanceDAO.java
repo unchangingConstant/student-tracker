@@ -18,11 +18,11 @@ import domainentities.Student;
 public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM students")
-    // @RegisterFieldMapper(Student.class)
+    @RegisterFieldMapper(Student.class)
     public List<Student> getAllStudents();
 
     @SqlUpdate("INSERT INTO students (firstName, middleName, lastName) VALUES (?, ?, ?)")
-    // @RegisterFieldMapper(Student.class)
+    @RegisterFieldMapper(Student.class)
     public boolean insertStudent(Student student);
 
     @SqlUpdate("DELETE FROM students WHERE studentId=?")
