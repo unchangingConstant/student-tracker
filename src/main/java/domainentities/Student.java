@@ -1,13 +1,17 @@
 package domainentities;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 
-@Getter
-@Setter
-@Builder // not necessary. Stupid overhead imo
+// Check ALL annotations for necessity
+@Data
+@Builder
+// TODO potentially necessary for dao mapping? Double check, read up on mappers
+@NoArgsConstructor
+@AllArgsConstructor
 public class Student {
 
     @NonNull
@@ -23,7 +27,6 @@ public class Student {
     // TODO Delete once view logic is implemented on frontend
     public String toString() {
         return String.format("%s %s", firstName, lastName);
-
     }
 
 }

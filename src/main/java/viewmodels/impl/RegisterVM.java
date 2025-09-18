@@ -1,14 +1,12 @@
 package viewmodels.impl;
 
 import domainentities.Student;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import models.Model;
 import models.impl.AttendanceDatabaseModel;
 import viewmodels.ViewModel;
 
-public class RegisterVM implements ViewModel<ObservableList<Student>> {
+public class RegisterVM implements ViewModel<AttendanceDatabaseModel> {
 
     private AttendanceDatabaseModel model;
 
@@ -33,8 +31,8 @@ public class RegisterVM implements ViewModel<ObservableList<Student>> {
     }
 
     @Override
-    public void setModel(Model<ObservableList<Student>> model) {
-        this.model = (AttendanceDatabaseModel) model;
+    public void setModel(AttendanceDatabaseModel model) {
+        this.model = model;
     }
 
 }
