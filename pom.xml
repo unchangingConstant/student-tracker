@@ -50,6 +50,17 @@
         <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-sqlobject</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- junit dependencies' versions are managed by junit-bom -->
+    <dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -61,6 +72,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency> 
+      <dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.13.4</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
     </dependencies>
   </dependencyManagement>
 
