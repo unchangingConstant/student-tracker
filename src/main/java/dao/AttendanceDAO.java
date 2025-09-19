@@ -5,24 +5,28 @@ import java.util.List;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.sqlite.SQLiteDataSource;
 
 import domainentities.Student;
 
-// Read up on mappers, chapter 7 of JDBI docs
+// Read up on mappers, section 7 of JDBI docs
 public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM students")
     @RegisterFieldMapper(Student.class)
     public List<Student> getAllStudents();
 
-    @SqlUpdate("INSERT INTO students (firstName, middleName, lastName) VALUES (?, ?, ?)")
+    @SqlQuery("SELECT * FROM students WHERE studentId = ?")
     @RegisterFieldMapper(Student.class)
-    public boolean insertStudent(Student student);
+    public Student getStudent(int studentId);
 
-    @SqlUpdate("DELETE FROM students WHERE studentId=?")
+    @SqlUpdate("INSERT INTO students (firstName, middleName, lastName, subjects) VALUES (:firstName, :middleName, :lastName, :subjects)")
+    public boolean insertStudent(@BindBean Student student);
+
+    @SqlUpdate("DELETE FROM students WHERE studentId = ?")
     public boolean deleteStudent(Integer studentId);
 
     /**

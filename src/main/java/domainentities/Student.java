@@ -1,16 +1,17 @@
 package domainentities;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 
 // Check ALL annotations for necessity
 @Data
-@Builder
-// TODO potentially necessary for dao mapping? Double check, read up on mappers
-@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor // Necessary for DAO mapping, they must have a default constructor!!!
 @AllArgsConstructor
 public class Student {
 
@@ -23,10 +24,5 @@ public class Student {
     // Keep this nullable for data validation
     // If student hasn't been assigned an Id, should be null
     private Integer studentId;
-
-    // TODO Delete once view logic is implemented on frontend
-    public String toString() {
-        return String.format("%s %s", firstName, lastName);
-    }
 
 }

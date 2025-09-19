@@ -20,9 +20,8 @@ public class RegisterVM implements ViewModel<AttendanceDatabaseModel> {
     protected TextField subjectsInput;
 
     public void onRegisterButtonAction() {
-        Student student = Student.builder().firstName(firstNameInput.getText()).lastName(lastNameInput.getText())
-                .middleName(middleNameInput.getText().equals("") ? null : middleNameInput.getText()).subjects((short) 1)
-                .build();
+        Student student = new Student(firstNameInput.getText(), lastNameInput.getText(),
+                middleNameInput.getText().equals("") ? null : middleNameInput.getText(), (short) 1, null);
         model.addStudent(student);
     }
 
