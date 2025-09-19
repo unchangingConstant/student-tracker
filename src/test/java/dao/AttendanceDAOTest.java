@@ -48,7 +48,7 @@ public class AttendanceDAOTest {
     @DisplayName("insertStudent() handles student with no id")
     void testInsertNewStudent() {
         Student expected = new Student("Ethan", "Begley", "Labubu", (short) 2, null);
-        assertTrue(dao.insertStudent(expected));
+        assertEquals(1, dao.insertStudent(expected));
         Student result = dao.getStudent(1);
         assertEquals(1, result.getStudentId());
         expected.setStudentId(1);
@@ -59,7 +59,7 @@ public class AttendanceDAOTest {
     @DisplayName("deleteStudent() smoke test")
     void testDeleteStudent() {
         Student test = new Student("Ethan", "Begley", "Labubu", (short) 2, 1);
-        assertTrue(dao.insertStudent(test));
+        assertEquals(1, dao.insertStudent(test));
         assertTrue(dao.deleteStudent(1));
         assertTrue(dao.getAllStudents().isEmpty());
     }

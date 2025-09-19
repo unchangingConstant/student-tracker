@@ -6,6 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.sqlite.SQLiteDataSource;
@@ -24,7 +25,8 @@ public interface AttendanceDAO {
     public Student getStudent(int studentId);
 
     @SqlUpdate("INSERT INTO students (firstName, middleName, lastName, subjects) VALUES (:firstName, :middleName, :lastName, :subjects)")
-    public boolean insertStudent(@BindBean Student student);
+    @GetGeneratedKeys // gets the new id of the student
+    public Integer insertStudent(@BindBean Student student);
 
     @SqlUpdate("DELETE FROM students WHERE studentId = ?")
     public boolean deleteStudent(Integer studentId);

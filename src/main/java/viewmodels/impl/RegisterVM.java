@@ -26,7 +26,8 @@ public class RegisterVM implements ViewModel<AttendanceDatabaseModel> {
     }
 
     public void onDeleteButtonAction() {
-        model.deleteStudent(model.lastId());
+        throw new UnsupportedOperationException();
+        // model.deleteStudent(100);
     }
 
     @Override
