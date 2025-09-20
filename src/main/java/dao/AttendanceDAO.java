@@ -22,7 +22,7 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM students WHERE studentId = ?")
     @RegisterFieldMapper(Student.class)
-    public Student getStudent(int studentId);
+    public Student getStudent(Integer studentId);
 
     @SqlUpdate("INSERT INTO students (firstName, middleName, lastName, subjects) VALUES (:firstName, :middleName, :lastName, :subjects)")
     @GetGeneratedKeys // gets the new id of the student

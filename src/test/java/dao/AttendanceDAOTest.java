@@ -22,12 +22,12 @@ public class AttendanceDAOTest {
     @RegisterExtension // this annotation has something to do with the magic behind junit5 and stuff
     // Creates tool which creates in-mem sqlite database at test time
     private JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
-    private Jdbi jdbi;
+    private String initDatabaseScript;
     private AttendanceDAO dao;
 
     @BeforeEach
     void setUp() {
-        jdbi = sqliteExtension.getJdbi();
+        Jdbi jdbi = sqliteExtension.getJdbi();
         // try not to hardcode shit like this if you can help it
         // maybe a static method in the dao code to run this script?
         jdbi.useHandle(handle -> {

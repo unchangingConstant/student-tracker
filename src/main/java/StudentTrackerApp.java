@@ -8,10 +8,10 @@ import javafx.stage.Stage;
 import models.impl.AttendanceDatabaseModel;
 import viewmodels.impl.RootVM;
 
-import org.jdbi.v3.core.Jdbi;
 import org.sqlite.SQLiteDataSource;
 
 import dao.AttendanceDAO;
+import database.DatabaseInitializer;
 
 // TODO, is sqlobject a necessary dependency?
 public class StudentTrackerApp extends Application {
@@ -24,9 +24,7 @@ public class StudentTrackerApp extends Application {
         URL location = getClass().getResource("fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        // figure out how to do this better. The URL needs to be set more reliably
-        dataSource.setUrl(String.format("jdbc:sqlite:%s", databaseLocation));
+        SQLiteDataSource dataSource = DatabaseInitializer.initializeDatabase(databaseLocation);
         AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
         AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
         Parent root = fxmlLoader.load();
@@ -48,9 +46,6 @@ public class StudentTrackerApp extends Application {
             databaseLocation = "database/database.db"; // TODO improve file path specification method
         } else if (args[0].equals("prod")) {
             throw new RuntimeException("prod environment not yet implemented");
-            // Set up .student-tracker folder and shih
-        } else if (args[0].equals("test")) {
-            throw new RuntimeException("test environment not yet implemented");
             // Set up .student-tracker folder and shih
         } else {
             throw new RuntimeException("No valid run mode has been set for the application");
