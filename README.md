@@ -11,23 +11,16 @@ An application that will allow Kumon center owners to track which students are i
 - Java Maven for project management
 - JavaFX for frontend
 - JDBC/SQLite for database
+- **Deployment tool TBD**
 
 ## Contribute
 
-### Recommended tools for development environment
-
-- VSCode with the Devcontainers extension
-- Any sort of container tool, such as Podman or Docker.
-- The .devcontainer file which will be provided later on in this read me
-
 ### Setting up development environment
 
-- Make sure your container engine is running in the background
-- Pull the repository from github
-- Open repository in VSCode
-- Create a new folder at the root of the repository called `.devcontainer`
-- In that folder, create a new file called devcontainer.json and copy the info at the end of the read me into it. Save the file
-- In VSCode, press Ctrl + Shift + P and select "Open folder in container"
+- Install Maven 3.9.10
+- Use Java 21 (As specified in project's `pom.xml`)
+- Pull project from repository
+- Open IDE (IDE compatible with Maven works)
 
 ## Help
 
@@ -40,8 +33,3 @@ Me!
 ## License
 
 No license, for now...
-
-## Build history
-
-- Copy the POM to this project
-- mvn clean install
