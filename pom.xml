@@ -4,7 +4,7 @@
   <groupId>org.openjfx</groupId>
   <artifactId>student-tracker</artifactId>
   <packaging>jar</packaging>
-  <version>0.1-ALPHA</version>
+  <version>0.1</version>
   <name>demo</name>
   <url>http://maven.apache.org</url>
 
@@ -27,7 +27,7 @@
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>${sqlite-jdbc.version}</version>
-  </dependency>
+    </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
@@ -93,9 +93,11 @@
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
           <mainClass>StudentTrackerApp</mainClass>
-          <commandlineArgs>${environment}</commandlineArgs>
         </configuration>
       </plugin>
+      <!-- Code copied straight from https://maven.apache.org/plugins/maven-shade-plugin/usage.html -->
+      <!-- This will create a .jar for my program during the package phase that includes dependencies specified in POM -->
+      <!-- (Normally, package does not include dependcies from the pom. Seems counter intuitive but whatever) -->
     </plugins>
   </build>
 </project>

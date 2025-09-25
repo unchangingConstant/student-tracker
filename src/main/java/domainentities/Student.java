@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
+// TODO consider using java records to remove lombok dependency?
 // Check ALL annotations for necessity
 @Data
 @ToString

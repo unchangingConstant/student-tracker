@@ -1,4 +1,4 @@
-package database;
+package buildutils;
 
 import org.sqlite.SQLiteDataSource;
 
@@ -8,6 +8,7 @@ import org.sqlite.SQLiteDataSource;
  */
 public class DatabaseInitializer {
 
+    // TODO Change this to use maven profile to pull database file path
     public static SQLiteDataSource initializeDatabase(String databaseFilePath) {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(String.format("jdbc:sqlite:%s", databaseFilePath));

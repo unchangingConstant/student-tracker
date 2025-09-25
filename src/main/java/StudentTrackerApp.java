@@ -1,4 +1,6 @@
+import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,16 +12,28 @@ import viewmodels.impl.RootVM;
 
 import org.sqlite.SQLiteDataSource;
 
+import buildutils.DatabaseInitializer;
 import dao.AttendanceDAO;
-import database.DatabaseInitializer;
 
 // TODO, is sqlobject a necessary dependency?
+/**
+ * TODO Consider more event driven approach, should DAO be accessible via a
+ * service and send events to the model? Avoids hard-coded model-dao sync
+ */
 public class StudentTrackerApp extends Application {
 
     private static String databaseLocation;
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        String classpath = System.getProperty("java.class.path");
+        String[] classPathValues = classpath.split(File.pathSeparator);
+        System.out.println(Arrays.toString(classPathValues));
+
+        String modulepath = System.getProperty("jdk.module.path");
+        String[] modulePathValues = modulepath.split(File.pathSeparator);
+        System.out.println(Arrays.toString(modulePathValues));
 
         URL location = getClass().getResource("fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
@@ -37,20 +51,7 @@ public class StudentTrackerApp extends Application {
     }
 
     public static void main(String[] args) {
-        // create setup-type method?
-        if (args.length == 0) {
-            // TODO better exception type?
-            throw new RuntimeException("Select a run mode for the application, 'dev' or 'prod'");
-        }
-        if (args[0].equals("dev")) {
-            databaseLocation = "database/database.db"; // TODO improve file path specification method
-        } else if (args[0].equals("prod")) {
-            throw new RuntimeException("prod environment not yet implemented");
-            // Set up .student-tracker folder and shih
-        } else {
-            throw new RuntimeException("No valid run mode has been set for the application");
-        }
-
+        databaseLocation = "database/database.db";
         launch();
         // create cleanup-type method
     }
