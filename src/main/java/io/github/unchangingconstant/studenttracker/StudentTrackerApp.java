@@ -1,3 +1,5 @@
+package io.github.unchangingconstant.studenttracker;
+
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
@@ -7,13 +9,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import models.impl.AttendanceDatabaseModel;
-import viewmodels.impl.RootVM;
+import io.github.unchangingconstant.studenttracker.models.impl.AttendanceDatabaseModel;
+import io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM;
 
 import org.sqlite.SQLiteDataSource;
 
-import buildutils.DatabaseInitializer;
-import dao.AttendanceDAO;
+import io.github.unchangingconstant.studenttracker.buildutils.DatabaseInitializer;
+import io.github.unchangingconstant.studenttracker.dao.AttendanceDAO;
 
 // TODO, is sqlobject a necessary dependency?
 /**
@@ -35,7 +37,7 @@ public class StudentTrackerApp extends Application {
         String[] modulePathValues = modulepath.split(File.pathSeparator);
         System.out.println(Arrays.toString(modulePathValues));
 
-        URL location = getClass().getResource("fxml/root.fxml");
+        URL location = getClass().getResource("fxml/root.fxml"); // This is returning null for some reason. Investigate!
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
         SQLiteDataSource dataSource = DatabaseInitializer.initializeDatabase(databaseLocation);

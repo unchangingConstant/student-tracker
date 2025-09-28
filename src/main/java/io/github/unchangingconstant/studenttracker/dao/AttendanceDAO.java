@@ -1,4 +1,4 @@
-package dao;
+package io.github.unchangingconstant.studenttracker.dao;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.sqlite.SQLiteDataSource;
 
-import domainentities.Student;
+import io.github.unchangingconstant.studenttracker.domainentities.Student;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface AttendanceDAO {

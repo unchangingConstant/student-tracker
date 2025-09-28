@@ -1,4 +1,4 @@
-package buildutils;
+package io.github.unchangingconstant.studenttracker.buildutils;
 
 import org.sqlite.SQLiteDataSource;
 

@@ -1,10 +1,10 @@
-package viewmodels.impl;
+package io.github.unchangingconstant.studenttracker.viewmodels.impl;
 
-import domainentities.Student;
+import io.github.unchangingconstant.studenttracker.domainentities.Student;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import models.impl.AttendanceDatabaseModel;
-import viewmodels.ViewModel;
+import io.github.unchangingconstant.studenttracker.models.impl.AttendanceDatabaseModel;
+import io.github.unchangingconstant.studenttracker.viewmodels.ViewModel;
 
 public class RegisterVM implements ViewModel<AttendanceDatabaseModel> {
 

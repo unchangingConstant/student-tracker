@@ -1,4 +1,4 @@
-package domainentities;
+package io.github.unchangingconstant.studenttracker.domainentities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

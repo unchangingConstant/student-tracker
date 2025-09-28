@@ -92,12 +92,9 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
-          <mainClass>StudentTrackerApp</mainClass>
+          <mainClass>io.github.unchangingconstant.studenttracker.StudentTrackerApp</mainClass>
         </configuration>
       </plugin>
-      <!-- Code copied straight from https://maven.apache.org/plugins/maven-shade-plugin/usage.html -->
-      <!-- This will create a .jar for my program during the package phase that includes dependencies specified in POM -->
-      <!-- (Normally, package does not include dependcies from the pom. Seems counter intuitive but whatever) -->
     </plugins>
   </build>
 </project>

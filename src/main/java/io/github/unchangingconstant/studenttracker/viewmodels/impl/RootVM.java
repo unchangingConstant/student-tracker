@@ -1,10 +1,10 @@
-package viewmodels.impl;
+package io.github.unchangingconstant.studenttracker.viewmodels.impl;
 
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import models.impl.AttendanceDatabaseModel;
-import viewmodels.ViewModel;
+import io.github.unchangingconstant.studenttracker.models.impl.AttendanceDatabaseModel;
+import io.github.unchangingconstant.studenttracker.viewmodels.ViewModel;
 import javafx.fxml.FXML;
 
 public class RootVM implements ViewModel<AttendanceDatabaseModel> {

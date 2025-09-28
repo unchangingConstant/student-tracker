@@ -1,4 +1,4 @@
-package models;
+package io.github.unchangingconstant.studenttracker.models;
 
 import javafx.beans.property.Property;
 
