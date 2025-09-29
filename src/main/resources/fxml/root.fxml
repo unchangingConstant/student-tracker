@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import viewmodels.impl.RootVM?>
+<?import io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM?>
 
-<VBox fx:controller="viewmodels.impl.RootVM" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM" xmlns:fx="http://javafx.com/fxml">
 <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <fx:include source="pages/register.fxml" fx:id="registerPage"/>
