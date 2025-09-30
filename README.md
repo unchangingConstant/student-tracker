@@ -34,6 +34,14 @@ NOTE: Soon to be rewritten to be easier to setup
 
 This section will be written in a stream-of-consciousness style to document where we're at in this process.
 
+Currently, I want to use jpackage to deploy the application. It should be done via this command:
+
+`mvn clean verify jpackage:jpackage`
+
+However, the created .exe does not run. When I run it from command line it does not even give any output. My theory is that the binaries that JavaFX requires aren't being added to the module path, so the application can't start. I'm going to try and solve this by manually putting all the required binaries into a `mods` folder in this project and setting it as the module path in the jpackage plugin's configuration in the pom.
+
+If this doesn't work, my next theory is that the database is not being successfully initialized. But this is unlikely. (Not unlikely for the database to be completely non-functional, just unlikely for it to be the cause of this particular problem.)
+
 ## Help
 
 Any answers to FAQ will be put here.

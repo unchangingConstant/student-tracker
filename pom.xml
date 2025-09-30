@@ -103,8 +103,8 @@
           <input>target</input>
           <mainJar>student-tracker-0.1.jar</mainJar>
           <mainClass>io.github.unchangingconstant.studenttracker.StudentTrackerApp</mainClass>
-          <name>UCStudentTracker</name>
-          <destination>deployed</destination>
+          <name>deployed</name>
+          <destination>.</destination>
           <type>APP_IMAGE</type> 
           <javaOptions>
             <option>-Djavafx.verbose=true</option>
