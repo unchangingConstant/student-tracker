@@ -37,8 +37,7 @@ public class StudentTrackerApp extends Application {
         String[] modulePathValues = modulepath.split(File.pathSeparator);
         System.out.println(Arrays.toString(modulePathValues));
 
-        URL location = getClass().getResource("/fxml/root.fxml"); // This is returning null for some reason.
-                                                                  // Investigate!
+        URL location = getClass().getResource("/fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
         SQLiteDataSource dataSource = DatabaseInitializer.initializeDatabase(databaseLocation);

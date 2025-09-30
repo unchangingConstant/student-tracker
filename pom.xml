@@ -95,6 +95,55 @@
           <mainClass>io.github.unchangingconstant.studenttracker.StudentTrackerApp</mainClass>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.7.1</version>
+        <configuration>
+          <input>target</input>
+          <mainJar>student-tracker-0.1.jar</mainJar>
+          <mainClass>io.github.unchangingconstant.studenttracker.StudentTrackerApp</mainClass>
+          <name>UCStudentTracker</name>
+          <destination>deployed</destination>
+          <type>APP_IMAGE</type> 
+          <javaOptions>
+            <option>-Djavafx.verbose=true</option>
+          </javaOptions>
+          <modulePaths>
+            <path>mods</path>
+          </modulePaths>
+        </configuration>
+      </plugin>
+      <plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.5.1</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+        <transformers>
+          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <mainClass>io.github.unchangingconstant.studenttracker.StudentTrackerApp</mainClass>
+          </transformer>
+            </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
