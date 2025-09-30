@@ -42,6 +42,8 @@ However, the created .exe does not run. When I run it from command line it does 
 
 If this doesn't work, my next theory is that the database is not being successfully initialized. But this is unlikely. (Not unlikely for the database to be completely non-functional, just unlikely for it to be the cause of this particular problem.)
 
+As a personal reminder to myself: We basically need 3 components to deploy this: A custom runtime (To avoid depending on the installer machine for one), all dependencies, and the JavaFX binaries (which need to be put into the module path)
+
 ## Help
 
 Any answers to FAQ will be put here.

@@ -109,12 +109,13 @@
           <javaOptions>
             <option>-Djavafx.verbose=true</option>
           </javaOptions>
-          <modulePaths>
+          <!-- <modulePaths>
             <path>mods</path>
-          </modulePaths>
+          </modulePaths> -->
         </configuration>
       </plugin>
       <plugin>
+       <!-- delete this plugin. This will JavaFX modules into the jar which will put them in classpath. We do not want that no sirrr find another way -->
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-shade-plugin</artifactId>
   <version>3.5.1</version>
