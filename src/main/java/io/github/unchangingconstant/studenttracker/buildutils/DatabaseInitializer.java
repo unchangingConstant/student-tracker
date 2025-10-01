@@ -1,5 +1,7 @@
 package io.github.unchangingconstant.studenttracker.buildutils;
 
+import java.sql.Connection;
+
 import org.sqlite.SQLiteDataSource;
 
 /**
@@ -17,6 +19,10 @@ public class DatabaseInitializer {
 
     public static SQLiteDataSource initializeInMemoryDatabase() {
         return initializeDatabase(":memory:");
+    }
+
+    private static void createTables(SQLiteDataSource dataSource) {
+
     }
 
 }

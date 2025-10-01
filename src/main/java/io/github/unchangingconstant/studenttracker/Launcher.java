@@ -1,0 +1,11 @@
+package io.github.unchangingconstant.studenttracker;
+
+public class Launcher {
+
+    // This should somehow avoid java runtime components missing error when
+    // packaging?
+    public static void main(String[] args) {
+        StudentTrackerApp.launch(StudentTrackerApp.class, args);
+    }
+
+}

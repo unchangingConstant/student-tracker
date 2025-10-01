@@ -30,17 +30,19 @@ public class StudentTrackerApp extends Application {
     public void start(Stage stage) throws Exception {
 
         String classpath = System.getProperty("java.class.path");
-        String[] classPathValues = classpath.split(File.pathSeparator);
+        String[] classPathValues = classpath == null ? new String[] { "Null classpath (huh?)" }
+                : classpath.split(File.pathSeparator);
         System.out.println(Arrays.toString(classPathValues));
 
         String modulepath = System.getProperty("jdk.module.path");
-        String[] modulePathValues = modulepath.split(File.pathSeparator);
+        String[] modulePathValues = modulepath == null ? new String[] { "Null modulepath" }
+                : modulepath.split(File.pathSeparator);
         System.out.println(Arrays.toString(modulePathValues));
 
         URL location = getClass().getResource("/fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
-        SQLiteDataSource dataSource = DatabaseInitializer.initializeDatabase(databaseLocation);
+        SQLiteDataSource dataSource = DatabaseInitializer.initializeInMemoryDatabase();
         AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
         AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
         Parent root = fxmlLoader.load();
@@ -50,12 +52,6 @@ public class StudentTrackerApp extends Application {
         stage.setTitle("StudentTracker");
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        databaseLocation = "database/database.db";
-        launch();
-        // create cleanup-type method
     }
 
 }
