@@ -2,6 +2,8 @@ package io.github.unchangingconstant.studenttracker;
 
 import java.io.File;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.Arrays;
 
 import javafx.application.Application;
@@ -42,7 +44,9 @@ public class StudentTrackerApp extends Application {
         URL location = getClass().getResource("/fxml/root.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(location);
 
-        SQLiteDataSource dataSource = DatabaseInitializer.initializeInMemoryDatabase();
+        SQLiteDataSource dataSource = DatabaseInitializer
+                .initializeDatabase(String.format("%s/database.db", System.getProperty("user.dir")));
+
         AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
         AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
         Parent root = fxmlLoader.load();
