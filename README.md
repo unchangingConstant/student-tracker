@@ -38,9 +38,11 @@ Currently, I want to use jpackage to deploy the application. It should be done v
 
 `mvn clean verify jpackage:jpackage`
 
-However, the created .exe does not run. When I run it from command line it does not even give any output. My theory is that the binaries that JavaFX requires aren't being added to the module path, so the application can't start. I'm going to try and solve this by manually putting all the required binaries into a `mods` folder in this project and setting it as the module path in the jpackage plugin's configuration in the pom.
+~~However, the created .exe does not run. When I run it from command line it does not even give any output. My theory is that the binaries that JavaFX requires aren't being added to the module path, so the application can't start. I'm going to try and solve this by manually putting all the required binaries into a `mods` folder in this project and setting it as the module path in the jpackage plugin's configuration in the pom.~~
 
-If this doesn't work, my next theory is that the database is not being successfully initialized. But this is unlikely. (Not unlikely for the database to be completely non-functional, just unlikely for it to be the cause of this particular problem.)
+~~If this doesn't work, my next theory is that the database is not being successfully initialized. But this is unlikely. (Not unlikely for the database to be completely non-functional, just unlikely for it to be the cause of this particular problem.)~~
+
+Update! I seperated the main class from the Application class and the `.exe` now triggers a pop-up which says "Failed to start JVM". However, if I run the app using the commandline, the fatal error is a failure to setup the database! So, no more "JavaFX runtime components can't be found" errors!
 
 As a personal reminder to myself: We basically need 3 components to deploy this: A custom runtime (To avoid depending on the installer machine for one), all dependencies, and the JavaFX binaries (which need to be put into the module path)
 
