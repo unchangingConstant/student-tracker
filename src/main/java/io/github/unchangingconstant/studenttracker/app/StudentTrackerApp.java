@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker;
+package io.github.unchangingconstant.studenttracker.app;
 
 import java.io.File;
 import java.net.URL;
@@ -11,15 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import io.github.unchangingconstant.studenttracker.models.impl.AttendanceDatabaseModel;
-import io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM;
 
 import org.sqlite.SQLiteDataSource;
 
+import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
+import io.github.unchangingconstant.studenttracker.app.models.impl.AttendanceDatabaseModel;
+import io.github.unchangingconstant.studenttracker.app.viewmodels.impl.RootVM;
 import io.github.unchangingconstant.studenttracker.buildutils.DatabaseInitializer;
-import io.github.unchangingconstant.studenttracker.dao.AttendanceDAO;
 
-// TODO, is sqlobject a necessary dependency?
 /**
  * TODO Consider more event driven approach, should DAO be accessible via a
  * service and send events to the model? Avoids hard-coded model-dao sync

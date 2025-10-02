@@ -14,6 +14,8 @@ import org.sqlite.SQLiteDataSource;
  */
 public class DatabaseInitializer {
 
+    private static String initDatabase = "sql/initDatabase.sql";
+
     // TODO Change this to use maven profile to pull database file path
     public static SQLiteDataSource initializeDatabase(String databaseFilePath) {
         SQLiteDataSource dataSource = new SQLiteDataSource();
@@ -22,12 +24,12 @@ public class DatabaseInitializer {
         return dataSource;
     }
 
-    public static SQLiteDataSource initializeInMemoryDatabase() {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl("jdbc:sqlite::memory:");
-        createTables(dataSource);
-        return dataSource;
-    }
+    // public static SQLiteDataSource initializeInMemoryDatabase() {
+    // SQLiteDataSource dataSource = new SQLiteDataSource();
+    // dataSource.setUrl("jdbc:sqlite::memory:");
+    // createTables(dataSource);
+    // return dataSource;
+    // }
 
     private static void createTables(SQLiteDataSource dataSource) {
         try {

@@ -13,12 +13,14 @@
     <maven.compiler.target>21</maven.compiler.target>
     <java.version>21</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     <javafx.version>21</javafx.version>
     <javafxml.version>21</javafxml.version>
     <dbutils.version>1.7</dbutils.version>
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
     <lombok.version>1.18.40</lombok.version>
+    
     <launcher-class>io.github.unchangingconstant.studenttracker.Launcher</launcher-class>
     <environment>dev</environment>
   </properties>
@@ -89,6 +91,8 @@
   <build>
     <plugins>
 
+      <!-- What does this do again? Oh, I think it compiles my application jar into the output directory-->
+      <!-- Come to think of it, these next two plugins just override the default maven plugin config, right? -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -96,7 +100,8 @@
             <outputDirectory>${project.build.directory}/mods</outputDirectory>
         </configuration>
       </plugin>
-    
+
+      <!-- This copies project dependencies into the target folder for packaging -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -109,6 +114,7 @@
                 </goals>
                 <configuration>
                   <includeScope>runtime</includeScope>
+                  <!-- TODO name this folder better -->
                   <outputDirectory>${project.build.directory}/mods</outputDirectory>
                 </configuration>
             </execution>
@@ -132,7 +138,6 @@
         <version>1.7.1</version>
         <configuration>
           <input>${project.build.directory}/mods</input>
-          <!-- <module>student.tracker/${launcher-class}</module> -->
           <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
           <mainClass>${launcher-class}</mainClass>
           <name>deployed</name>
@@ -141,21 +146,6 @@
           <javaOptions>
             <option>-Djavafx.verbose=true</option>
           </javaOptions>
-          <!-- JavaFX modules are placed here -->
-          <!-- <modulePaths>
-            <path>${project.build.directory}/mods</path>
-          </modulePaths> -->
-          <!-- <addModules>
-            <module>javafx.base</module>
-            <module>javafx.controls</module>
-            <module>javafx.graphics</module>
-            <module>javafx.fxml</module>
-            <module>io.leangen.geantyref</module>
-            <module>org.jdbi.v3.core</module>
-            <module>org.jdbi.v3.sqlobject</module>
-            <module>org.slf4j</module>
-            <module>org.xerial.sqlitejdbc</module>
-          </addModules> -->
         </configuration>
       </plugin>
 
