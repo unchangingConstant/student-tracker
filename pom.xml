@@ -132,6 +132,7 @@
         <version>1.7.1</version>
         <configuration>
           <input>${project.build.directory}/mods</input>
+          <!-- <module>student.tracker/${launcher-class}</module> -->
           <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
           <mainClass>${launcher-class}</mainClass>
           <name>deployed</name>
@@ -141,14 +142,19 @@
             <option>-Djavafx.verbose=true</option>
           </javaOptions>
           <!-- JavaFX modules are placed here -->
-          <modulePaths>
+          <!-- <modulePaths>
             <path>${project.build.directory}/mods</path>
-          </modulePaths>
+          </modulePaths> -->
           <!-- <addModules>
             <module>javafx.base</module>
             <module>javafx.controls</module>
             <module>javafx.graphics</module>
             <module>javafx.fxml</module>
+            <module>io.leangen.geantyref</module>
+            <module>org.jdbi.v3.core</module>
+            <module>org.jdbi.v3.sqlobject</module>
+            <module>org.slf4j</module>
+            <module>org.xerial.sqlitejdbc</module>
           </addModules> -->
         </configuration>
       </plugin>

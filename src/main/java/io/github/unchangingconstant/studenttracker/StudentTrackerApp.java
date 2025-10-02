@@ -26,36 +26,36 @@ import io.github.unchangingconstant.studenttracker.dao.AttendanceDAO;
  */
 public class StudentTrackerApp extends Application {
 
-    private static String databaseLocation;
+        private static String databaseLocation;
 
-    @Override
-    public void start(Stage stage) throws Exception {
+        @Override
+        public void start(Stage stage) throws Exception {
 
-        String classpath = System.getProperty("java.class.path");
-        String[] classPathValues = classpath == null ? new String[] { "Null classpath (huh?)" }
-                : classpath.split(File.pathSeparator);
-        System.out.println(Arrays.toString(classPathValues));
+                String classpath = System.getProperty("java.class.path");
+                String[] classPathValues = classpath == null ? new String[] { "Null classpath (huh?)" }
+                                : classpath.split(File.pathSeparator);
+                System.out.println(Arrays.toString(classPathValues));
 
-        String modulepath = System.getProperty("jdk.module.path");
-        String[] modulePathValues = modulepath == null ? new String[] { "Null modulepath" }
-                : modulepath.split(File.pathSeparator);
-        System.out.println(Arrays.toString(modulePathValues));
+                String modulepath = System.getProperty("jdk.module.path");
+                String[] modulePathValues = modulepath == null ? new String[] { "Null modulepath" }
+                                : modulepath.split(File.pathSeparator);
+                System.out.println(Arrays.toString(modulePathValues));
 
-        URL location = getClass().getResource("/fxml/root.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(location);
+                URL location = getClass().getResource("/fxml/root.fxml");
+                FXMLLoader fxmlLoader = new FXMLLoader(location);
 
-        SQLiteDataSource dataSource = DatabaseInitializer
-                .initializeDatabase(String.format("%s/database.db", System.getProperty("user.dir")));
+                SQLiteDataSource dataSource = DatabaseInitializer
+                                .initializeDatabase(String.format("%s/database.db", System.getProperty("user.dir")));
 
-        AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
-        AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
-        Parent root = fxmlLoader.load();
-        ((RootVM) fxmlLoader.getController()).setModel(model);
+                AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
+                AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
+                Parent root = fxmlLoader.load();
+                ((RootVM) fxmlLoader.getController()).setModel(model);
 
-        Scene scene = new Scene(root, 300, 275);
-        stage.setTitle("StudentTracker");
-        stage.setScene(scene);
-        stage.show();
-    }
+                Scene scene = new Scene(root, 300, 275);
+                stage.setTitle("StudentTracker");
+                stage.setScene(scene);
+                stage.show();
+        }
 
 }
