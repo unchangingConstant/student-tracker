@@ -2,8 +2,6 @@ package io.github.unchangingconstant.studenttracker.app;
 
 import java.io.File;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.Arrays;
 
 import javafx.application.Application;
