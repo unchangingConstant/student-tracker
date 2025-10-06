@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app;
+package io.github.unchangingconstant.studenttracker;
 
 import java.io.File;
 import java.net.URL;
@@ -13,8 +13,6 @@ import javafx.stage.Stage;
 import org.sqlite.SQLiteDataSource;
 
 import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
-import io.github.unchangingconstant.studenttracker.app.models.impl.AttendanceDatabaseModel;
-import io.github.unchangingconstant.studenttracker.app.viewmodels.impl.RootVM;
 import io.github.unchangingconstant.studenttracker.buildutils.DatabaseInitializer;
 
 /**
@@ -45,9 +43,9 @@ public class StudentTrackerApp extends Application {
                                 .initializeDatabase(String.format("%s/database.db", System.getProperty("user.dir")));
 
                 AttendanceDAO dao = AttendanceDAO.getAttendanceDAO(dataSource);
-                AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
+                // AttendanceDatabaseModel model = new AttendanceDatabaseModel(dao);
                 Parent root = fxmlLoader.load();
-                ((RootVM) fxmlLoader.getController()).setModel(model);
+                // ((RootViewModel) fxmlLoader.getController()).setModel(model);
 
                 Scene scene = new Scene(root, 300, 275);
                 stage.setTitle("StudentTracker");

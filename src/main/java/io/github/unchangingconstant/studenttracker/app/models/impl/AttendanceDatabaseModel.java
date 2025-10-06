@@ -1,10 +1,10 @@
-package io.github.unchangingconstant.studenttracker.models.impl;
+package io.github.unchangingconstant.studenttracker.app.models.impl;
 
 import java.util.List;
 
-import io.github.unchangingconstant.studenttracker.dao.AttendanceDAO;
-import io.github.unchangingconstant.studenttracker.domainentities.Student;
-import io.github.unchangingconstant.studenttracker.models.Model;
+import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
+import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
+import io.github.unchangingconstant.studenttracker.app.models.Model;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

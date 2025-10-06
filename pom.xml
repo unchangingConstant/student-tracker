@@ -20,8 +20,9 @@
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
     <lombok.version>1.18.40</lombok.version>
+    <guice.version>7.0.0</guice.version>
     
-    <launcher-class>io.github.unchangingconstant.studenttracker.app.Launcher</launcher-class>
+    <launcher-class>io.github.unchangingconstant.studenttracker.Launcher</launcher-class>
     <environment>dev</environment>
   </properties>
 
@@ -67,6 +68,12 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <!-- For dependency injection and management -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>

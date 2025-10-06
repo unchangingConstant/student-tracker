@@ -10,8 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.unchangingconstant.studenttracker.dao.AttendanceDAO;
-import io.github.unchangingconstant.studenttracker.domainentities.Student;
+import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
+import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's

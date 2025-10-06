@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app;
+package io.github.unchangingconstant.studenttracker;
 
 public class Launcher {
 

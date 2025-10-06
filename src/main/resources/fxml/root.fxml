@@ -6,13 +6,43 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM?>
+<?import io.github.unchangingconstant.studenttracker.ui.controllers.RootController?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.viewmodels.impl.RootVM" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.ui.controllers.RootController" xmlns:fx="http://javafx.com/fxml">
 <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
-    <fx:include source="pages/register.fxml" fx:id="registerPage"/>
+    <GridPane alignment="center" hgap="10" vgap="10">
+        <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
-    <fx:include source="pages/database.fxml" fx:id="databasePage"/> 
+            <Text text="Enter new student" 
+                GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="4"/>
+        
+            <Label text="First Name:"
+                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="firstNameInput"
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Last Name:"
+                GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <TextField fx:id="lastNameInput"
+                GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            
+            <Label text="Middle Name:"
+                GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="middleNameInput"
+                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Subjects:"
+                GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <TextField fx:id="subjectsInput"
+                GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+            
+            <Button text="Register" onAction="#onRegisterButtonAction"
+                GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
+            <Button text="Delete" onAction="#onDeleteButtonAction"
+                GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
+    </GridPane>
+
+    <!-- <fx:include source="pages/database.fxml" fx:id="databasePage"/>  -->
 
 </VBox>
