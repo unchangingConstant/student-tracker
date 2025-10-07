@@ -2,6 +2,9 @@ package io.github.unchangingconstant.studenttracker.app.models.impl;
 
 import java.util.List;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
 import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
 import io.github.unchangingconstant.studenttracker.app.models.Model;
@@ -10,11 +13,13 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+@Singleton
 public class AttendanceDatabaseModel implements Model<ObjectProperty<ObservableList<Student>>> {
 
     private SimpleListProperty<Student> students;
     private AttendanceDAO dao;
 
+    @Inject
     public AttendanceDatabaseModel(AttendanceDAO dao) {
         List<Student> initialData = dao.getAllStudents();
         // This way. Otherwise the property has a null list
@@ -38,6 +43,10 @@ public class AttendanceDatabaseModel implements Model<ObjectProperty<ObservableL
         if (removed)
             dao.deleteStudent(studentId);
 
+    }
+
+    public List<Student> getAllStudents() {
+        return dao.getAllStudents();
     }
 
     @Override

@@ -1,6 +1,7 @@
-package io.github.unchangingconstant.studenttracker.ui.controllers;
+package io.github.unchangingconstant.studenttracker.ui;
 
-import javafx.fxml.Initializable;
+public interface Controller {
 
-public interface Controller extends Initializable {
+    public void initialize();
+
 }

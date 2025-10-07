@@ -39,10 +39,10 @@
             
             <Button text="Register" onAction="#onRegisterButtonAction"
                 GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
-            <Button text="Delete" onAction="#onDeleteButtonAction"
+            <Button text="Delete" 
                 GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
     </GridPane>
 
-    <!-- <fx:include source="pages/database.fxml" fx:id="databasePage"/>  -->
+    <fx:include source="pages/database.fxml" fx:id="databasePage"/> 
 
 </VBox>

@@ -1,10 +1,12 @@
-package io.github.unchangingconstant.studenttracker.ui.controllers.impl;
+package io.github.unchangingconstant.studenttracker.ui.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.google.inject.Inject;
+
 import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
-import io.github.unchangingconstant.studenttracker.ui.controllers.Controller;
+import io.github.unchangingconstant.studenttracker.ui.Controller;
 import io.github.unchangingconstant.studenttracker.ui.viewmodels.RootViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -23,8 +25,13 @@ public class RootController implements Controller {
 
     private RootViewModel viewmodel;
 
+    @Inject
+    public RootController(RootViewModel viewmodel) {
+        this.viewmodel = viewmodel;
+    }
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize() {
         viewmodel.getStudentList().bind(databasePage.itemsProperty());
         viewmodel.getFirstNameInput().bind(firstNameInput.textProperty());
         viewmodel.getLastNameInput().bind(lastNameInput.textProperty());
