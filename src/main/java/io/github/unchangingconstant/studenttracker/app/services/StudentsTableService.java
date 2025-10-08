@@ -11,13 +11,13 @@ import io.github.unchangingconstant.studenttracker.app.entities.Student;
 // TODO examine data validation more rigorously
 // TODO consider how error handling should be implemented
 @Singleton
-public class DatabaseAccessService {
+public class StudentsTableService {
 
-    private DatabaseEventService eventService;
+    private StudentsTableEventService eventService;
     private DatabaseDAO dao;
 
     @Inject
-    public DatabaseAccessService(DatabaseEventService eventService, DatabaseDAO dao) {
+    public StudentsTableService(StudentsTableEventService eventService, DatabaseDAO dao) {
         this.eventService = eventService;
         this.dao = dao;
     }

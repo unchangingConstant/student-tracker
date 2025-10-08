@@ -6,18 +6,14 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
-import io.github.unchangingconstant.studenttracker.app.services.DatabaseAccessService;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
+import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class RootViewModel {
 
     private StudentsTableModel model;
-    private DatabaseAccessService dbAccess;
+    private StudentsTableService dbAccess;
 
     @Getter
     private SimpleStringProperty firstNameInput;
@@ -26,10 +22,10 @@ public class RootViewModel {
     @Getter
     private SimpleStringProperty middleNameInput;
     @Getter
-    private Property<ObservableList<Student>> studentList;
+    private SimpleListProperty<Student> studentList;
 
     @Inject
-    public RootViewModel(StudentsTableModel model, DatabaseAccessService dbAccess) {
+    public RootViewModel(StudentsTableModel model, StudentsTableService dbAccess) {
         // Dependencies
         this.model = model;
         this.dbAccess = dbAccess;
