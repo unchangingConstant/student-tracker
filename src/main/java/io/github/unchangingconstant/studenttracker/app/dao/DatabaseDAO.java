@@ -22,9 +22,9 @@ public interface DatabaseDAO {
     @RegisterFieldMapper(Student.class)
     public Student getStudent(Integer studentId);
 
-    @SqlUpdate("INSERT INTO students (firstName, middleName, lastName, subjects) VALUES (:firstName, :middleName, :lastName, :subjects)")
+    @SqlUpdate("INSERT INTO students (firstName, middleName, lastName, subjects) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
-    public Integer insertStudent(@BindBean Student student);
+    public Integer insertStudent(String firstName, String middleName, String lastName, short subjects);
 
     @SqlUpdate("DELETE FROM students WHERE studentId = ?")
     public boolean deleteStudent(Integer studentId);

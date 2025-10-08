@@ -22,8 +22,8 @@ public class DatabaseAccessService {
         this.dao = dao;
     }
 
-    public Integer insertStudent(Student student) {
-        Integer result = this.dao.insertStudent(student);
+    public Integer insertStudent(String firstName, String middleName, String lastName, short subjects) {
+        Integer result = this.dao.insertStudent(firstName, middleName, lastName, subjects);
         eventService.triggerInsert(result);
         return result;
     }

@@ -43,9 +43,8 @@ public class RootViewModel {
     }
 
     public void onRegisterButtonAction() {
-        Student student = new Student(firstNameInput.getValue(), lastNameInput.getValue(),
-                middleNameInput.getValue().equals("") ? null : middleNameInput.getValue(), (short) 1, null);
-        dbAccess.insertStudent(student);
+        dbAccess.insertStudent(firstNameInput.getValue(), lastNameInput.getValue(),
+                middleNameInput.getValue().equals("") ? null : middleNameInput.getValue(), (short) 1);
     }
 
     public void onDeleteButtonAction() {
