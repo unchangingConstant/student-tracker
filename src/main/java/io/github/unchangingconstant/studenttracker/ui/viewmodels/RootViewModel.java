@@ -4,9 +4,9 @@ import lombok.Getter;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
+import io.github.unchangingconstant.studenttracker.entities.Student;
+import io.github.unchangingconstant.studenttracker.ui.models.StudentsTableModel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -34,7 +34,7 @@ public class RootViewModel {
         this.lastNameInput = new SimpleStringProperty();
         this.middleNameInput = new SimpleStringProperty();
         this.studentList = new SimpleListProperty<Student>();
-        // Bind model to ViewModel
+        // Bind viewmodel to model
         this.model.bind(studentList);
     }
 

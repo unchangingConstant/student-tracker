@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.entities.Visit;
 
 @Singleton
 public class VisitsTableEventService {

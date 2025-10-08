@@ -2,7 +2,7 @@ package io.github.unchangingconstant.studenttracker.ui.controllers;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.entities.Student;
 import io.github.unchangingconstant.studenttracker.ui.Controller;
 import io.github.unchangingconstant.studenttracker.ui.viewmodels.RootViewModel;
 import javafx.fxml.FXML;

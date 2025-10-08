@@ -7,7 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.entities.Visit;
 
 @Singleton
 public class VisitsTableService {
@@ -30,8 +30,8 @@ public class VisitsTableService {
 
     // update!!! Should return request status
     public void endVisit(Integer visitId) {
-        Visit result = this.dao.updateVisitEndtime(LocalDateTime.now(), visitId);
-        eventService.triggerUpdate(result);
+        // Visit result = this.dao.updateVisitEndtime(LocalDateTime.now(), visitId);
+        // eventService.triggerUpdate(result);
     }
 
     public List<Visit> getOngoingVisits() {

@@ -1,12 +1,12 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.ui.models;
 
 import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
+import io.github.unchangingconstant.studenttracker.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableEventService;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -29,6 +29,10 @@ public class StudentsTableModel {
         this.dbAccess = dbAccess;
     }
 
+    public void bind(SimpleListProperty<Student> property) {
+        property.bind(this.students);
+    }
+
     private void onInsertStudent(Integer studentId) {
         students.add(dbAccess.getStudent(studentId));
     }
@@ -45,10 +49,6 @@ public class StudentsTableModel {
 
     private void onUpdateStudent(Student student) {
 
-    }
-
-    public void bind(SimpleListProperty<Student> property) {
-        property.bind(this.students);
     }
 
 }

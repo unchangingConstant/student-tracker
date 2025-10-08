@@ -1,4 +1,4 @@
-package dao;
+package io.github.unchangingconstant.studenttracker.app.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.entities.Student;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -34,10 +34,10 @@ public class AttendanceDAOTest {
         jdbi.useHandle(handle -> {
             handle.execute("""
                     CREATE TABLE IF NOT EXISTS students (
-                        studentId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        firstName TEXT NOT NULL,
-                        middleName TEXT,
-                        lastName TEXT NOT NULL,
+                        student_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        first_name TEXT NOT NULL,
+                        middle_name TEXT,
+                        last_name TEXT NOT NULL,
                         subjects INTEGER
                     )
                     """);
@@ -45,16 +45,15 @@ public class AttendanceDAOTest {
         dao = jdbi.onDemand(DatabaseDAO.class);
     }
 
-    // @Test
-    // @DisplayName("insertStudent() handles student with no id")
-    // void testInsertNewStudent() {
-    // Student expected = new Student("Ethan", "Begley", "Labubu", (short) 2, null);
-    // assertEquals(1, dao.insertStudent(expected));
-    // Student result = dao.getStudent(1);
-    // assertEquals(1, result.getStudentId());
-    // expected.setStudentId(1);
-    // assertEquals(expected, result);
-    // }
+    @Test
+    @DisplayName("insertStudent() handles student with no id")
+    void testInsertNewStudent() {
+        Student expected = new Student("Ethan", "Begley", "Labubu", (short) 2, 1);
+        assertEquals(1, dao.insertStudent("Ethan", "Labubu", "Begley", (short) 2));
+        Student result = dao.getStudent(1);
+        assertEquals(1, result.getStudentId());
+        assertEquals(expected, result);
+    }
 
     // @Test
     // @DisplayName("deleteStudent() smoke test")

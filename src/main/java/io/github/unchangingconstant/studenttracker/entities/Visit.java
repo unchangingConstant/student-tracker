@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.entities;
+package io.github.unchangingconstant.studenttracker.entities;
 
 import java.time.LocalDateTime;
 

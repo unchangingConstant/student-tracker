@@ -9,8 +9,8 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.entities.Student;
+import io.github.unchangingconstant.studenttracker.entities.Visit;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
@@ -52,6 +52,7 @@ public interface DatabaseDAO {
     public boolean deleteStudentVisits(Integer studentId);
 
     @SqlUpdate("UPDATE visits SET end_time = ? WHERE visit_id = ?")
-    public Visit updateVisitEndtime(LocalDateTime endTime, Integer visitId);
+    // TODO jesus christ write your tests man, your services count on it
+    public void updateVisitEndtime(LocalDateTime endTime, Integer visitId);
 
 }

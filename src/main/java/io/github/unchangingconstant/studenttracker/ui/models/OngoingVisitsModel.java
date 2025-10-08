@@ -1,13 +1,13 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.ui.models;
 
 import java.util.List;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.services.VisitsTableEventService;
 import io.github.unchangingconstant.studenttracker.app.services.VisitsTableService;
+import io.github.unchangingconstant.studenttracker.entities.Student;
+import io.github.unchangingconstant.studenttracker.entities.Visit;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 
