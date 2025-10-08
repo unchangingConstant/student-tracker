@@ -4,8 +4,11 @@ import lombok.Getter;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
-import io.github.unchangingconstant.studenttracker.app.models.impl.AttendanceDatabaseModel;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
+import io.github.unchangingconstant.studenttracker.app.services.DatabaseAccessService;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +16,8 @@ import javafx.collections.ObservableList;
 
 public class RootViewModel {
 
-    private AttendanceDatabaseModel model;
+    private StudentsTableModel model;
+    private DatabaseAccessService dbAccess;
 
     @Getter
     private SimpleStringProperty firstNameInput;
@@ -22,23 +26,26 @@ public class RootViewModel {
     @Getter
     private SimpleStringProperty middleNameInput;
     @Getter
-    private SimpleListProperty<Student> studentList;
+    private Property<ObservableList<Student>> studentList;
 
     @Inject
-    public RootViewModel(AttendanceDatabaseModel model) {
+    public RootViewModel(StudentsTableModel model, DatabaseAccessService dbAccess) {
+        // Dependencies
+        this.model = model;
+        this.dbAccess = dbAccess;
+        // ViewModel properties
         this.firstNameInput = new SimpleStringProperty();
         this.lastNameInput = new SimpleStringProperty();
         this.middleNameInput = new SimpleStringProperty();
-        // TODO Make this an exposed model property instead (MODEL REFACTOR!!!)
-        this.studentList = new SimpleListProperty<Student>(FXCollections.observableArrayList(model.getAllStudents()));
-        this.model = model;
+        this.studentList = new SimpleListProperty<Student>();
+        // Bind model to ViewModel
+        this.model.bind(studentList);
     }
 
     public void onRegisterButtonAction() {
         Student student = new Student(firstNameInput.getValue(), lastNameInput.getValue(),
                 middleNameInput.getValue().equals("") ? null : middleNameInput.getValue(), (short) 1, null);
-        model.addStudent(student);
-        studentList.add(student);
+        dbAccess.insertStudent(student);
     }
 
     public void onDeleteButtonAction() {

@@ -1,11 +1,8 @@
 package io.github.unchangingconstant.studenttracker.ui.controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.ui.Controller;
 import io.github.unchangingconstant.studenttracker.ui.viewmodels.RootViewModel;
 import javafx.fxml.FXML;
@@ -32,10 +29,11 @@ public class RootController implements Controller {
 
     @Override
     public void initialize() {
-        viewmodel.getStudentList().bind(databasePage.itemsProperty());
         viewmodel.getFirstNameInput().bind(firstNameInput.textProperty());
         viewmodel.getLastNameInput().bind(lastNameInput.textProperty());
         viewmodel.getMiddleNameInput().bind(middleNameInput.textProperty());
+        // ViewModel not changeable by view in this binding order
+        databasePage.itemsProperty().bind(viewmodel.getStudentList());
     }
 
     public void onRegisterButtonAction() {

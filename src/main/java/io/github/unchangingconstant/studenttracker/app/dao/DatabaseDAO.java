@@ -2,20 +2,18 @@ package io.github.unchangingconstant.studenttracker.app.dao;
 
 import java.util.List;
 
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.sqlite.SQLiteDataSource;
 
-import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
 
 // Read up on mappers, section 7 of JDBI docs
-public interface AttendanceDAO {
+public interface DatabaseDAO {
 
+    // Probably better for this to return a Map<Integer, Student>
     @SqlQuery("SELECT * FROM students")
     @RegisterFieldMapper(Student.class)
     public List<Student> getAllStudents();
@@ -30,13 +28,5 @@ public interface AttendanceDAO {
 
     @SqlUpdate("DELETE FROM students WHERE studentId = ?")
     public boolean deleteStudent(Integer studentId);
-
-    /**
-     * Returns an instance of an implementation of this interface
-     * TODO Delegate this to App context?
-     */
-    public static AttendanceDAO getAttendanceDAO(SQLiteDataSource dataSource) {
-        return Jdbi.create(dataSource).installPlugin(new SqlObjectPlugin()).onDemand(AttendanceDAO.class);
-    }
 
 }

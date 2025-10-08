@@ -10,8 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
-import io.github.unchangingconstant.studenttracker.app.domainentities.Student;
+import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
+import io.github.unchangingconstant.studenttracker.app.entities.model.Student;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -24,7 +24,7 @@ public class AttendanceDAOTest {
     // Creates tool which creates in-mem sqlite database at test time
     private JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
     private String initDatabaseScript;
-    private AttendanceDAO dao;
+    private DatabaseDAO dao;
 
     @BeforeEach
     void setUp() {
@@ -42,7 +42,7 @@ public class AttendanceDAOTest {
                     )
                     """);
         });
-        dao = jdbi.onDemand(AttendanceDAO.class);
+        dao = jdbi.onDemand(DatabaseDAO.class);
     }
 
     @Test

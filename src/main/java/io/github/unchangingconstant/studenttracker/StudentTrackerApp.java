@@ -22,7 +22,7 @@ public class StudentTrackerApp extends Application {
         public void start(Stage stage) throws Exception {
                 Injector injector = Guice.createInjector(new DAOModule());
 
-                URL location = getClass().getResource("/fxml/root.fxml");
+                URL location = getClass().getResource("/view/root.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
                 fxmlLoader.setControllerFactory(injector::getInstance);
                 Parent root = fxmlLoader.load();

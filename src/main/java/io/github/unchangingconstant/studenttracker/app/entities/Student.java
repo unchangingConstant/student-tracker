@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.domainentities;
+package io.github.unchangingconstant.studenttracker.app.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,8 +22,7 @@ public class Student {
     private String lastName;
     private String middleName;
     private short subjects;
-    // Keep this nullable for data validation
-    // If student hasn't been assigned an Id, should be null
+    @NonNull
     private Integer studentId;
 
 }

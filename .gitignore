@@ -2,3 +2,5 @@
 target
 # why does this keep popping up
 .vscode
+# database created upon application run to be ignored
+database.db

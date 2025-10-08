@@ -11,13 +11,13 @@ import org.sqlite.SQLiteDataSource;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-import io.github.unchangingconstant.studenttracker.app.dao.AttendanceDAO;
+import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 
 public class DAOModule extends AbstractModule {
 
     @Provides
     // TODO AHHHHH CAST IT INTO THE FIRE, DESTROY IT!!!!!
-    public static AttendanceDAO provideAttendanceDAO() {
+    public static DatabaseDAO provideDatabaseDAO() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(String.format("jdbc:sqlite:%s", "database.db"));
         try {
@@ -36,7 +36,7 @@ public class DAOModule extends AbstractModule {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return Jdbi.create(dataSource).installPlugin(new SqlObjectPlugin()).onDemand(AttendanceDAO.class);
+        return Jdbi.create(dataSource).installPlugin(new SqlObjectPlugin()).onDemand(DatabaseDAO.class);
     }
 
 }
