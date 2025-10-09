@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.services;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -37,7 +38,7 @@ public class StudentsTableService {
         return this.dao.getStudent(studentId);
     }
 
-    public List<Student> getAllStudents() {
+    public Map<Integer, Student> getAllStudents() {
         return this.dao.getAllStudents();
     }
 

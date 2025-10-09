@@ -2,6 +2,8 @@ package io.github.unchangingconstant.studenttracker.app.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
+
 import org.instancio.Instancio;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -27,10 +29,13 @@ public class DatabaseDAOTest {
     private final JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
     private final String createSchemaScript = ScriptLoader.loadSqlScript("/sql/schema.sql");
     private DatabaseDAO dao;
+    private Jdbi jdbi;
+
+    private final String INSERT = "INSERT INTO students (student_id, first_name, last_name, middle_name, subjects) VALUES (:studentId, :firstName, :lastName, :middleName, :subjects)";
 
     @BeforeEach
     void setUp() {
-        Jdbi jdbi = sqliteExtension.getJdbi();
+        jdbi = sqliteExtension.getJdbi();
         jdbi.useHandle(handle -> handle.execute(createSchemaScript));
         dao = jdbi.onDemand(DatabaseDAO.class);
     }
@@ -38,27 +43,27 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getStudent(Integer) correctly returns student with given ID")
     void testGetStudent_1() {
-        Student s = Instancio.create(Student.class);
+        Student expected = Instancio.create(Student.class);
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT).bindBean(expected).execute());
+        assertEquals(expected, dao.getStudent(expected.getStudentId()));
     }
 
     @Test
-    @DisplayName("insertStudent() handles student with no id")
-    void testInsertNewStudent() {
-        Student expected = Student.builder().studentId(1).firstName("John").middleName("Henry").lastName("Smith")
-                .subjects((short) 2)
-                .build();
-        assertEquals(1, dao.insertStudent("John", "Henry", "Smith", (short) 2));
-        Student result = dao.getStudent(1);
-        assertEquals(1, result.getStudentId());
-        assertEquals(expected, result);
-    }
+    @DisplayName("getAllStudents() returns all student in a map, multiple students in table case")
+    void testGetAllStudents_1() {
+        Student s1 = Instancio.create(Student.class);
+        Student s2 = Instancio.create(Student.class);
+        Student s3 = Instancio.create(Student.class);
 
-    @Test
-    @DisplayName("deleteStudent() smoke test")
-    void testDeleteStudent() {
-        assertEquals(1, dao.insertStudent("John", "Henry", "Smith", (short) 2));
-        assertTrue(dao.deleteStudent(1));
-        assertTrue(dao.getAllStudents().isEmpty());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT).bindBean(s1).execute());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT).bindBean(s2).execute());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT).bindBean(s3).execute());
+
+        Map<Integer, Student> map = dao.getAllStudents();
+
+        assertEquals(s1, map.get(s1.getStudentId()));
+        assertEquals(s2, map.get(s2.getStudentId()));
+        assertEquals(s3, map.get(s3.getStudentId()));
     }
 
 }

@@ -2,9 +2,10 @@ package io.github.unchangingconstant.studenttracker.app.dao;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
-import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -15,11 +16,10 @@ import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
 
-    // Probably better for this to return a Map<Integer, Student>
     @SqlQuery("SELECT * FROM students")
     @RegisterFieldMapper(Student.class)
-    // TODO return as maps. Just better
-    public List<Student> getAllStudents();
+    @KeyColumn("student_id")
+    public Map<Integer, Student> getAllStudents();
 
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
     @RegisterFieldMapper(Student.class)

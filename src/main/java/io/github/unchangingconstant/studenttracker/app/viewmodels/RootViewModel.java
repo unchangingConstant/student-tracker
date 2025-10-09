@@ -35,7 +35,7 @@ public class RootViewModel {
         this.middleNameInput = new SimpleStringProperty();
         this.studentList = new SimpleListProperty<Student>();
         // Bind viewmodel to model
-        this.model.bind(studentList);
+        // this.model.bind(studentList);
     }
 
     public void onRegisterButtonAction() {
