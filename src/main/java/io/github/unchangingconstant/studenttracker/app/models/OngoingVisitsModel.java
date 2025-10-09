@@ -22,7 +22,7 @@ public class OngoingVisitsModel {
         // subscribes to database events to maintain state accuracy
         eventService.subscribeToDeletes(visitId -> onDeleteVisit(visitId));
         eventService.subscribeToInserts(visitId -> onInsertVisit(visitId));
-
+        eventService.subscribeToUpdates(visit -> onUpdateVisit(visit));
         this.dbAccess = dbAccess;
     }
 
@@ -37,5 +37,9 @@ public class OngoingVisitsModel {
                 break;
             }
         }
+    }
+
+    private void onUpdateVisit(Visit visit) {
+        // TODO omg consider returning these things as maps, NOT LISTS!
     }
 }

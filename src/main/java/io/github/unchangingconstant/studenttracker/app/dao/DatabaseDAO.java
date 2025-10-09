@@ -18,6 +18,7 @@ public interface DatabaseDAO {
     // Probably better for this to return a Map<Integer, Student>
     @SqlQuery("SELECT * FROM students")
     @RegisterFieldMapper(Student.class)
+    // TODO return as maps. Just better
     public List<Student> getAllStudents();
 
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
