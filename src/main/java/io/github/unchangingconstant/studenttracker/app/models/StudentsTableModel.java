@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.ui.models;
+package io.github.unchangingconstant.studenttracker.app.models;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
-import io.github.unchangingconstant.studenttracker.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableEventService;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -22,7 +22,7 @@ public class StudentsTableModel {
     public StudentsTableModel(StudentsTableService dbAccess, StudentsTableEventService eventService) {
         List<Student> initialData = dbAccess.getAllStudents();
         this.students = new SimpleListProperty<Student>(FXCollections.observableArrayList(initialData));
-        // Ensures model is state is synced to database at all times
+        // Ensures model state is synced to database at all times
         eventService.subscribeToDeletes(studentId -> this.onDeleteStudent(studentId));
         eventService.subscribeToInserts(studentId -> this.onInsertStudent(studentId));
         eventService.subscribeToUpdates(student -> this.onUpdateStudent(student));

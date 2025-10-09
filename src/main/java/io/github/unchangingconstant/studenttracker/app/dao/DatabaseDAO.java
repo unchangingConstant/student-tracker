@@ -9,8 +9,8 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import io.github.unchangingconstant.studenttracker.entities.Student;
-import io.github.unchangingconstant.studenttracker.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
@@ -26,6 +26,7 @@ public interface DatabaseDAO {
 
     @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
+    // TODO why no accept null middle name????
     public Integer insertStudent(String firstName, String middleName, String lastName, short subjects);
 
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")

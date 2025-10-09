@@ -1,12 +1,12 @@
-package io.github.unchangingconstant.studenttracker.ui.viewmodels;
+package io.github.unchangingconstant.studenttracker.app.viewmodels;
 
 import lombok.Getter;
 
 import com.google.inject.Inject;
 
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
-import io.github.unchangingconstant.studenttracker.entities.Student;
-import io.github.unchangingconstant.studenttracker.ui.models.StudentsTableModel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 

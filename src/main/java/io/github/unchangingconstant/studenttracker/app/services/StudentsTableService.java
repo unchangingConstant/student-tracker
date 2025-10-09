@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import io.github.unchangingconstant.studenttracker.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
 
 // TODO examine data validation more rigorously
 // TODO consider how error handling should be implemented

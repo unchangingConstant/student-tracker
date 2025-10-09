@@ -18,46 +18,10 @@ public class DAOModule extends AbstractModule {
 
     @Provides
     @Singleton
-    // TODO AHHHHH CAST IT INTO THE FIRE, DESTROY IT!!!!!
-    public static DatabaseDAO provideDatabaseDAO() {
+    public DatabaseDAO provideDatabaseDAO() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl(String.format("jdbc:sqlite:%s", "database.db"));
-        try {
-            Connection conn = dataSource.getConnection();
-            // TODO USE RESOURCES FOR THIS
-            conn.createStatement()
-                    .execute(
-                            "CREATE TABLE IF NOT EXISTS students (" + //
-                                    "    student_id INTEGER PRIMARY KEY AUTOINCREMENT," + //
-                                    "    first_name TEXT NOT NULL," + //
-                                    "    middle_name TEXT," + //
-                                    "    last_name TEXT NOT NULL," + //
-                                    "    subjects INTEGER" + //
-                                    ");" + //
-                                    "CREATE TABLE IF NOT EXISTS visits (" + //
-                                    "    visit_id INTEGER PRIMARY KEY AUTOINCREMENT," + //
-                                    "    start_time DATETIME NOT NULL," + //
-                                    "    end_time DATETIME," + //
-                                    "    student_id INTEGER," + //
-                                    "    FOREIGN KEY (student_id) REFERENCES Students(student_id)" + //
-                                    ");" + //
-                                    "");
-            ResultSet rs = conn.getMetaData().getTables(null, null, "%", null);
-            System.out.println("Tables in database:");
-            while (rs.next()) {
-                System.out.println("  - " + rs.getString("TABLE_NAME"));
-            }
-            rs.close();
-            conn.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        dataSource.setUrl("jdbc:sqlite:database.db");
         return Jdbi.create(dataSource).installPlugin(new SqlObjectPlugin()).onDemand(DatabaseDAO.class);
-    }
-
-    @Provides
-    public String provideSchemaSQLString() {
-        return null;
     }
 
 }

@@ -1,8 +1,8 @@
-package io.github.unchangingconstant.studenttracker.ui.viewmodels;
+package io.github.unchangingconstant.studenttracker.app.viewmodels;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 import javafx.beans.property.Property;
 import javafx.collections.ObservableList;
 

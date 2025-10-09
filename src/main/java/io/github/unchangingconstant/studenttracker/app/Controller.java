@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.ui;
+package io.github.unchangingconstant.studenttracker.app;
 
 public interface Controller {
 
