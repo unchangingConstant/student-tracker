@@ -74,6 +74,13 @@
       <artifactId>guice</artifactId>
       <version>${guice.version}</version>
     </dependency>
+    <!-- Shout out steffen -->
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+      <version>5.5.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
