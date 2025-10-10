@@ -16,18 +16,17 @@ import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
 
+    @SqlQuery("SELECT * FROM students WHERE student_id = ?")
+    @RegisterFieldMapper(Student.class)
+    public Student getStudent(Integer studentId);
+
     @SqlQuery("SELECT * FROM students")
     @RegisterFieldMapper(Student.class)
     @KeyColumn("student_id")
     public Map<Integer, Student> getAllStudents();
 
-    @SqlQuery("SELECT * FROM students WHERE student_id = ?")
-    @RegisterFieldMapper(Student.class)
-    public Student getStudent(Integer studentId);
-
     @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
-    // TODO why no accept null middle name????
     public Integer insertStudent(String firstName, String middleName, String lastName, short subjects);
 
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")

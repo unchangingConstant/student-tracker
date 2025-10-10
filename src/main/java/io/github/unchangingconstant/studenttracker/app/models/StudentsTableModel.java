@@ -36,8 +36,8 @@ public class StudentsTableModel {
     }
 
     private void onInsertStudent(Integer studentId) {
-        Student newStudent = dbAccess.getStudent(studentId);
-        students.put(newStudent.getStudentId(), dbAccess.getStudent(studentId));
+        Student newStudent = this.dbAccess.getStudent(studentId);
+        students.put(newStudent.getStudentId(), newStudent);
     }
 
     private void onDeleteStudent(Integer studentId) {
