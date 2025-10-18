@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ScriptLoader {
 
+    // TODO OMG READ section 1.14.3 OF JDBI DOCS!!!!
     public static String loadSqlScript(String resourcePath) {
         try (InputStream inputStream = ScriptLoader.class
                 .getResourceAsStream(resourcePath)) {

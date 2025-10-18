@@ -24,9 +24,9 @@ public class StudentsTableService {
     }
 
     public Integer insertStudent(String firstName, String middleName, String lastName, short subjects) {
-        Integer result = this.dao.insertStudent(firstName, middleName, lastName, subjects);
-        eventService.triggerInsert(result);
-        return result;
+        Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects);
+        eventService.triggerInsert(inserted);
+        return inserted;
     }
 
     public void deleteStudent(Integer studentId) {

@@ -6,22 +6,24 @@ import java.util.Map;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.mappers.RowToStudentMapper;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
 
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
-    @RegisterFieldMapper(Student.class)
+    @RegisterRowMapper(RowToStudentMapper.class)
     public Student getStudent(Integer studentId);
 
     @SqlQuery("SELECT * FROM students")
-    @RegisterFieldMapper(Student.class)
+    @RegisterRowMapper(RowToStudentMapper.class)
     @KeyColumn("student_id")
     public Map<Integer, Student> getAllStudents();
 

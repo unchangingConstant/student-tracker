@@ -2,18 +2,12 @@ package io.github.unchangingconstant.studenttracker.app.entities;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.ToString;
+import lombok.Value;
 
-@Data
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@Builder
 public class Visit {
 
     @NonNull

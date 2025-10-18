@@ -5,7 +5,7 @@ import java.net.URL;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import io.github.unchangingconstant.studenttracker.config.DAOModule;
+import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +20,7 @@ public class StudentTrackerApp extends Application {
 
         @Override
         public void start(Stage stage) throws Exception {
-                Injector injector = Guice.createInjector(new DAOModule());
+                Injector injector = Guice.createInjector(new DatabaseModule());
 
                 URL location = getClass().getResource("/view/main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
