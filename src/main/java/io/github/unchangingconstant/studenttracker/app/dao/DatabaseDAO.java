@@ -40,22 +40,22 @@ public interface DatabaseDAO {
 
     @SqlQuery("SELECT * FROM visits")
     @RegisterFieldMapper(Visit.class)
-    public List<Visit> getAllVisits();
+    @KeyColumn("visit_id")
+    public Map<Integer, Visit> getAllVisits();
 
     @SqlQuery("SELECT * FROM visits WHERE end_time IS NULL")
     @RegisterFieldMapper(Visit.class)
-    public List<Visit> getOngoingVisits();
+    @KeyColumn("visit_id")
+    public Map<Integer, Visit> getOngoingVisits();
 
     @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the visit
     public Integer insertVisit(LocalDateTime startTime, LocalDateTime endTime, Integer studentId);
 
     @SqlUpdate("DELETE FROM visits WHERE student_id = ?")
-    // TODO get all of the deleted visits' ids?
     public boolean deleteStudentVisits(Integer studentId);
 
     @SqlUpdate("UPDATE visits SET end_time = ? WHERE visit_id = ?")
-    // TODO jesus christ write your tests man, your services count on it
     public void updateVisitEndtime(LocalDateTime endTime, Integer visitId);
 
 }

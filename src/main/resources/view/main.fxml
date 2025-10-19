@@ -8,6 +8,6 @@
 
 <TabPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.MainController" xmlns:fx="http://javafx.com/fxml">
 
-    <fx:include source="tabs/session.fxml" fx:id="session"/> 
+    <fx:include source="pages/session.fxml" fx:id="session"/> 
 
 </TabPane>

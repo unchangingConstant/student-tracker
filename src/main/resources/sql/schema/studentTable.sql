@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS visits (
     start_time DATETIME NOT NULL,
     end_time DATETIME,
     student_id INTEGER,
-    FOREIGN KEY (student_id) REFERENCES Students(student_id)
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE RESTRICT
 );

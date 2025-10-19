@@ -2,6 +2,7 @@ package io.github.unchangingconstant.studenttracker.app.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -10,13 +11,13 @@ import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 
 @Singleton
-public class VisitsTableService {
+public class VisitService {
 
     private DatabaseDAO dao;
-    private VisitsTableEventService eventService;
+    private VisitEventService eventService;
 
     @Inject
-    public VisitsTableService(DatabaseDAO dao, VisitsTableEventService eventService) {
+    public VisitService(DatabaseDAO dao, VisitEventService eventService) {
         this.eventService = eventService;
         this.dao = dao;
     }
@@ -34,7 +35,7 @@ public class VisitsTableService {
         // eventService.triggerUpdate(result);
     }
 
-    public List<Visit> getOngoingVisits() {
+    public Map<Integer, Visit> getOngoingVisits() {
         return this.dao.getOngoingVisits();
     }
 

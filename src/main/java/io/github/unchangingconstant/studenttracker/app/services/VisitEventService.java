@@ -7,23 +7,22 @@ import java.util.function.Consumer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 
 @Singleton
-public class StudentsTableEventService {
-
-    private List<Consumer<Student>> updateSubs;
+public class VisitEventService {
+    private List<Consumer<Visit>> updateSubs;
     private List<Consumer<Integer>> deleteSubs;
     private List<Consumer<Integer>> insertSubs;
 
     @Inject
-    public StudentsTableEventService() {
-        updateSubs = new LinkedList<Consumer<Student>>();
+    public VisitEventService() {
+        updateSubs = new LinkedList<Consumer<Visit>>();
         deleteSubs = new LinkedList<Consumer<Integer>>();
         insertSubs = new LinkedList<Consumer<Integer>>();
     }
 
-    public void subscribeToUpdates(Consumer<Student> function) {
+    public void subscribeToUpdates(Consumer<Visit> function) {
         updateSubs.add(function);
     }
 
@@ -35,16 +34,15 @@ public class StudentsTableEventService {
         insertSubs.add(function);
     }
 
-    protected void triggerUpdate(Student student) {
-        updateSubs.forEach(function -> function.accept(student));
+    protected void triggerUpdate(Visit visit) {
+        updateSubs.forEach(function -> function.accept(visit));
     }
 
-    protected void triggerDelete(Integer studentId) {
-        deleteSubs.forEach(function -> function.accept(studentId));
+    protected void triggerDelete(Integer visitId) {
+        deleteSubs.forEach(function -> function.accept(visitId));
     }
 
-    protected void triggerInsert(Integer studentId) {
-        insertSubs.forEach(function -> function.accept(studentId));
+    protected void triggerInsert(Integer visitId) {
+        insertSubs.forEach(function -> function.accept(visitId));
     }
-
 }

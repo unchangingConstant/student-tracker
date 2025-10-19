@@ -3,22 +3,22 @@ package io.github.unchangingconstant.studenttracker.app.services;
 import java.util.List;
 import java.util.Map;
 
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 
-// TODO examine data validation more rigorously
-// TODO consider how error handling should be implemented
 @Singleton
-public class StudentsTableService {
+public class StudentService {
 
-    private StudentsTableEventService eventService;
+    private StudentEventService eventService;
     private DatabaseDAO dao;
 
     @Inject
-    public StudentsTableService(StudentsTableEventService eventService, DatabaseDAO dao) {
+    public StudentService(StudentEventService eventService, DatabaseDAO dao) {
         this.eventService = eventService;
         this.dao = dao;
     }
@@ -30,8 +30,19 @@ public class StudentsTableService {
     }
 
     public void deleteStudent(Integer studentId) {
-        this.dao.deleteStudent(studentId);
-        eventService.triggerDelete(studentId);
+        Boolean deleted;
+        try {
+            deleted = this.dao.deleteStudent(studentId);
+        } catch (UnableToExecuteStatementException e) {
+            // If unable to delete due to foreign key constraints
+            if (e.getMessage().contains("FOREIGN KEY constraint")) {
+                throw new IllegalStateException("Cannot delete student with existing visits", e);
+            }
+            throw new RuntimeException("Failed to delete student", e);
+        }
+        if (deleted) {
+            eventService.triggerDelete(studentId);
+        }
     }
 
     public Student getStudent(Integer studentId) {

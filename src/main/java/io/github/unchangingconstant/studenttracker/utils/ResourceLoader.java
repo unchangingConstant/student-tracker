@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class ScriptLoader {
+public class ResourceLoader {
 
     // TODO OMG READ section 1.14.3 OF JDBI DOCS!!!!
-    public static String loadSqlScript(String resourcePath) {
-        try (InputStream inputStream = ScriptLoader.class
+    public static String loadResource(String resourcePath) {
+        try (InputStream inputStream = ResourceLoader.class
                 .getResourceAsStream(resourcePath)) {
 
             if (inputStream == null) {

@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
-// TODO consider using java records to remove lombok dependency?
 // Check ALL annotations for necessity
 @Value
 @Builder

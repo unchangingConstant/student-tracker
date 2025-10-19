@@ -6,14 +6,20 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
-import io.github.unchangingconstant.studenttracker.app.services.StudentsTableService;
+import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class RootViewModel {
 
+    enum Page {
+        STUDENT_TABLE_PAGE, ONGOING_VISITS_PAGE
+    }
+
     private StudentsTableModel model;
-    private StudentsTableService dbAccess;
+    private StudentService dbAccess;
+
+    private Page currPage;
 
     @Getter
     private SimpleStringProperty firstNameInput;
@@ -25,7 +31,7 @@ public class RootViewModel {
     private SimpleListProperty<Student> studentList;
 
     @Inject
-    public RootViewModel(StudentsTableModel model, StudentsTableService dbAccess) {
+    public RootViewModel(StudentsTableModel model, StudentService dbAccess) {
         // Dependencies
         this.model = model;
         this.dbAccess = dbAccess;
