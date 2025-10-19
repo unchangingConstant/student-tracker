@@ -7,7 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.services.StudentService;
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.domain.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentEventService;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;

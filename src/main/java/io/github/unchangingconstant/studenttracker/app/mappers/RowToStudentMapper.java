@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.mappers;
+package io.github.unchangingconstant.studenttracker.app.mappers.daoToDomain;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.domain.Student;
 
 public class RowToStudentMapper implements RowMapper<Student> {
 

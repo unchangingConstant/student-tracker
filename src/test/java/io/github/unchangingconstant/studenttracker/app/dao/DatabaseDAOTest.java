@@ -17,12 +17,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.entities.domain.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.domain.Visit;
+import io.github.unchangingconstant.studenttracker.app.mappers.daoToDomain.RowToStudentMapper;
+import io.github.unchangingconstant.studenttracker.app.mappers.daoToDomain.RowToVisitMapper;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToStudentMapper;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToVisitMapper;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's

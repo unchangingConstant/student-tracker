@@ -8,8 +8,8 @@
 
 <Tab xmlns:fx="http://javafx.com/fxml" fx:id="session" text="Session" closable="false">
 
-    <ListView xmlns:fx="http://javafx.com/fxml" fx:id="ongoingVisitsView">
+    <TableView xmlns:fx="http://javafx.com/fxml" fx:id="ongoingVisitsView">
     
-    </ListView>
+    </TableView>
 
 </Tab>

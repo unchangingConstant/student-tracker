@@ -14,6 +14,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.mappers.RowToStudentMapper;
+import io.github.unchangingconstant.studenttracker.app.mappers.RowToVisitMapper;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
@@ -34,17 +35,17 @@ public interface DatabaseDAO {
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
 
-    @SqlQuery("SELECT * FROM visits WHERE visit_id = ?")
-    @RegisterFieldMapper(Visit.class)
+    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id WHERE v.visit_id = ?;")
+    @RegisterRowMapper(RowToVisitMapper.class)
     public Visit getVisit(Integer visitId);
 
-    @SqlQuery("SELECT * FROM visits")
-    @RegisterFieldMapper(Visit.class)
+    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id;")
+    @RegisterRowMapper(RowToVisitMapper.class)
     @KeyColumn("visit_id")
     public Map<Integer, Visit> getAllVisits();
 
-    @SqlQuery("SELECT * FROM visits WHERE end_time IS NULL")
-    @RegisterFieldMapper(Visit.class)
+    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id;")
+    @RegisterRowMapper(RowToVisitMapper.class)
     @KeyColumn("visit_id")
     public Map<Integer, Visit> getOngoingVisits();
 

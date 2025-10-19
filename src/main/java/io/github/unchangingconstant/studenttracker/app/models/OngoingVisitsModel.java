@@ -4,33 +4,36 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import io.github.unchangingconstant.studenttracker.app.services.VisitEventService;
 import io.github.unchangingconstant.studenttracker.app.services.VisitService;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 
+@Singleton
 public class OngoingVisitsModel {
 
     private SimpleMapProperty<Integer, Visit> ongoingVisits;
-    private VisitService dbAccess;
+    private VisitService visitService;
 
     @Inject
-    public OngoingVisitsModel(VisitService dbAccess, VisitEventService eventService) {
-        Map<Integer, Visit> initialData = dbAccess.getOngoingVisits();
+    public OngoingVisitsModel(VisitService visitService,
+            VisitEventService eventService) {
+        Map<Integer, Visit> initialData = visitService.getOngoingVisits();
         this.ongoingVisits = new SimpleMapProperty<Integer, Visit>(
                 FXCollections.observableHashMap());
-        this.ongoingVisits.putAll(initialData);
         // subscribes to database events to maintain state accuracy
         eventService.subscribeToDeletes(visitId -> onDeleteVisit(visitId));
         eventService.subscribeToInserts(visitId -> onInsertVisit(visitId));
         eventService.subscribeToUpdates(visit -> onUpdateVisit(visit));
-        this.dbAccess = dbAccess;
+        this.visitService = visitService;
     }
 
     private void onInsertVisit(Integer visitId) {
-        Visit inserted = dbAccess.getVisit(visitId);
+        Visit inserted = visitService.getVisit(visitId);
         if (inserted.getEndTime() == null) {
             ongoingVisits.put(visitId, inserted);
         }

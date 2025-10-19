@@ -11,6 +11,8 @@ import lombok.Value;
 public class Visit {
 
     @NonNull
+    private String studentName;
+    @NonNull
     private Integer visitId;
     @NonNull
     private Integer studentId;
