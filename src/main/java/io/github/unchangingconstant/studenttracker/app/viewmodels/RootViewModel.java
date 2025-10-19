@@ -4,7 +4,7 @@ import lombok.Getter;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.entities.domain.Student;
+import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.models.StudentsTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import javafx.beans.property.SimpleListProperty;

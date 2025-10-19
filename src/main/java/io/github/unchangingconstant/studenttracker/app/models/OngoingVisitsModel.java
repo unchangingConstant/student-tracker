@@ -1,13 +1,11 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.entities.Visit;
-import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import io.github.unchangingconstant.studenttracker.app.services.VisitEventService;
 import io.github.unchangingconstant.studenttracker.app.services.VisitService;
 import javafx.beans.property.SimpleMapProperty;
@@ -25,11 +23,16 @@ public class OngoingVisitsModel {
         Map<Integer, Visit> initialData = visitService.getOngoingVisits();
         this.ongoingVisits = new SimpleMapProperty<Integer, Visit>(
                 FXCollections.observableHashMap());
+        initialData.forEach((visitId, visit) -> this.ongoingVisits.put(visitId, visit));
         // subscribes to database events to maintain state accuracy
         eventService.subscribeToDeletes(visitId -> onDeleteVisit(visitId));
         eventService.subscribeToInserts(visitId -> onInsertVisit(visitId));
         eventService.subscribeToUpdates(visit -> onUpdateVisit(visit));
         this.visitService = visitService;
+    }
+
+    public void bind(SimpleMapProperty<Integer, Visit> map) {
+        map.bind(ongoingVisits);
     }
 
     private void onInsertVisit(Integer visitId) {

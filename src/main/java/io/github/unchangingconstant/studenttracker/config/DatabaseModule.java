@@ -24,7 +24,7 @@ public class DatabaseModule extends AbstractModule {
                 handle.execute("PRAGMA foreign_keys = ON");
             }
         });
-        return jdbi.onDemand(DatabaseDAO.class);
+        return jdbi.installPlugin(new SqlObjectPlugin()).onDemand(DatabaseDAO.class);
     }
 
     @Provides

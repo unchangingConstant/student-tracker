@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.entities.domain;
+package io.github.unchangingconstant.studenttracker.app.entities;
 
 import lombok.Builder;
 import lombok.NonNull;
