@@ -1,5 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -9,22 +10,25 @@ import com.google.inject.Singleton;
 import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentEventService;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 @Singleton
-public class StudentsTableModel {
+public class StudentTableModel {
 
     private StudentService dbAccess;
 
-    private SimpleMapProperty<Integer, Student> students;
+    private SimpleListProperty<Student> students;
 
     @Inject
-    public StudentsTableModel(StudentService dbAccess, StudentEventService eventService) {
-        Map<Integer, Student> initialData = dbAccess.getAllStudents();
-        // TODO populate this!!!
-        this.students = new SimpleMapProperty<Integer, Student>(FXCollections.observableHashMap());
-        this.students.putAll(initialData);
+    public StudentTableModel(StudentService dbAccess, StudentEventService eventService) {
+        Collection<Student> initialData = dbAccess.getAllStudents().values();
+        this.students = new SimpleListProperty<Student>(FXCollections.observableArrayList());
+        this.students.addAll(initialData);
         // Ensures model state is synced to database at all times
         eventService.subscribeToDeletes(studentId -> this.onDeleteStudent(studentId));
         eventService.subscribeToInserts(studentId -> this.onInsertStudent(studentId));
@@ -33,21 +37,20 @@ public class StudentsTableModel {
         this.dbAccess = dbAccess;
     }
 
-    public void bind(SimpleMapProperty<Integer, Student> property) {
+    public void bind(ObjectProperty<ObservableList<Student>> property) {
         property.bind(this.students);
     }
 
     private void onInsertStudent(Integer studentId) {
-        // TODO WRITE THIS
-        // students.put(student.getStudentId(), studentId);
+        students.add(dbAccess.getStudent(studentId));
     }
 
     private void onDeleteStudent(Integer studentId) {
-        // TODO figure out something better lol
+        students.removeIf(student -> student.getStudentId().equals(studentId));
     }
 
     private void onUpdateStudent(Student student) {
-
+        students.add(student);
     }
 
 }

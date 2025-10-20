@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Tab fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.StudentTableController" xmlns:fx="http://javafx.com/fxml">
+
+    <GridPane alignment="center" hgap="10" vgap="10">
+        <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+
+            <Text text="Register Student" 
+                GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="4"/>
+        
+            <Label text="First Name:"
+                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="firstNameInput"
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Last Name:"
+                GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <TextField fx:id="lastNameInput"
+                GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            
+            <Label text="Middle Name:"
+                GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="middleNameInput"
+                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Subjects:"
+                GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <TextField fx:id="subjectsInput"
+                GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+            
+            <Button fx:id="registerButton" text="Register"
+                GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
+
+            <TableView fx:id="studentView"
+                GridPane.columnIndex="4" GridPane.rowIndex="0" GridPane.columnSpan="4" GridPane.rowSpan="4"/>
+    </GridPane>
+
+</Tab>
