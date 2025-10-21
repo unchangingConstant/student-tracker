@@ -17,10 +17,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToStudentMapper;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToVisitMapper;
+import io.github.unchangingconstant.studenttracker.app.backend.dao.DatabaseDAO;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToStudentMapper;
+import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisitMapper;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;
 

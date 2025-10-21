@@ -1,10 +1,10 @@
-package io.github.unchangingconstant.studenttracker.app.viewmodels;
+package io.github.unchangingconstant.studenttracker.app.gui.viewmodels;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
-import io.github.unchangingconstant.studenttracker.app.services.StudentService;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
+import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;

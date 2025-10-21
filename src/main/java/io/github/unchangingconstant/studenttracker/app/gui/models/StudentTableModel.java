@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.app.gui.models;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.Map;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.services.StudentService;
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.services.StudentEventService;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.services.StudentEventService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

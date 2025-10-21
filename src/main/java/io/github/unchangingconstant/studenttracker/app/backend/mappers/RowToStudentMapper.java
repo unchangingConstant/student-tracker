@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.mappers;
+package io.github.unchangingconstant.studenttracker.app.backend.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import java.time.ZoneId;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 
 public class RowToStudentMapper implements RowMapper<Student> {
 

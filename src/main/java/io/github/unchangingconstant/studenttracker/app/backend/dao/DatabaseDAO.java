@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.dao;
+package io.github.unchangingconstant.studenttracker.app.backend.dao;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,10 +11,10 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToStudentMapper;
-import io.github.unchangingconstant.studenttracker.app.mappers.RowToVisitMapper;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToStudentMapper;
+import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisitMapper;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {

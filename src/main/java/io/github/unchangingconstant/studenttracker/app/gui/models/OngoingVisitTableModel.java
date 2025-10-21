@@ -1,43 +1,39 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.app.gui.models;
 
 import java.util.Collection;
 
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
-import io.github.unchangingconstant.studenttracker.app.services.VisitEventService;
-import io.github.unchangingconstant.studenttracker.app.services.VisitService;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.services.VisitEventService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 @Singleton
 public class OngoingVisitTableModel {
 
-    private SimpleListProperty<OngoingVisitModel> ongoingVisits;
+    private SimpleListProperty<Visit> ongoingVisits;
 
     private VisitService visitService;
 
     public OngoingVisitTableModel(VisitService visitService, VisitEventService eventService) {
         this.visitService = visitService;
         Collection<Visit> initialData = visitService.getOngoingVisits().values();
-        ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
-
-        initialData.forEach(visit -> {
-
-            SimpleLongProperty timeRemaining = new SimpleLongProperty();
-
-            ongoingVisits.add(null);
-        });
-
+        ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList(initialData));
         eventService.subscribeToDeletes(visit -> onVisitDelete(visit));
         eventService.subscribeToInserts(visit -> onVisitInsert(visit));
         eventService.subscribeToUpdates(visit -> onVisitUpdate(visit));
     }
 
-    public void bind(ObjectProperty<ObservableList<OngoingVisitModel>> prop) {
+    public void addListener(ChangeListener<ObservableList<Visit>> listener) {
+        ongoingVisits.addListener(listener);
+    }
+
+    public void bind(ObjectProperty<ObservableList<Visit>> prop) {
         prop.bind(ongoingVisits);
     }
 
@@ -45,17 +41,20 @@ public class OngoingVisitTableModel {
     // visits with the same id or if a visit with that id doesn't exist
     private void onVisitDelete(Integer deleted) {
         Boolean result = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getVisitId().equals(deleted));
-        if (!result) {
-            throw new RuntimeException("Illegal mismatch between model and database states");
-        }
     }
 
     private void onVisitInsert(Integer inserted) {
-
+        Visit newVisit = visitService.getVisit(inserted);
+        if (newVisit.getEndTime() == null) {
+            ongoingVisits.add(newVisit);
+        }
     }
 
     private void onVisitUpdate(Visit updated) {
-
+        Boolean removed = ongoingVisits.removeIf(visit -> visit.getVisitId().equals(updated.getVisitId()));
+        if (removed || updated.getEndTime() == null) {
+            ongoingVisits.add(updated);
+        }
     }
 
 }

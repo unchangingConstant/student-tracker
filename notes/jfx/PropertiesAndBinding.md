@@ -156,3 +156,65 @@ public class Main {
 ```
 
 Why is validity important? I don't know, you tell me.
+
+## Binding In-Depth (Source: https://www.pragmaticcoding.ca/javafx/elements/custom_binding)
+
+There are three ways to create a Binding; the Fluent API, using the Bindings class builder methods and extending one of the abstract Binding classes to create a custom binding. We’re going to look at this last method in this article.
+
+You should understand how to create your own custom Binding class just so that you understand how Bindings work internally. This makes it much easier to understand how to use the builder method in the Bindings class - which you will probably use a lot.
+
+### The Abstract Classes
+
+In practice, virtually all custom Binding classes are created by extending one of the abstract Binding classes contained in the JavaFX library. These are all designed to handle bindings on different types of data. There is BooleanBinding, DoubleBinding, IntegerBinding, ListBinding, LongBinding, MapBinding, ObjectBinding, SetBinding, and StringBinding.
+
+In general, all of these abstract classes are similar, differing only in the data types that they are concerned with. The Binding classes for collections have some additional methods that relate to aspects of collections, such as size or “empty”. Also, all of these classes implement observable interfaces for their data types. So, an IntegerBinding implements ObservableIntegerValue.
+
+Since they implement Binding, they will implement methods for addListener() (for both InvalidationListeners, and ChangeListeners). The bind() method for all of these classes is protected, so you cannot call it from your layout code - meaning that your bound dependencies need to be defined at the time that you instantiate the Binding.
+
+### The computeValue() Method
+
+The vast majority of the time, all of the code that you write for a custom Binding class will be it’s constructor and the computeValue() method. The computeValue() method is abstract in all of these classes, so it’s mandatory when you define your own class. You’ll need to call the protected bind() method from the parent abstract class, and the only place to do that is generally the constructor.
+
+The computeValue() method is also protected. It’s called from the public get() method, and it returns the data type encapsulated by the Binding class. So a class extending IntegerBinding will return int from both its get() and computeValue() methods.
+
+This is very important to understand: _The Binding itself is all about linking `Observable` values and `Properties`, but the `computeValue()` method is concerned about the underlying data type of the binding. It can calculate its return value from anywhere, and it generally deals with normal Java data types and classes._
+
+Example:
+
+```java
+class CustomIntegerBinding extends IntegerBinding {
+
+    private final ObservableObjectValue<Integer> property1;
+    private final ObservableObjectValue<Integer> property2;
+    private final ObservableBooleanValue evenOnly;
+    private int divisor = 1;
+
+    public CustomIntegerBinding(ObservableObjectValue<Integer> property1, ObservableObjectValue<Integer> property2, ObservableBooleanValue evenOnly) {
+        super.bind(property1, property2, evenOnly);
+        this.property1 = property1;
+        this.property2 = property2;
+        this.evenOnly = evenOnly;
+    }
+
+    @Override
+    protected int computeValue() {
+        int result = (property1.get() + property2.get()) / divisor;
+        System.out.println("computing " + property1.get() + " " + property2.get() + " divisor: " + divisor + " result: " + result);
+        divisor++;
+        if (evenOnly.get()) {
+            return ((result % 2) == 0) ? result : 0;
+        }
+        return result;
+    }
+}
+```
+
+### The Custom Binding
+
+This custom Binding extends IntegerBinding, so its get() and computeValue() are going to return int. Since this is an externally declared class, we need to create fields for all of the dependency properties, and they need to be passed in the constructor. That’s pretty much all that the constructor does; initialize the fields and call super.bind().
+
+The call to super.bind() is going to register each of these properties with IntegerBinding so that they are monitored and will invalidate the Binding when one of them changes. This invalidation will trigger whatever Properties that this Binding is bound to to call the get() method, which will in turn call the computeValue() method.
+
+There’s also a private int field in the Binding called divisor. This is there to show that this is just an ordinary class, and computeValue() is just an ordinary method like any other.
+
+What does computeValue() do? Basically, it adds the current values of both Integer properties together, and then divides them by the divisor, which it then increments by one. If the Boolean property is true then it checks to see if the result is even or odd, and if it’s odd, it returns zero instead.

@@ -1,9 +1,9 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.components;
+package io.github.unchangingconstant.studenttracker.app.gui.controllers.components;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.viewmodels.StudentTableViewModel;
+import io.github.unchangingconstant.studenttracker.app.gui.Controller;
+import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.StudentTableViewModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

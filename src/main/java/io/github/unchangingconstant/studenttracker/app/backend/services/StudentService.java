@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.services;
+package io.github.unchangingconstant.studenttracker.app.backend.services;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,8 @@ import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.dao.DatabaseDAO;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 
 @Singleton
 public class StudentService {

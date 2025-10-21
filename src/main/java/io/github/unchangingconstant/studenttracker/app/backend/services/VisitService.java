@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.services;
+package io.github.unchangingconstant.studenttracker.app.backend.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.Map;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import io.github.unchangingconstant.studenttracker.app.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.dao.DatabaseDAO;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 
 @Singleton
 public class VisitService {

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.components.RegisterFormController" 
+<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.components.RegisterFormController" 
     alignment="center" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml">
 
     <Text text="Register Student" 

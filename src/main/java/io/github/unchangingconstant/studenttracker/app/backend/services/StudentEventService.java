@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.services;
+package io.github.unchangingconstant.studenttracker.app.backend.services;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 
 @Singleton
 public class StudentEventService {
