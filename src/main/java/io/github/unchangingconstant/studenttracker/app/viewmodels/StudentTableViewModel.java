@@ -5,15 +5,10 @@ import com.google.inject.Inject;
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.StudentService;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleMapProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import lombok.Getter;
-import lombok.Setter;
 
 public class StudentTableViewModel {
 
@@ -41,7 +36,7 @@ public class StudentTableViewModel {
 
     public void onRegisterButtonAction() {
         studentService.insertStudent(firstNameInput.get(), middleNameInput.get(), lastNameInput.get(),
-                (short) 1);
+                1);
         firstNameInput.set("");
         middleNameInput.set("");
         lastNameInput.set("");

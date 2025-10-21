@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<TableView fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.components.StudentViewController" 
+    xmlns:fx="http://javafx.com/fxml" fx:id="studentView">
+    <columnResizePolicy>
+        <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
+    </columnResizePolicy>
+</TableView>

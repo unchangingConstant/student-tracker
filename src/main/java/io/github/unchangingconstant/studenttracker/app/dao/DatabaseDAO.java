@@ -30,7 +30,7 @@ public interface DatabaseDAO {
 
     @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
-    public Integer insertStudent(String firstName, String middleName, String lastName, short subjects);
+    public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects);
 
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);

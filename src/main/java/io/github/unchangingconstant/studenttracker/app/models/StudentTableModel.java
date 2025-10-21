@@ -10,13 +10,14 @@ import com.google.inject.Singleton;
 import io.github.unchangingconstant.studenttracker.app.services.StudentService;
 import io.github.unchangingconstant.studenttracker.app.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.services.StudentEventService;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/*
+ * Should purely represent the state of the current database
+ */
 @Singleton
 public class StudentTableModel {
 

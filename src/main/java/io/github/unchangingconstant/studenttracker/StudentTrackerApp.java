@@ -27,7 +27,7 @@ public class StudentTrackerApp extends Application {
                 fxmlLoader.setControllerFactory(injector::getInstance);
                 Parent root = fxmlLoader.load();
 
-                Scene scene = new Scene(root, 300, 275);
+                Scene scene = new Scene(root, 960, 540);
                 stage.setTitle("StudentTracker");
                 stage.setScene(scene);
                 stage.show();

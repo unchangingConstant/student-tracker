@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Tab xmlns:fx="http://javafx.com/fxml" text="Student Manager" closable="false">
+    <VBox>
+        <padding>
+            <Insets top="25" right="25" bottom="10" left="25"/>
+        </padding>
+        <fx:include source="/view/components/registerform.fxml" fx:id="registerForm"/>
+        <fx:include source="/view/components/studentview.fxml" fx:id="studentView"/>
+    </VBox>
+</Tab>

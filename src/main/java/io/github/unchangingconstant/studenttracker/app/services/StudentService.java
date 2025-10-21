@@ -23,7 +23,7 @@ public class StudentService {
         this.dao = dao;
     }
 
-    public Integer insertStudent(String firstName, String middleName, String lastName, short subjects) {
+    public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects) {
         Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects);
         eventService.triggerInsert(inserted);
         return inserted;
