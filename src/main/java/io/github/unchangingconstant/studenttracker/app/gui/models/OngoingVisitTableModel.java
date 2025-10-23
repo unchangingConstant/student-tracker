@@ -2,12 +2,14 @@ package io.github.unchangingconstant.studenttracker.app.gui.models;
 
 import java.util.Collection;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitEventService;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -20,6 +22,7 @@ public class OngoingVisitTableModel {
 
     private VisitService visitService;
 
+    @Inject
     public OngoingVisitTableModel(VisitService visitService, VisitEventService eventService) {
         this.visitService = visitService;
         Collection<Visit> initialData = visitService.getOngoingVisits().values();
@@ -33,7 +36,7 @@ public class OngoingVisitTableModel {
         ongoingVisits.addListener(listener);
     }
 
-    public void bind(ObjectProperty<ObservableList<Visit>> prop) {
+    public void bind(Property<ObservableList<Visit>> prop) {
         prop.bind(ongoingVisits);
     }
 

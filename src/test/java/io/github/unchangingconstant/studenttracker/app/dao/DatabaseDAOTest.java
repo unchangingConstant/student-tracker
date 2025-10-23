@@ -24,6 +24,7 @@ import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToStud
 import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisitMapper;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;
+import io.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -40,7 +41,7 @@ public class DatabaseDAOTest {
 
     private final String STUDENT_TABLE = ResourceLoader.loadResource("/sql/schema/studentTable.sql");
     private final String VISIT_TABLE = ResourceLoader.loadResource("/sql/schema/visitTable.sql");
-    private final String INSERT_STUDENT = "INSERT INTO students (student_id, first_name, last_name, middle_name, subjects) VALUES (:studentId, :firstName, :lastName, :middleName, :subjects)";
+    private final String INSERT_STUDENT = "INSERT INTO students (student_id, first_name, last_name, middle_name, subjects, date_added) VALUES (:studentId, :firstName, :lastName, :middleName, :subjects, :dateAdded)";
     private final String INSERT_VISIT = "INSERT INTO visits (visit_id, student_id, start_time, end_time) VALUES (:visitId, :studentId, :startTime, :endTime)";
     private final String SELECT_STUDENT = "SELECT * FROM students WHERE student_id = ?";
 
@@ -56,15 +57,17 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getStudent() maps query result to Student object")
     void testGetStudent_1() {
-        Student expected = Instancio.create(Student.class);
+        Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
+        System.out.println(expected.getDateAdded());
+        dao.getStudent(expected.getStudentId());
         assertEquals(expected, dao.getStudent(expected.getStudentId()));
     }
 
     @Test
     @DisplayName("getStudent() maps NULL middle_name as null middleName in Student object")
     void testGetStudent_2() {
-        Student expected = Instancio.of(Student.class).set(field(Student::getMiddleName), null).create();
+        Student expected = StudentTestUtil.student().set(field(Student::getMiddleName), null).create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
         assertEquals(expected, dao.getStudent(expected.getStudentId()));
     }
@@ -72,7 +75,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getStudent() returns null on non-existant ID")
     void testGetStudent_3() {
-        Student expected = Instancio.create(Student.class);
+        Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
         assertEquals(null, dao.getStudent(expected.getStudentId() + 1));
     }
@@ -80,7 +83,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getStudent() gets the right student")
     void testGetStudent_4() {
-        Student expected = Instancio.of(Student.class).set(field(Student::getStudentId), 2).create();
+        Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 2).create();
         List<Student> sample = Instancio.createList(Student.class);
         sample.add(1, expected);
         sample.forEach(
@@ -92,9 +95,9 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getAllStudents() maps query result to <studentId, student> map.")
     void testGetAllStudents_1() {
-        Student s1 = Instancio.create(Student.class);
-        Student s2 = Instancio.create(Student.class);
-        Student s3 = Instancio.create(Student.class);
+        Student s1 = StudentTestUtil.student().create();
+        Student s2 = StudentTestUtil.student().create();
+        Student s3 = StudentTestUtil.student().create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1).execute());
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s2).execute());
@@ -113,9 +116,9 @@ public class DatabaseDAOTest {
     @DisplayName("insertStudent() inserts students correctly")
     void testInsertStudent_1() {
         // This sucks. Just hoping the dao assigns it an ID of "1"
-        Student s = Instancio.of(Student.class).set(field(Student::getStudentId), 1).create();
+        Student s = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
         Integer resultId = dao.insertStudent(s.getFirstName(), s.getMiddleName(),
-                s.getLastName(), s.getSubjects());
+                s.getLastName(), s.getSubjects(), s.getDateAdded());
         Student result = jdbi
                 .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
         assertEquals(s, result);
@@ -124,10 +127,10 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("insertStudent() inserts null middleName correctly")
     void testInsertStudent_2() {
-        Student s = Instancio.of(Student.class).set(field(Student::getMiddleName), null)
+        Student s = StudentTestUtil.student().set(field(Student::getMiddleName), null)
                 .set(field(Student::getStudentId), 1).create();
         Integer resultId = dao.insertStudent(s.getFirstName(), s.getMiddleName(),
-                s.getLastName(), s.getSubjects());
+                s.getLastName(), s.getSubjects(), s.getDateAdded());
         Student result = jdbi
                 .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
         assertEquals(s, result);
@@ -136,7 +139,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("deleteStudent() returns true on successful delete")
     void testDeleteStudent_1() {
-        Student s = Instancio.create(Student.class);
+        Student s = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
         assertTrue(dao.deleteStudent(s.getStudentId()));
     }
@@ -144,7 +147,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("deleteStudent() returns false on failed delete")
     void testDeleteStudent_2() {
-        Student s = Instancio.create(Student.class);
+        Student s = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
         assertFalse(dao.deleteStudent(s.getStudentId() + 1));
     }
@@ -153,7 +156,7 @@ public class DatabaseDAOTest {
     @DisplayName("deleteStudent() deletes the correct entry")
     void testDeleteStudent_3() {
         List<Student> list = Instancio.createList(Student.class);
-        Student removed = Instancio.create(Student.class);
+        Student removed = StudentTestUtil.student().create();
         list.add(1, removed); // Make removed element the 2nd element of the list
         list.forEach(
                 student -> jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute()));
@@ -168,7 +171,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("deleteStudent() doesn't delete student when student has visits in the visits table")
     void testDeleteStudent_4() {
-        Student s = Instancio.create(Student.class);
+        Student s = StudentTestUtil.student().create();
         Visit v = Instancio.of(Visit.class).set(field(Visit::getStudentId), s.getStudentId()).create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
@@ -181,6 +184,13 @@ public class DatabaseDAOTest {
         assertEquals(s, result);
     }
 
-    // TODO WRITE VISIT STUFF!!!
+    // VISIT TESTS START HERE
+
+    @Test
+    @DisplayName("getVisit() gets the visit with the corresponding id")
+    void testGetVisit_1() {
+        Visit v = Instancio.create(Visit.class);
+        Student s = StudentTestUtil.student().create();
+    }
 
 }

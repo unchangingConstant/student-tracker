@@ -11,6 +11,7 @@ import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.services.StudentEventService;
 import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +39,7 @@ public class StudentTableModel {
         this.dbAccess = dbAccess;
     }
 
-    public void bind(ObjectProperty<ObservableList<Student>> property) {
+    public void bind(Property<ObservableList<Student>> property) {
         property.bind(this.students);
     }
 

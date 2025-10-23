@@ -1,7 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.backend.services;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.Instant;
 import java.util.Map;
 
 import com.google.inject.Inject;
@@ -24,7 +23,7 @@ public class VisitService {
 
     public Integer startVisit(Integer studentId) {
         // Must not have ongoing visits when starting one
-        Integer result = this.dao.insertVisit(LocalDateTime.now(), null, studentId);
+        Integer result = this.dao.insertVisit(Instant.now(), null, studentId);
         eventService.triggerInsert(result);
         return result;
     }

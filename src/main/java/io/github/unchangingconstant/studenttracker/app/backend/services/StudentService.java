@@ -1,6 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.backend.services;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Map;
 
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -24,7 +24,7 @@ public class StudentService {
     }
 
     public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects) {
-        Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects);
+        Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects, Instant.now());
         eventService.triggerInsert(inserted);
         return inserted;
     }

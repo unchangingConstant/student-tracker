@@ -1,6 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.backend.entities;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -20,6 +20,6 @@ public class Student {
     private String middleName;
     private Integer subjects;
     @NonNull
-    private ZonedDateTime dateAdded;
+    private Instant dateAdded;
 
 }

@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS students (
     middle_name TEXT,
     last_name TEXT NOT NULL,
     subjects INTEGER,
-    date_added TEXT NOT NULL DEFAULT (datetime('now'))
+    date_added INTEGER NOT NULL
 );
 

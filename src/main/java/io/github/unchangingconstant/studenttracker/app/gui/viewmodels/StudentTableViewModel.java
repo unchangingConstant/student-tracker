@@ -6,6 +6,7 @@ import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
 import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import lombok.Getter;
@@ -43,7 +44,7 @@ public class StudentTableViewModel {
         subjectsInput.set("");
     }
 
-    public void bindToModelProperty(ObjectProperty<ObservableList<Student>> map) {
+    public void bindToModelProperty(Property<ObservableList<Student>> map) {
         model.bind(map);
     }
 

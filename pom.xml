@@ -140,7 +140,6 @@
             </execution>
         </executions>
       </plugin>
-
       <!-- This is to run the program for quick testing -->
       <plugin>
         <groupId>org.openjfx</groupId>

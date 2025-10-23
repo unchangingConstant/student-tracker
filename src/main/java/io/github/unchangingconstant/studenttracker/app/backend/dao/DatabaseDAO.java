@@ -1,11 +1,9 @@
 package io.github.unchangingconstant.studenttracker.app.backend.dao;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.Instant;
 import java.util.Map;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
-import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -28,9 +26,10 @@ public interface DatabaseDAO {
     @KeyColumn("student_id")
     public Map<Integer, Student> getAllStudents();
 
-    @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects) VALUES (?, ?, ?, ?)")
+    @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects, date_added) VALUES (?, ?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
-    public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects);
+    public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects,
+            Instant dateAdded);
 
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
@@ -51,12 +50,12 @@ public interface DatabaseDAO {
 
     @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the visit
-    public Integer insertVisit(LocalDateTime startTime, LocalDateTime endTime, Integer studentId);
+    public Integer insertVisit(Instant startTime, Instant endTime, Integer studentId);
 
     @SqlUpdate("DELETE FROM visits WHERE student_id = ?")
     public boolean deleteStudentVisits(Integer studentId);
 
     @SqlUpdate("UPDATE visits SET end_time = ? WHERE visit_id = ?")
-    public void updateVisitEndtime(LocalDateTime endTime, Integer visitId);
+    public void updateVisitEndtime(Instant endTime, Integer visitId);
 
 }
