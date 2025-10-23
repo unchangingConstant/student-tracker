@@ -1,36 +1,52 @@
 package io.github.unchangingconstant.studenttracker.app.gui.viewmodels;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Timer;
 
 import com.google.inject.Inject;
 
+import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
 import io.github.unchangingconstant.studenttracker.app.gui.models.OngoingVisitTableModel;
-import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.bindings.ListToMapBinding;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.util.Duration;
+import lombok.Getter;
 
 public class SessionViewModel {
 
     private OngoingVisitTableModel model;
-    private SimpleListProperty<Visit> modelProp;
-    private ListToMapBinding<Visit, Integer, Integer> updateQueue;
-    private ListToMapBinding<Visit, Integer, SimpleLongProperty> timeRemainingRef;
+    // Corresponds update-second to VisitIds for efficient updating
+    @Getter
+    private SimpleMapProperty<Long, List<Integer>> updateQueue;
+    // Corresponds visitId to timeRemaining
+    @Getter
+    private SimpleMapProperty<Integer, SimpleLongProperty> timeRemainingRef;
+    private Timeline clock;
 
     @Inject
     public SessionViewModel(OngoingVisitTableModel model, VisitService service) {
         this.model = model;
-        this.modelProp = new SimpleListProperty<>();
-        model.bind(modelProp);
-        bindTimeRemainingRefToModel();
-        bindUpdateQueueToModel();
+        setupTimeRemainingRef();
+        setupUpdateQueue();
+        setupClock();
+        service.startVisit(1);
     }
 
     public void bindToTimeRemainingProperty(SimpleLongProperty prop, Integer visitId) {
+        prop.bind(timeRemainingRef.get(visitId));
     }
 
     public void bindToModelProperty(Property<ObservableList<Visit>> prop) {
@@ -38,36 +54,54 @@ public class SessionViewModel {
     }
 
     private void updateRemainingTime() {
+        Instant now = Instant.now();
+        updateQueue.get(now.getEpochSecond() % 60).forEach(visitId -> timeRemainingRef.get(visitId)
+                .set(ChronoUnit.MINUTES.between(model.get(visitId).getStartTime(), now)));
     }
 
-    private void bindTimeRemainingRefToModel() {
-        this.timeRemainingRef = new ListToMapBinding<Visit, Integer, SimpleLongProperty>(modelProp.get()) {
-
-            @Override
-            protected Integer keyFactory(Visit item) {
-                return item.getVisitId();
-            }
-
-            @Override
-            protected SimpleLongProperty valueFactory(Visit item) {
-                return new SimpleLongProperty(ChronoUnit.MINUTES.between(LocalDateTime.now(),
-                        item.getStartTime()));
-            }
-        };
+    private void setupClock() {
+        clock = new Timeline(new KeyFrame(
+                Duration.seconds(1),
+                event -> {
+                    System.out.println("Tick tock");
+                    updateRemainingTime();
+                }));
+        clock.setCycleCount(Timeline.INDEFINITE);
+        clock.play();
     }
 
-    private void bindUpdateQueueToModel() {
-        this.updateQueue = new ListToMapBinding<Visit, Integer, Integer>(modelProp.get()) {
-
+    private void setupTimeRemainingRef() {
+        // POPULATE THE LIST!!!
+        timeRemainingRef = new SimpleMapProperty<>(FXCollections.observableHashMap());
+        model.addListener(new ListChangeListener<Visit>() {
             @Override
-            protected Integer keyFactory(Visit item) {
-                return item.getStartTime().getSecond();
+            public void onChanged(Change<? extends Visit> evt) {
+                if (evt.wasAdded()) {
+                    evt.getAddedSubList().forEach(visit -> timeRemainingRef.put(visit.getVisitId(),
+                            new SimpleLongProperty(ChronoUnit.MINUTES.between(Instant.now(), visit.getStartTime()))));
+                } else if (evt.wasRemoved()) {
+                    evt.getRemoved().forEach(visit -> timeRemainingRef.remove(visit.getVisitId()));
+                }
             }
+        });
+    }
 
+    private void setupUpdateQueue() {
+        updateQueue = new SimpleMapProperty<>(FXCollections.observableHashMap());
+        for (Long i = (long) 0; i < 60; i++) {
+            updateQueue.put(i, new LinkedList<Integer>());
+        }
+        model.addListener(new ListChangeListener<Visit>() {
             @Override
-            protected Integer valueFactory(Visit item) {
-                return item.getVisitId();
+            public void onChanged(Change<? extends Visit> evt) {
+                if (evt.wasAdded()) {
+                    evt.getAddedSubList().forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60)
+                            .add(visit.getVisitId()));
+                } else if (evt.wasRemoved()) {
+                    evt.getRemoved().forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60)
+                            .removeIf(visitId -> visitId.equals(visit.getVisitId())));
+                }
             }
-        };
+        });
     }
 }

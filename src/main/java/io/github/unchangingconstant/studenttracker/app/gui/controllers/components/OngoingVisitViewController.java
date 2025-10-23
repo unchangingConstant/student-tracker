@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
 import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.SessionViewModel;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -28,11 +29,13 @@ public class OngoingVisitViewController implements Controller {
 
         TableColumn<Visit, String> nameColumn = new TableColumn<>("Student Name");
         nameColumn.setCellValueFactory(visit -> {
-            return new SimpleStringProperty("Some student");
+            return new SimpleStringProperty(visit.getValue().getStudentName());
         });
-        TableColumn<Visit, String> timeRemainingColumn = new TableColumn<>("Time Remaining");
-        nameColumn.setCellValueFactory(visit -> {
-            return new SimpleStringProperty();
+        TableColumn<Visit, Number> timeRemainingColumn = new TableColumn<>("Time Remaining");
+        timeRemainingColumn.setCellValueFactory(visit -> {
+            SimpleLongProperty val = viewModel.getTimeRemainingRef().get(visit.getValue().getVisitId());
+            System.out.println(val);
+            return val;
         });
         ongoingVisitView.getColumns().add(nameColumn);
         ongoingVisitView.getColumns().add(timeRemainingColumn);

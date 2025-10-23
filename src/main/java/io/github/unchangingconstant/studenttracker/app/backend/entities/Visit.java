@@ -1,6 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.backend.entities;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -17,8 +17,8 @@ public class Visit {
     @NonNull
     private Integer studentId;
     @NonNull
-    private LocalDateTime startTime;
+    private Instant startTime;
     // If null, the visit is ongoing
-    private LocalDateTime endTime;
+    private Instant endTime;
 
 }

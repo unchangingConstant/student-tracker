@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.gui.models;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -13,6 +14,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 @Singleton
@@ -32,7 +34,16 @@ public class OngoingVisitTableModel {
         eventService.subscribeToUpdates(visit -> onVisitUpdate(visit));
     }
 
-    public void addListener(ChangeListener<ObservableList<Visit>> listener) {
+    public Iterable<Visit> iterator() {
+        return ongoingVisits.iterator();
+    }
+
+    // This is okay since visits are immutable
+    public Visit get(Integer visitId) {
+        return ongoingVisits.get(visitId);
+    }
+
+    public void addListener(ListChangeListener<Visit> listener) {
         ongoingVisits.addListener(listener);
     }
 
