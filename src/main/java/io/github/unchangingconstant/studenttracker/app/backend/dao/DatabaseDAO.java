@@ -9,8 +9,10 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToOngoingVisitMapper;
 import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToStudentMapper;
 import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisitMapper;
 
@@ -34,19 +36,19 @@ public interface DatabaseDAO {
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
 
-    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id WHERE v.visit_id = ?;")
+    @SqlQuery("SELECT * FROM visits WHERE visit_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
     public Visit getVisit(Integer visitId);
 
-    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id;")
+    @SqlQuery("SELECT * FROM visits")
     @RegisterRowMapper(RowToVisitMapper.class)
     @KeyColumn("visit_id")
     public Map<Integer, Visit> getAllVisits();
 
-    @SqlQuery("SELECT v.*, s.first_name, s.middle_name, s.last_name FROM visits v INNER JOIN students s ON v.student_id = s.student_id;")
-    @RegisterRowMapper(RowToVisitMapper.class)
+    @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
+    @RegisterRowMapper(RowToOngoingVisitMapper.class)
     @KeyColumn("visit_id")
-    public Map<Integer, Visit> getOngoingVisits();
+    public Map<Integer, OngoingVisit> getOngoingVisits();
 
     @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the visit

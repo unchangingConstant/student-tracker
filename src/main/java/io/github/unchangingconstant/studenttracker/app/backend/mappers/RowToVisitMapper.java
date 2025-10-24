@@ -13,14 +13,12 @@ public class RowToVisitMapper implements RowMapper<Visit> {
 
         @Override // time to hang myself for writing this
         public Visit map(ResultSet rs, StatementContext ctx) throws SQLException {
-                return Visit.builder().visitId(rs.getInt("visit_id")).studentId(rs.getInt("student_id"))
-                                .startTime(Instant.ofEpochMilli(rs.getLong("start_time")))
-                                .endTime(Instant.ofEpochMilli(rs.getLong("end_time")))
-                                .studentName(String.format("%s%s %s", rs.getString("first_name"),
-                                                rs.getString("middle_name").equals("") ? ""
-                                                                : " " + rs.getString("middle_name").charAt(0) + ".",
-                                                rs.getString("last_name")))
-                                .build();
+                return Visit.builder()
+                        .visitId(rs.getInt("visit_id"))
+                        .studentId(rs.getInt("student_id"))
+                        .startTime(Instant.ofEpochMilli(rs.getLong("start_time")))
+                        .endTime(Instant.ofEpochMilli(rs.getLong("end_time")))
+                        .build();
         }
 
 }

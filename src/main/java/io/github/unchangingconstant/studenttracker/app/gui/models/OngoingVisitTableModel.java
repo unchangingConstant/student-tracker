@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitEventService;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
@@ -18,57 +19,57 @@ import javafx.collections.ObservableList;
 @Singleton
 public class OngoingVisitTableModel {
 
-    private SimpleListProperty<Visit> ongoingVisits;
+    private SimpleListProperty<OngoingVisit> ongoingVisits;
 
     private VisitService visitService;
 
     @Inject
     public OngoingVisitTableModel(VisitService visitService, VisitEventService eventService) {
         this.visitService = visitService;
-        Collection<Visit> initialData = visitService.getOngoingVisits().values();
+        Collection<OngoingVisit> initialData = visitService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList(initialData));
         eventService.subscribeToDeletes(visit -> onVisitDelete(visit));
         eventService.subscribeToInserts(visit -> onVisitInsert(visit));
         eventService.subscribeToUpdates(visit -> onVisitUpdate(visit));
     }
 
-    public ObservableList<Visit> readOnlyList() {
+    public ObservableList<OngoingVisit> ongoingVisits() {
         return FXCollections.unmodifiableObservableList(ongoingVisits);
     }
 
     // This is okay since visits are immutable
-    public Visit get(Integer visitId) {
-        for (Visit visit : ongoingVisits) {
-            if (visit.getVisitId().equals(visitId)) {
+    public OngoingVisit get(Integer visitId) {
+        for (OngoingVisit visit : ongoingVisits) {
+            if (visit.getStudentId().equals(visitId)) {
                 return visit;
             }
         }
         throw new NoSuchElementException("Visit couldn't be found");
     }
 
-    public void addListener(ListChangeListener<Visit> listener) {
+    public void addListener(ListChangeListener<OngoingVisit> listener) {
         ongoingVisits.addListener(listener);
     }
 
-    public void bind(Property<ObservableList<Visit>> prop) {
+    public void bind(Property<ObservableList<OngoingVisit>> prop) {
         prop.bind(ongoingVisits);
     }
 
     // TODO Fix this at some point. No way of telling if there are more than one
     // visits with the same id or if a visit with that id doesn't exist
     private void onVisitDelete(Integer deleted) {
-        ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getVisitId().equals(deleted));
+        ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().equals(deleted));
     }
 
     private void onVisitInsert(Integer inserted) {
-        Visit newVisit = visitService.getVisit(inserted);
+        OngoingVisit newVisit = visitService.getVisit(inserted);
         if (newVisit.getEndTime() == null) {
             ongoingVisits.add(newVisit);
         }
     }
 
-    private void onVisitUpdate(Visit updated) {
-        Boolean removed = ongoingVisits.removeIf(visit -> visit.getVisitId().equals(updated.getVisitId()));
+    private void onVisitUpdate(OngoingVisit updated) {
+        Boolean removed = ongoingVisits.removeIf(visit -> visit.getStudentId().equals(updated.getStudentId()));
         if (removed || updated.getEndTime() == null) {
             ongoingVisits.add(updated);
         }

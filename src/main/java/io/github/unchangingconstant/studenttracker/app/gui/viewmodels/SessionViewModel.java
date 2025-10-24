@@ -1,22 +1,18 @@
 package io.github.unchangingconstant.studenttracker.app.gui.viewmodels;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
 import io.github.unchangingconstant.studenttracker.app.gui.models.OngoingVisitTableModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
@@ -48,7 +44,7 @@ public class SessionViewModel {
         prop.bind(timeRemainingRef.get(visitId));
     }
 
-    public void bindToModelProperty(Property<ObservableList<Visit>> prop) {
+    public void bindToModelProperty(Property<ObservableList<OngoingVisit>> prop) {
         model.bind(prop);
     }
 
@@ -71,17 +67,16 @@ public class SessionViewModel {
 
     private void setupTimeRemainingRef() {
         timeRemainingRef = new SimpleMapProperty<>(FXCollections.observableHashMap());
-        // TODO POPULATE THE LIST A DIFFERENT WAY OH MY GOD!!!!!!
-        model.readOnlyList().forEach(visit -> timeRemainingRef.put(visit.getVisitId(),
+        model.ongoingVisits().forEach(visit -> timeRemainingRef.put(visit.getStudentId(),
                 new SimpleLongProperty(ChronoUnit.MINUTES.between(visit.getStartTime(), Instant.now()))));
-        model.addListener(new ListChangeListener<Visit>() {
+        model.addListener(new ListChangeListener<OngoingVisit>() {
             @Override
-            public void onChanged(Change<? extends Visit> evt) {
+            public void onChanged(Change<? extends OngoingVisit> evt) {
                 if (evt.wasAdded()) {
-                    evt.getAddedSubList().forEach(visit -> timeRemainingRef.put(visit.getVisitId(),
+                    evt.getAddedSubList().forEach(visit -> timeRemainingRef.put(visit.getStudentId(),
                             new SimpleLongProperty(ChronoUnit.MINUTES.between(Instant.now(), visit.getStartTime()))));
                 } else if (evt.wasRemoved()) {
-                    evt.getRemoved().forEach(visit -> timeRemainingRef.remove(visit.getVisitId()));
+                    evt.getRemoved().forEach(visit -> timeRemainingRef.remove(visit.getStudentId()));
                 }
             }
         });
@@ -92,19 +87,17 @@ public class SessionViewModel {
         for (Long i = (long) 0; i < 60; i++) {
             updateQueue.put(i, new LinkedList<Integer>());
         }
-        // TODO POPULATE THE LIST A DIFFERENT WAY OH MY GOD!!!!!!
-        model.readOnlyList()
-                .forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60).add(visit.getVisitId()));
-
-        model.addListener(new ListChangeListener<Visit>() {
+        model.ongoingVisits()
+                .forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60).add(visit.getStudentId()));
+        model.addListener(new ListChangeListener<OngoingVisit>() {
             @Override
-            public void onChanged(Change<? extends Visit> evt) {
+            public void onChanged(Change<? extends OngoingVisit> evt) {
                 if (evt.wasAdded()) {
                     evt.getAddedSubList().forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60)
-                            .add(visit.getVisitId()));
+                            .add(visit.getStudentId()));
                 } else if (evt.wasRemoved()) {
                     evt.getRemoved().forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60)
-                            .removeIf(visitId -> visitId.equals(visit.getVisitId())));
+                            .removeIf(visitId -> visitId.equals(visit.getStudentId())));
                 }
             }
         });

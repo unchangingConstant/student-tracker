@@ -6,21 +6,15 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
-// Check ALL annotations for necessity
 @Value
 @Builder
-public class Student {
-
+public class OngoingVisit {
+    
     @NonNull
     private Integer studentId;
     @NonNull
-    private String firstName;
+    private Instant startTime;
     @NonNull
-    private String lastName;
-    private String middleName;
-    @NonNull
-    private Integer subjects;
-    @NonNull
-    private Instant dateAdded;
+    private String studentName;
 
 }

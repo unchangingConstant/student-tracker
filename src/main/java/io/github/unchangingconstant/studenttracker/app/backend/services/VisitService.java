@@ -34,7 +34,7 @@ public class VisitService {
         // eventService.triggerUpdate(result);
     }
 
-    public Map<Integer, Visit> getOngoingVisits() {
+    public Map<Integer, OngoingVisit> getOngoingVisits() {
         return this.dao.getOngoingVisits();
     }
 

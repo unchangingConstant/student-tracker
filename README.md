@@ -8,9 +8,11 @@ An application that will allow Kumon center owners to track which students are i
 
 ### Stack
 
-- Java Maven for project management
-- JavaFX for frontend
+- Maven for project management
+- JavaFX for GUI
 - JDBI/SQLite for database
+- Guice for dependency injection
+- Mockito / Instancio for testing
 - Panteleyev's JPackage plugin for deployment
 
 ## Contribute
