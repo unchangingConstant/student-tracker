@@ -11,4 +11,10 @@
     <columnResizePolicy>
         <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
     </columnResizePolicy>
+    <columns>
+        <TableColumn text="Student Name" fx:id="nameColumn"/>
+        <TableColumn text="Time Remaining" fx:id="timeRemainingColumn"/>
+        <TableColumn text="Start Time" fx:id="startTimeColumn"/>
+        <TableColumn text="Actions" fx:id="actionsColumn"/>
+    </columns>
 </TableView>

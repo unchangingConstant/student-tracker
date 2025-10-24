@@ -42,7 +42,6 @@ public class SessionViewModel {
         setupTimeRemainingRef();
         setupUpdateQueue();
         setupClock();
-        service.startVisit(1);
     }
 
     public void bindToTimeRemainingProperty(SimpleLongProperty prop, Integer visitId) {
@@ -57,13 +56,13 @@ public class SessionViewModel {
         Instant now = Instant.now();
         updateQueue.get(now.getEpochSecond() % 60).forEach(visitId -> timeRemainingRef.get(visitId)
                 .set(ChronoUnit.MINUTES.between(model.get(visitId).getStartTime(), now)));
+
     }
 
     private void setupClock() {
         clock = new Timeline(new KeyFrame(
                 Duration.seconds(1),
                 event -> {
-                    System.out.println("Tick tock");
                     updateRemainingTime();
                 }));
         clock.setCycleCount(Timeline.INDEFINITE);
@@ -71,8 +70,10 @@ public class SessionViewModel {
     }
 
     private void setupTimeRemainingRef() {
-        // POPULATE THE LIST!!!
         timeRemainingRef = new SimpleMapProperty<>(FXCollections.observableHashMap());
+        // TODO POPULATE THE LIST A DIFFERENT WAY OH MY GOD!!!!!!
+        model.readOnlyList().forEach(visit -> timeRemainingRef.put(visit.getVisitId(),
+                new SimpleLongProperty(ChronoUnit.MINUTES.between(visit.getStartTime(), Instant.now()))));
         model.addListener(new ListChangeListener<Visit>() {
             @Override
             public void onChanged(Change<? extends Visit> evt) {
@@ -91,6 +92,10 @@ public class SessionViewModel {
         for (Long i = (long) 0; i < 60; i++) {
             updateQueue.put(i, new LinkedList<Integer>());
         }
+        // TODO POPULATE THE LIST A DIFFERENT WAY OH MY GOD!!!!!!
+        model.readOnlyList()
+                .forEach(visit -> updateQueue.get(visit.getStartTime().getEpochSecond() % 60).add(visit.getVisitId()));
+
         model.addListener(new ListChangeListener<Visit>() {
             @Override
             public void onChanged(Change<? extends Visit> evt) {

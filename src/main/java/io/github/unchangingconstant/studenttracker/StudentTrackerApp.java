@@ -7,6 +7,9 @@ import com.google.inject.Injector;
 
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +24,13 @@ public class StudentTrackerApp extends Application {
         @Override
         public void start(Stage stage) throws Exception {
                 Injector injector = Guice.createInjector(new DatabaseModule());
+
+                SimpleListProperty<Integer> listProp = new SimpleListProperty<>(FXCollections.observableArrayList());
+                ReadOnlyListWrapper<Integer> readOnly = new ReadOnlyListWrapper<>(listProp);
+
+                listProp.add(1);
+                System.out.println(readOnly.get(0));
+                // System.out.println(readOnly.remove(0));
 
                 URL location = getClass().getResource("/view/main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
