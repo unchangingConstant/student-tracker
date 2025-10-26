@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.backend.dao.DatabaseDAO;
+import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 
 @Singleton

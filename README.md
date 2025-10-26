@@ -21,6 +21,7 @@ An application that will allow Kumon center owners to track which students are i
 
 - Maven 3.9.11
 - Java 21
+- sqlite3 command line tool (Optional, but useful for testing)
 
 ### Deploying
 

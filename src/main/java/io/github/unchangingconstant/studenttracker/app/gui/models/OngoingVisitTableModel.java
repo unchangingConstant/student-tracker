@@ -62,17 +62,18 @@ public class OngoingVisitTableModel {
     }
 
     private void onVisitInsert(Integer inserted) {
-        OngoingVisit newVisit = visitService.getVisit(inserted);
-        if (newVisit.getEndTime() == null) {
-            ongoingVisits.add(newVisit);
-        }
+        // OngoingVisit newVisit = visitService.getVisit(inserted);
+        // if (newVisit.getEndTime() == null) {
+        //     ongoingVisits.add(newVisit);
+        // }
     }
 
+    // TODO refactor this whole class bruh
     private void onVisitUpdate(OngoingVisit updated) {
-        Boolean removed = ongoingVisits.removeIf(visit -> visit.getStudentId().equals(updated.getStudentId()));
-        if (removed || updated.getEndTime() == null) {
-            ongoingVisits.add(updated);
-        }
+        // Boolean removed = ongoingVisits.removeIf(visit -> visit.getStudentId().equals(updated.getStudentId()));
+        // if (removed || updated.getEndTime() == null) {
+        //     ongoingVisits.add(updated);
+        // }
     }
 
 }
