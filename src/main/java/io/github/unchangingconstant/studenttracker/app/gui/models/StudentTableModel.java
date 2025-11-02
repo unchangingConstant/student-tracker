@@ -43,6 +43,10 @@ public class StudentTableModel {
         property.bind(this.students);
     }
 
+    public ObservableList<Student> getStudents()   {
+        return FXCollections.unmodifiableObservableList(students.get());
+    }
+
     private void onInsertStudent(Integer studentId) {
         students.add(attendanceService.getStudent(studentId));
     }

@@ -113,6 +113,9 @@ public class AttendanceService {
         visitsObserver.triggerDelete(visitId);
     }
 
+    /*
+     * Notifies subscribers of database changes
+     */
     public class Observer<K, V> {
     
         private List<Consumer<V>> updateSubs;

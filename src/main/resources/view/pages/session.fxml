@@ -11,6 +11,7 @@
         <padding>
             <Insets top="25" right="25" bottom="10" left="25"/>
         </padding>
+        <fx:include source="/view/components/startVisit.fxml" fx:id="startVisit"/>
         <fx:include source="/view/components/ongoingvisitsview.fxml" fx:id="ongoingVisitsView"/>
     </VBox>
 </Tab>

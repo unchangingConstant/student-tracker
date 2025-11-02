@@ -25,13 +25,6 @@ public class StudentTrackerApp extends Application {
         public void start(Stage stage) throws Exception {
                 Injector injector = Guice.createInjector(new DatabaseModule());
 
-                SimpleListProperty<Integer> listProp = new SimpleListProperty<>(FXCollections.observableArrayList());
-                ReadOnlyListWrapper<Integer> readOnly = new ReadOnlyListWrapper<>(listProp);
-
-                listProp.add(1);
-                System.out.println(readOnly.get(0));
-                // System.out.println(readOnly.remove(0));
-
                 URL location = getClass().getResource("/view/main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
                 fxmlLoader.setControllerFactory(injector::getInstance);

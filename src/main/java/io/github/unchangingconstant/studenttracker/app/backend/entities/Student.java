@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
 
-// Check ALL annotations for necessity
 @Value
 @Builder
 public class Student {

@@ -3,7 +3,6 @@ package io.github.unchangingconstant.studenttracker.app.gui.controllers.componen
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
 import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.SessionViewModel;
 import javafx.beans.property.SimpleStringProperty;
