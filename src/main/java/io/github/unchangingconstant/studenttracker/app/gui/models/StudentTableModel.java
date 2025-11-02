@@ -8,9 +8,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.backend.services.StudentEventService;
-import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
-import javafx.beans.property.ObjectProperty;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService.Observer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -22,21 +21,22 @@ import javafx.collections.ObservableList;
 @Singleton
 public class StudentTableModel {
 
-    private StudentService dbAccess;
+    private AttendanceService attendanceService;
 
     private SimpleListProperty<Student> students;
 
     @Inject
-    public StudentTableModel(StudentService dbAccess, StudentEventService eventService) {
-        Collection<Student> initialData = dbAccess.getAllStudents().values();
+    public StudentTableModel(AttendanceService attendanceService) {
+        Collection<Student> initialData = attendanceService.getAllStudents().values();
         this.students = new SimpleListProperty<Student>(FXCollections.observableArrayList());
         this.students.addAll(initialData);
         // Ensures model state is synced to database at all times
-        eventService.subscribeToDeletes(studentId -> this.onDeleteStudent(studentId));
-        eventService.subscribeToInserts(studentId -> this.onInsertStudent(studentId));
-        eventService.subscribeToUpdates(student -> this.onUpdateStudent(student));
+        Observer<Integer, Student> observer = attendanceService.getStudentsObserver();
+        observer.subscribeToDeletes(studentId -> this.onDeleteStudent(studentId));
+        observer.subscribeToInserts(studentId -> this.onInsertStudent(studentId));
+        observer.subscribeToUpdates(student -> this.onUpdateStudent(student));
 
-        this.dbAccess = dbAccess;
+        this.attendanceService = attendanceService;
     }
 
     public void bind(Property<ObservableList<Student>> property) {
@@ -44,7 +44,7 @@ public class StudentTableModel {
     }
 
     private void onInsertStudent(Integer studentId) {
-        students.add(dbAccess.getStudent(studentId));
+        students.add(attendanceService.getStudent(studentId));
     }
 
     private void onDeleteStudent(Integer studentId) {

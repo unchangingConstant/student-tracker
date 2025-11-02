@@ -3,9 +3,8 @@ package io.github.unchangingconstant.studenttracker.app.gui.viewmodels;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
-import io.github.unchangingconstant.studenttracker.app.backend.services.StudentService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -14,7 +13,7 @@ import lombok.Getter;
 public class StudentTableViewModel {
 
     private StudentTableModel model;
-    private StudentService studentService;
+    private AttendanceService attendanceService;
 
     @Getter
     private SimpleStringProperty firstNameInput = new SimpleStringProperty();
@@ -26,17 +25,17 @@ public class StudentTableViewModel {
     private SimpleStringProperty subjectsInput = new SimpleStringProperty();
 
     @Inject
-    public StudentTableViewModel(StudentTableModel model, StudentService studentService) {
+    public StudentTableViewModel(StudentTableModel model, AttendanceService attendanceService) {
         this.model = model;
-        this.studentService = studentService;
+        this.attendanceService = attendanceService;
     }
 
     public void onDeleteStudentButtonAction(Integer studentId) {
-        studentService.deleteStudent(studentId);
+        attendanceService.deleteStudent(studentId);
     }
 
     public void onRegisterButtonAction() {
-        studentService.insertStudent(firstNameInput.get(), middleNameInput.get(), lastNameInput.get(),
+        attendanceService.insertStudent(firstNameInput.get(), middleNameInput.get(), lastNameInput.get(),
                 1);
         firstNameInput.set("");
         middleNameInput.set("");

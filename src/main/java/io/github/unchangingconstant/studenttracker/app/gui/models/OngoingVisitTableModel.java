@@ -7,9 +7,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Visit;
-import io.github.unchangingconstant.studenttracker.app.backend.services.VisitEventService;
-import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService.Observer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -20,17 +19,17 @@ import javafx.collections.ObservableList;
 public class OngoingVisitTableModel {
 
     private SimpleListProperty<OngoingVisit> ongoingVisits;
-
-    private VisitService visitService;
+    private AttendanceService attendanceService;
 
     @Inject
-    public OngoingVisitTableModel(VisitService visitService, VisitEventService eventService) {
-        this.visitService = visitService;
-        Collection<OngoingVisit> initialData = visitService.getOngoingVisits().values();
+    public OngoingVisitTableModel(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
+        Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList(initialData));
-        eventService.subscribeToDeletes(visit -> onVisitDelete(visit));
-        eventService.subscribeToInserts(visit -> onVisitInsert(visit));
-        eventService.subscribeToUpdates(visit -> onVisitUpdate(visit));
+        Observer<Integer, OngoingVisit> observer = attendanceService.getOngoingVisitsObserver();
+        observer.subscribeToDeletes(visit -> onOngoingVisitDelete(visit));
+        observer.subscribeToInserts(visit -> onOngoingVisitInsert(visit));
+        observer.subscribeToUpdates(visit -> onOngoingVisitUpdate(visit));
     }
 
     public ObservableList<OngoingVisit> ongoingVisits() {
@@ -38,13 +37,13 @@ public class OngoingVisitTableModel {
     }
 
     // This is okay since visits are immutable
-    public OngoingVisit get(Integer visitId) {
+    public OngoingVisit get(Integer studentId) {
         for (OngoingVisit visit : ongoingVisits) {
-            if (visit.getStudentId().equals(visitId)) {
+            if (visit.getStudentId().equals(studentId)) {
                 return visit;
             }
         }
-        throw new NoSuchElementException("Visit couldn't be found");
+        throw new NoSuchElementException(String.format("Visit with studentId %d could not be found", studentId));
     }
 
     public void addListener(ListChangeListener<OngoingVisit> listener) {
@@ -55,25 +54,23 @@ public class OngoingVisitTableModel {
         prop.bind(ongoingVisits);
     }
 
-    // TODO Fix this at some point. No way of telling if there are more than one
-    // visits with the same id or if a visit with that id doesn't exist
-    private void onVisitDelete(Integer deleted) {
+    private void onOngoingVisitDelete(Integer deleted) {
         ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().equals(deleted));
     }
 
-    private void onVisitInsert(Integer inserted) {
-        // OngoingVisit newVisit = visitService.getVisit(inserted);
-        // if (newVisit.getEndTime() == null) {
-        //     ongoingVisits.add(newVisit);
-        // }
+    private void onOngoingVisitInsert(Integer inserted) {
+        OngoingVisit newVisit = attendanceService.getOngoingVisit(inserted);
+        ongoingVisits.add(newVisit);
     }
 
-    // TODO refactor this whole class bruh
-    private void onVisitUpdate(OngoingVisit updated) {
-        // Boolean removed = ongoingVisits.removeIf(visit -> visit.getStudentId().equals(updated.getStudentId()));
-        // if (removed || updated.getEndTime() == null) {
-        //     ongoingVisits.add(updated);
-        // }
+    private void onOngoingVisitUpdate(OngoingVisit updated) {
+        for (int i = 0; i < ongoingVisits.size(); i++){
+            if (ongoingVisits.get(i).getStudentId().equals(updated.getStudentId())) {
+                ongoingVisits.set(i, updated);
+                return;
+            }
+        }
+        throw new NoSuchElementException(String.format("OngoingVisit with studentId %d not found", updated.getStudentId()));
     }
 
 }

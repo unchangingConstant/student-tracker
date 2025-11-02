@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
-import io.github.unchangingconstant.studenttracker.app.backend.services.VisitService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.gui.models.OngoingVisitTableModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -24,7 +24,7 @@ import lombok.Getter;
 public class SessionViewModel {
 
     private OngoingVisitTableModel model;
-    // Corresponds update-second to VisitIds for efficient updating
+    // Corresponds update-second to ongoing visits for efficient updating
     @Getter
     private SimpleMapProperty<Long, List<Integer>> updateQueue;
     // Corresponds visitId to timeRemaining
@@ -33,15 +33,15 @@ public class SessionViewModel {
     private Timeline clock;
 
     @Inject
-    public SessionViewModel(OngoingVisitTableModel model, VisitService service) {
+    public SessionViewModel(OngoingVisitTableModel model, AttendanceService service) {
         this.model = model;
         setupTimeRemainingRef();
         setupUpdateQueue();
         setupClock();
     }
 
-    public void bindToTimeRemainingProperty(SimpleLongProperty prop, Integer visitId) {
-        prop.bind(timeRemainingRef.get(visitId));
+    public void bindToTimeRemainingProperty(SimpleLongProperty prop, Integer studentId) {
+        prop.bind(timeRemainingRef.get(studentId));
     }
 
     public void bindToModelProperty(Property<ObservableList<OngoingVisit>> prop) {
@@ -50,9 +50,8 @@ public class SessionViewModel {
 
     private void updateRemainingTime() {
         Instant now = Instant.now();
-        updateQueue.get(now.getEpochSecond() % 60).forEach(visitId -> timeRemainingRef.get(visitId)
-                .set(ChronoUnit.MINUTES.between(model.get(visitId).getStartTime(), now)));
-
+        updateQueue.get(now.getEpochSecond() % 60).forEach(studentId -> timeRemainingRef.get(studentId)
+                .set(ChronoUnit.MINUTES.between(model.get(studentId).getStartTime(), now)));
     }
 
     private void setupClock() {
@@ -67,8 +66,8 @@ public class SessionViewModel {
 
     private void setupTimeRemainingRef() {
         timeRemainingRef = new SimpleMapProperty<>(FXCollections.observableHashMap());
-        model.ongoingVisits().forEach(visit -> timeRemainingRef.put(visit.getStudentId(),
-                new SimpleLongProperty(ChronoUnit.MINUTES.between(visit.getStartTime(), Instant.now()))));
+        model.ongoingVisits().forEach(ongoingVisit -> timeRemainingRef.put(ongoingVisit.getStudentId(),
+                new SimpleLongProperty(ChronoUnit.MINUTES.between(ongoingVisit.getStartTime(), Instant.now()))));
         model.addListener(new ListChangeListener<OngoingVisit>() {
             @Override
             public void onChanged(Change<? extends OngoingVisit> evt) {

@@ -16,7 +16,7 @@ public class Visit {
     private Integer studentId;
     @NonNull
     private Instant startTime;
-    // If null, the visit is ongoing
+    @NonNull
     private Instant endTime;
 
 }

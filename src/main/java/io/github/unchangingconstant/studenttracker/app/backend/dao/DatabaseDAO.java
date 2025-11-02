@@ -19,6 +19,9 @@ import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisi
 // Read up on mappers, section 7 of JDBI docs
 public interface DatabaseDAO {
 
+    /*
+     * STUDENT METHODS
+     */
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
     @RegisterRowMapper(RowToStudentMapper.class)
     public Student getStudent(Integer studentId);
@@ -36,6 +39,9 @@ public interface DatabaseDAO {
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
 
+    /*
+     * VISIT METHODS
+     */
     @SqlQuery("SELECT * FROM visits WHERE visit_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
     public Visit getVisit(Integer visitId);
@@ -45,19 +51,32 @@ public interface DatabaseDAO {
     @KeyColumn("visit_id")
     public Map<Integer, Visit> getAllVisits();
 
+    @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
+    @GetGeneratedKeys // gets the new id of the visit
+    public Integer insertVisit(Instant startTime, Instant endTime, Integer studentId);
+
+    @SqlUpdate("DELETE FROM visits WHERE visit_id = ?")
+    public boolean deleteVisit(Integer visitId);
+
+    @SqlUpdate("DELETE FROM visits WHERE student_id = ?")
+    public boolean deleteStudentVisits(Integer studentId);
+
+    /*
+     * ONGOING VISIT METHODS
+     */
+    @SqlQuery("SELECT * FROM ongoing_visits WHERE studentId = ?")
+    @RegisterRowMapper(RowToVisitMapper.class)
+    public OngoingVisit getOngoingVisit(Integer studentId);
+
     @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     @KeyColumn("visit_id")
     public Map<Integer, OngoingVisit> getOngoingVisits();
 
-    @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
-    @GetGeneratedKeys // gets the new id of the visit
-    public Integer insertVisit(Instant startTime, Instant endTime, Integer studentId);
+    @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (?, ?)")
+    public void insertOngoingVisit(Integer studentId, Instant startTime);
 
-    @SqlUpdate("DELETE FROM visits WHERE student_id = ?")
-    public boolean deleteStudentVisits(Integer studentId);
-
-    @SqlUpdate("UPDATE visits SET end_time = ? WHERE visit_id = ?")
-    public void updateVisitEndtime(Instant endTime, Integer visitId);
+    @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = ?")
+    public void deleteOngoingVisit(Integer studentId);
 
 }
