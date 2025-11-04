@@ -10,7 +10,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 
-public class StudentTableViewModel {
+public class DatabaseViewModel {
 
     private StudentTableModel model;
     private AttendanceService attendanceService;
@@ -25,7 +25,7 @@ public class StudentTableViewModel {
     private SimpleStringProperty subjectsInput = new SimpleStringProperty();
 
     @Inject
-    public StudentTableViewModel(StudentTableModel model, AttendanceService attendanceService) {
+    public DatabaseViewModel(StudentTableModel model, AttendanceService attendanceService) {
         this.model = model;
         this.attendanceService = attendanceService;
     }

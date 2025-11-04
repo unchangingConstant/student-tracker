@@ -3,7 +3,7 @@ package io.github.unchangingconstant.studenttracker.app.gui.controllers.componen
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
-import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.StudentTableViewModel;
+import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.DatabaseViewModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,10 +24,10 @@ public class RegisterFormController implements Controller {
     @FXML
     private Button registerButton;
 
-    private StudentTableViewModel viewModel;
+    private DatabaseViewModel viewModel;
 
     @Inject
-    public RegisterFormController(StudentTableViewModel viewModel) {
+    public RegisterFormController(DatabaseViewModel viewModel) {
         this.viewModel = viewModel;
     }
 

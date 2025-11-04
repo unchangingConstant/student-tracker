@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
-import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.StudentTableViewModel;
+import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.DatabaseViewModel;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -16,10 +16,10 @@ public class StudentViewController implements Controller {
     @FXML
     private TableView<Student> studentView;
 
-    private StudentTableViewModel viewModel;
+    private DatabaseViewModel viewModel;
 
     @Inject
-    public StudentViewController(StudentTableViewModel viewModel) {
+    public StudentViewController(DatabaseViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
