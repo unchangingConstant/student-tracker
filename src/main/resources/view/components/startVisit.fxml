@@ -6,6 +6,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ComboBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.components.StartVisitController" 
-    xmlns:fx="http://javafx.com/fxml" fx:id="startVisit">
-</ComboBox>
+<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
+
+
+<HBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.components.StartVisitController" 
+        xmlns:fx="http://javafx.com/fxml">
+    <AutoCompleteTextField fx:id="startVisit"/>
+    <Button fx:id="startVisitButton" text="Start Visit"/>
+</HBox>
