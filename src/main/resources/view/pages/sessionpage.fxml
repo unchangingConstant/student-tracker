@@ -8,7 +8,7 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
 
-<Tab xmlns:fx="http://javafx.com/fxml" text="Ongoing Visits" closable="false">
+<Tab fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.SessionPageController" xmlns:fx="http://javafx.com/fxml" text="Ongoing Visits" closable="false">
     <VBox>
         <padding>
             <Insets top="25" right="25" bottom="10" left="25"/>
