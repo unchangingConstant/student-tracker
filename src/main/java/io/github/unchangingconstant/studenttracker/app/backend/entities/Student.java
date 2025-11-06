@@ -22,4 +22,10 @@ public class Student {
     @NonNull
     private Instant dateAdded;
 
+    public String getFullName() {
+        return firstName + " " + 
+            (middleName == null ? "" : middleName + " ") + 
+            lastName;
+    }
+
 }

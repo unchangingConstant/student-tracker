@@ -61,16 +61,15 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
         columns.add(timeRemainingColumn);
         columns.add(startTimeColumn);
         columns.add(actionsColumn);
-
     }
 
     private void createTimeRemainingColumn()    {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
-        InvalidationListener invalidationListener = (observable) -> System.out.println("Probably binding to the column");
         /**
          * Tried to fix the issue where the timeRemaining map doesn't update when the itemsProperty binds to the OngoingVisitTableModel. 
          * I guess invalidation listeners don't work here
          */
+        InvalidationListener invalidationListener = (observable) -> System.out.println("Probably binding to the column");
         getItems().addListener(invalidationListener); 
         getItems().addListener(new ListChangeListener<OngoingVisit>()   {
             @Override

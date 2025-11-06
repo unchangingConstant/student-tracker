@@ -13,7 +13,10 @@
         <padding>
             <Insets top="25" right="25" bottom="10" left="25"/>
         </padding>
-        <fx:include source="/view/components/startVisit.fxml" fx:id="startVisit"/>
+        <HBox>
+            <StudentSelector fx:id="studentSelector"/>
+            <Button fx:id="startVisitButton" text="Start Visit"/>
+        </HBox>
         <OngoingVisitView fx:id="ongoingVisitsView"/>
     </VBox>
 </Tab>

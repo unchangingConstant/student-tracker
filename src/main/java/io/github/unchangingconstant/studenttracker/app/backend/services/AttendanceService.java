@@ -49,12 +49,12 @@ public class AttendanceService {
         return dao.getOngoingVisit(studentId);
     }
 
-    public void startOngoingVisit(Integer studentId, Instant startTime) {
+    public void startOngoingVisit(Integer studentId) {
         // Must not have ongoing visits when starting one
         if (dao.getOngoingVisit(studentId) != null ) {
             throw new IllegalStateException("Student is already in the center.");
         };
-        dao.insertOngoingVisit(studentId, startTime);
+        dao.insertOngoingVisit(studentId, Instant.now());
         ongoingVisitsObserver.triggerInsert(studentId);
     }
 

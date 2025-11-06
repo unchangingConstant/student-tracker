@@ -17,7 +17,7 @@ public class RowToOngoingVisitMapper implements RowMapper<OngoingVisit>{
             .studentId(rs.getInt("student_id"))
             .startTime(Instant.ofEpochMilli(rs.getLong("start_time")))
             .studentName(String.format("%s%s %s", rs.getString("first_name"),
-                rs.getString("middle_name") == null ? "" : " " + rs.getString("middle_name").charAt(0) + ".",
+                rs.getString("middle_name").equals("") ? "" : " " + rs.getString("middle_name").charAt(0) + ".",
                 rs.getString("last_name")))
             .build();
     }
