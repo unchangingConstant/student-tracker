@@ -3,7 +3,6 @@ package io.github.unchangingconstant.studenttracker.app.gui.components;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +74,7 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
     }
 
     private void createTimeRemainingColumn()    {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
+        this.timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
         /**
          * Tried to fix the issue where the timeRemaining map doesn't update when the itemsProperty initially binds to the OngoingVisitTableModel. 
          * I guess invalidation listeners don't work here

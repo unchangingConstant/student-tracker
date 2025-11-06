@@ -17,6 +17,6 @@
             <StudentSelector fx:id="studentSelector"/>
             <Button fx:id="startVisitButton" text="Start Visit"/>
         </HBox>
-        <OngoingVisitView fx:id="ongoingVisitsView"/>
+        <OngoingVisitView fx:id="ongoingVisitsView" />
     </VBox>
 </Tab>

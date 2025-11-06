@@ -80,7 +80,16 @@ public class AttendanceService {
         return this.dao.getAllStudents();
     }
 
-    public void insertStudent(String firstName, String middleName, String lastName, Integer subjects) {
+    public void insertStudent(String firstName, String middleName, String lastName, Integer subjects) throws InvalidDatabaseEntryException {
+        if (!noGaps(firstName) || (middleName != null ? !noGaps(middleName) : false) || !noGaps(lastName))   {
+            throw new InvalidDatabaseEntryException("Names cannot have gaps");
+        }
+        if (!isAlpha(firstName) || (middleName != null ? !isAlpha(middleName) : false) || !isAlpha(lastName)) {
+            throw new InvalidDatabaseEntryException("Names must only contain alphabetic characters");
+        }
+        if (subjects > 2 || subjects < 0)   {
+            throw new InvalidDatabaseEntryException("A student may only take 2 subjects at a time");
+        }
         Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects, Instant.now());
         studentsObserver.triggerInsert(inserted);
     }
@@ -159,6 +168,23 @@ public class AttendanceService {
             insertSubs.forEach(function -> function.accept(dataId));
         }
 
+    }
+
+    public class InvalidDatabaseEntryException extends Exception {
+        public InvalidDatabaseEntryException()  {super();}
+        public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
+    }
+
+    /*
+     * Helper methods
+     */
+
+    private boolean isAlpha(String s)   {
+        return s.matches("[a-zA-Z]+");
+    }
+
+    private boolean noGaps(String s)  {
+        return !s.matches(".*\\s.*");
     }
 
 }

@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService.InvalidDatabaseEntryException;
 import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,8 +36,13 @@ public class DatabaseViewModel {
     }
 
     public void onRegisterButtonAction() {
-        attendanceService.insertStudent(firstNameInput.get(), middleNameInput.get(), lastNameInput.get(),
+        try {
+            attendanceService.insertStudent(firstNameInput.get(), middleNameInput.get(), lastNameInput.get(),
                 1);
+        } catch (InvalidDatabaseEntryException e)   {
+            // TODO display error message of sorts
+            System.out.println(e);
+        }
         firstNameInput.set("");
         middleNameInput.set("");
         lastNameInput.set("");
