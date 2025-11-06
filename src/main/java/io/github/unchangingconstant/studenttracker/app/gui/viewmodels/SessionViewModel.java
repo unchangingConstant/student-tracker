@@ -8,6 +8,7 @@ import io.github.unchangingconstant.studenttracker.app.backend.services.Attendan
 import io.github.unchangingconstant.studenttracker.app.gui.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import lombok.Getter;
@@ -20,6 +21,8 @@ public class SessionViewModel {
 
     @Getter
     private SimpleStringProperty studentSelectorInput = new SimpleStringProperty();
+    @Getter
+    private SimpleObjectProperty<Student> selected = new SimpleObjectProperty<>(null);
 
     // Corresponds update-second to ongoing visits for efficient updating
     @Inject
@@ -37,8 +40,8 @@ public class SessionViewModel {
         studentsModel.bind(prop);
     }
 
-    public void onStartVisitAction(Integer studentId) {
-        service.startOngoingVisit(studentId);
+    public void onStartVisitAction() {
+        service.startOngoingVisit(selected.getValue().getStudentId());
         studentSelectorInput.set("");
     }
 }

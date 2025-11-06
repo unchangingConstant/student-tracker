@@ -33,10 +33,11 @@ public class SessionPageController implements Controller {
         startVisitButton.setOnAction(actionEvent -> {
             Student selected = studentSelector.selectedProperty().getValue();
             if (selected != null)  {
-                viewModel.onStartVisitAction(selected.getStudentId());
+                viewModel.onStartVisitAction();
             }
         });
         viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
+        viewModel.getSelected().bindBidirectional(studentSelector.selectedProperty());
     }
 
 }
