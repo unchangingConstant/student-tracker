@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -81,16 +82,19 @@ public class AttendanceService {
     }
 
     public void insertStudent(String firstName, String middleName, String lastName, Integer subjects) throws InvalidDatabaseEntryException {
-        if (!noGaps(firstName) || (middleName != null ? !noGaps(middleName) : false) || !noGaps(lastName))   {
-            throw new InvalidDatabaseEntryException("Names cannot have gaps");
+        if (!noGaps(firstName) || !noGaps(middleName) || !noGaps(lastName)) {
+            throw new InvalidDatabaseEntryException("Names can not have gaps between characters");
         }
-        if (!isAlpha(firstName) || (middleName != null ? !isAlpha(middleName) : false) || !isAlpha(lastName)) {
+        if (!isAlpha(firstName.trim() + middleName.trim() + lastName.trim())) {
             throw new InvalidDatabaseEntryException("Names must only contain alphabetic characters");
         }
         if (subjects > 2 || subjects < 0)   {
-            throw new InvalidDatabaseEntryException("A student may only take 2 subjects at a time");
+            throw new InvalidDatabaseEntryException("A student may only take at most 2 subjects at a time");
         }
-        Integer inserted = this.dao.insertStudent(firstName, middleName, lastName, subjects, Instant.now());
+        Integer inserted = this.dao.insertStudent(
+            firstName.trim(), 
+            middleName.trim().equals("") ? null : middleName.trim(), 
+            lastName.trim(), subjects, Instant.now());
         studentsObserver.triggerInsert(inserted);
     }
 
@@ -175,16 +179,21 @@ public class AttendanceService {
         public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
     }
 
+    public class IllegalDatabaseOperationException extends Exception{
+        public IllegalDatabaseOperationException() {super();}
+        public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
+    }
+
     /*
      * Helper methods
      */
 
-    private boolean isAlpha(String s)   {
+    public static boolean isAlpha(String s)   {
         return s.matches("[a-zA-Z]+");
     }
 
-    private boolean noGaps(String s)  {
-        return !s.matches(".*\\s.*");
+    public static boolean noGaps(String s)  {
+        return new StringTokenizer(s).countTokens() == 1;
     }
 
 }
