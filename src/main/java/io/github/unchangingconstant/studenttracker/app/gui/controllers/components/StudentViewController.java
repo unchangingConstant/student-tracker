@@ -1,5 +1,9 @@
 package io.github.unchangingconstant.studenttracker.app.gui.controllers.components;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
@@ -44,8 +48,9 @@ public class StudentViewController implements Controller {
         });
         TableColumn<Student, String> dateColumn = new TableColumn<>("Date Added");
         dateColumn.setCellValueFactory(row -> {
-            Student s = row.getValue();
-            return new SimpleStringProperty(s.getDateAdded().toString());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
+            Instant dateAdded = row.getValue().getDateAdded();
+            return new SimpleStringProperty(formatter.format(dateAdded));
         });
         studentView.getColumns().add(nameColumn);
         studentView.getColumns().add(subjectColumn);
