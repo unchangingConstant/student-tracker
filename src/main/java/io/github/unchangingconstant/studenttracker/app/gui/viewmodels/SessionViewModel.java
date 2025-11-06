@@ -44,4 +44,8 @@ public class SessionViewModel {
         service.startOngoingVisit(selected.getValue().getStudentId());
         studentSelectorInput.set("");
     }
+
+    public void onEndOngoingVisit(Integer studentId) {
+        service.endOngoingVisit(ongoingVisitsModel.get(studentId));
+    }
 }

@@ -38,6 +38,7 @@ public class SessionPageController implements Controller {
         });
         viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
         viewModel.getSelected().bindBidirectional(studentSelector.selectedProperty());
+        ongoingVisitsView.setOnButtonAction(studentId -> viewModel.onEndOngoingVisit(studentId));
     }
 
 }

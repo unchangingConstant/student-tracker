@@ -1,25 +1,27 @@
 package io.github.unchangingconstant.studenttracker.app.gui.components;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
 import javafx.util.Duration;
 
 /*
@@ -35,23 +37,28 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
     private final TableColumn<OngoingVisit, String> nameColumn = new TableColumn<>();
     private final TableColumn<OngoingVisit, Number> timeRemainingColumn = new TableColumn<>();
     private final TableColumn<OngoingVisit, String> startTimeColumn = new TableColumn<>();
-    private final TableColumn<OngoingVisit, Void> actionsColumn = new TableColumn<>();
+    private final TableColumn<OngoingVisit, Number> actionsColumn = new TableColumn<>();
 
+    // Upon action button press, passes the OngoingVisit's studentId to this consumer
+    private Consumer<Integer> onButtonAction;
     // Corresponds studentId to ongoingVisit's time remaining
     private Map<Integer, SimpleLongProperty> timesRemaining;
     private Timeline timeline;
 
     public OngoingVisitView() {
+        super();
         // Keeps an extra column at the end from rendering
         columnResizePolicyProperty().set(CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         timesRemaining = new HashMap<>();
         nameColumn.setText("Student Name");
-        nameColumn.setCellValueFactory(visit -> {
-            return new SimpleStringProperty(visit.getValue().getStudentName());
+        nameColumn.setCellValueFactory(cellData -> {
+            return new SimpleStringProperty(cellData.getValue().getStudentName());
         });
         startTimeColumn.setText("Start Time");
-        startTimeColumn.setCellValueFactory(visit -> {
-            return new SimpleStringProperty(visit.getValue().getStartTime().toString());
+        startTimeColumn.setCellValueFactory(cellData -> {
+            Instant startTime = cellData.getValue().getStartTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
+            return new SimpleStringProperty(formatter.format(startTime));
         });
         createTimeRemainingColumn();
         createActionsColumn();
@@ -61,6 +68,10 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
         columns.add(timeRemainingColumn);
         columns.add(startTimeColumn);
         columns.add(actionsColumn);
+    }
+
+    public void setOnButtonAction(Consumer<Integer> newAction) {
+        onButtonAction = newAction;
     }
 
     private void createTimeRemainingColumn()    {
@@ -104,20 +115,19 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
     }
 
     private void createActionsColumn()  {
-        actionsColumn.setCellFactory(new Callback<TableColumn<OngoingVisit, Void>, TableCell<OngoingVisit, Void>>() {
-            @Override
-            public TableCell<OngoingVisit, Void> call(TableColumn<OngoingVisit, Void> col) {
-                TableCell<OngoingVisit, Void> buttonCell = new TableCell<>();
-                Button cellButton = new Button("Action");
-                buttonCell.setGraphic(cellButton);
-                cellButton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        System.out.println(event.getEventType());
-                    }
-                });
-                return buttonCell;
-            }
+        actionsColumn.setCellFactory(tableColumn -> {
+            TableCell<OngoingVisit, Number> buttonCell = new TableCell<>();
+            Button cellButton = new Button("End Visit");
+            buttonCell.setGraphic(cellButton);
+            cellButton.setOnAction(actionEvent ->  {
+                if (onButtonAction != null) {
+                    onButtonAction.accept(buttonCell.itemProperty().get().intValue()); // this code stinks
+                }
+            });
+            return buttonCell;
+        });
+        actionsColumn.setCellValueFactory(cell ->   {
+            return new SimpleIntegerProperty(cell.getValue().getStudentId());
         });
     }
 

@@ -18,11 +18,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
-// There has to be a better way oh my god
-/*
- * I'd take the example at this link: https://gist.github.com/floralvikings/10290131
- * But that idiot added no support for binding. 
- */
 public class StudentSelector extends TextField {
     
     private Property<ObservableList<Student>> options = new SimpleListProperty<>(FXCollections.observableArrayList());
