@@ -2,12 +2,14 @@ package io.github.unchangingconstant.studenttracker.app.gui.components;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
@@ -40,9 +42,14 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
     private Timeline timeline;
 
     public OngoingVisitView() {
+        // Keeps an extra column at the end from rendering
+        columnResizePolicyProperty().set(CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        timesRemaining = new HashMap<>();
+        nameColumn.setText("Student Name");
         nameColumn.setCellValueFactory(visit -> {
             return new SimpleStringProperty(visit.getValue().getStudentName());
         });
+        startTimeColumn.setText("Start Time");
         startTimeColumn.setCellValueFactory(visit -> {
             return new SimpleStringProperty(visit.getValue().getStartTime().toString());
         });
@@ -59,7 +66,12 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
 
     private void createTimeRemainingColumn()    {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
-
+        InvalidationListener invalidationListener = (observable) -> System.out.println("Probably binding to the column");
+        /**
+         * Tried to fix the issue where the timeRemaining map doesn't update when the itemsProperty binds to the OngoingVisitTableModel. 
+         * I guess invalidation listeners don't work here
+         */
+        getItems().addListener(invalidationListener); 
         getItems().addListener(new ListChangeListener<OngoingVisit>()   {
             @Override
             public void onChanged(Change<? extends OngoingVisit> c) {
@@ -79,7 +91,7 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
                 }
             }
         });
-
+        timeRemainingColumn.setText("Time Remaining");
         timeRemainingColumn.setCellValueFactory(cell-> {
             return timesRemaining.get(cell.getValue().getStudentId());
         });

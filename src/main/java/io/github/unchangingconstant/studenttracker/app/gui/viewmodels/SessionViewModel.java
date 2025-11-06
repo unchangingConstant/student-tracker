@@ -1,10 +1,5 @@
 package io.github.unchangingconstant.studenttracker.app.gui.viewmodels;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;

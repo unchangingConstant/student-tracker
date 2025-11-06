@@ -17,6 +17,7 @@ import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToStud
 import io.github.unchangingconstant.studenttracker.app.backend.mappers.RowToVisitMapper;
 
 // Read up on mappers, section 7 of JDBI docs
+// TODO consider returning Optionals
 public interface DatabaseDAO {
 
     /*
@@ -64,13 +65,13 @@ public interface DatabaseDAO {
     /*
      * ONGOING VISIT METHODS
      */
-    @SqlQuery("SELECT * FROM ongoing_visits WHERE studentId = ?")
-    @RegisterRowMapper(RowToVisitMapper.class)
+    @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
+    @RegisterRowMapper(RowToOngoingVisitMapper.class)
     public OngoingVisit getOngoingVisit(Integer studentId);
 
     @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
-    @KeyColumn("visit_id")
+    @KeyColumn("student_id")
     public Map<Integer, OngoingVisit> getOngoingVisits();
 
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (?, ?)")

@@ -1,15 +1,14 @@
 package io.github.unchangingconstant.studenttracker;
 
 import java.net.URL;
+import java.time.Instant;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyListWrapper;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,6 +23,10 @@ public class StudentTrackerApp extends Application {
         @Override
         public void start(Stage stage) throws Exception {
                 Injector injector = Guice.createInjector(new DatabaseModule());
+
+                // AttendanceService service = injector.getInstance(AttendanceService.class);
+                // service.insertStudent("Ethan", null, "Begley", 2);
+                // service.startOngoingVisit(service.getAllStudents().get(1).getStudentId(), Instant.now());
 
                 URL location = getClass().getResource("/view/main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);

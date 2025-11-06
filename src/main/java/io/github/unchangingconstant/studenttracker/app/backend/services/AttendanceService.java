@@ -49,16 +49,23 @@ public class AttendanceService {
         return dao.getOngoingVisit(studentId);
     }
 
-    public void insertOngoingVisit(Integer studentId, Instant startTime) {
+    public void startOngoingVisit(Integer studentId, Instant startTime) {
         // Must not have ongoing visits when starting one
+        if (dao.getOngoingVisit(studentId) != null ) {
+            throw new IllegalStateException("Student is already in the center.");
+        };
         dao.insertOngoingVisit(studentId, startTime);
         ongoingVisitsObserver.triggerInsert(studentId);
     }
 
     // update!!! Should return request status
-    public void deleteOngoingVisit(Integer studentId) {
-        dao.deleteOngoingVisit(studentId);
-        ongoingVisitsObserver.triggerDelete(studentId);
+    public void endOngoingVisit(OngoingVisit ongoingVisit) {
+        // Ends ongoing visit
+        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
+        ongoingVisitsObserver.triggerDelete(ongoingVisit.getStudentId());
+        // Logs endtime into Visit table
+        Integer visitId = dao.insertVisit(ongoingVisit.getStartTime(), Instant.now(), ongoingVisit.getStudentId());
+        visitsObserver.triggerInsert(visitId);
     }
 
     /*
