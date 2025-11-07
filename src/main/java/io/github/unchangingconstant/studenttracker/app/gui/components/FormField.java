@@ -23,10 +23,10 @@ public class FormField extends VBox implements Controller {
     private Label message;
 
     // The field name of this FormField
-    private final StringProperty text = new SimpleStringProperty("");
+    private final StringProperty fieldName = new SimpleStringProperty("");
     // public StringProperty textProperty() {return text;}
-    public void setText(String newText) {text.set(newText);}
-    public String getText() {return text.get();}
+    public void setFieldName(String newText) {fieldName.set(newText);}
+    public String getFieldName() {return fieldName.get();}
 
     private final BooleanProperty messageVisible = new SimpleBooleanProperty(false);
     public void setMessageVisible(boolean newBool) {messageVisible.set(newBool);}
@@ -34,20 +34,20 @@ public class FormField extends VBox implements Controller {
     
 
     public FormField()  {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/form_field.fxml"));
-		loader.setRoot(this);
-		loader.setController(this);
-		try {
-			loader.load();
-		}
-		catch (IOException e)   {
-			throw new RuntimeException(e);
-		}
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/form_field.fxml"));
+      loader.setRoot(this);
+      loader.setController(this);
+      try {
+        loader.load();
+      }
+      catch (IOException e)   {
+        throw new RuntimeException(e);
+      }
     }
 
     @Override
     public void initialize() {
-        fieldLabel.textProperty().bindBidirectional(text);
+        fieldLabel.textProperty().bindBidirectional(fieldName);
         message.visibleProperty().bindBidirectional(messageVisible);
     }
 

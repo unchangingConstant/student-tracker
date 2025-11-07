@@ -3,8 +3,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root type="VBox" xmlns:fx="http://javafx.com/fxml">
-    <Label fx:id="fieldLabel"/>
-    <TextField fx:id="input"/>
-    <Label fx:id="message"/>
+<fx:root type="VBox" xmlns:fx="http://javafx.com/fxml" styleClass="form-field">
+    <Label fx:id="fieldLabel" styleClass="form-field-fieldLabel"/>
+    <TextField fx:id="input" styleClass="form-field-input"/>
+    <Label fx:id="message" styleClass="form-field-message"/>
 </fx:root>
