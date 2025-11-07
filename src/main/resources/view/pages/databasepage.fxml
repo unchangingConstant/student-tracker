@@ -6,12 +6,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+
 <Tab xmlns:fx="http://javafx.com/fxml" text="Student Manager" closable="false">
     <VBox>
         <padding>
             <Insets top="25" right="25" bottom="10" left="25"/>
         </padding>
-        <fx:include source="/view/components/registerform.fxml" fx:id="registerForm"/>
+        <RegisterStudentForm/>
         <fx:include source="/view/components/studentview.fxml" fx:id="studentView"/>
     </VBox>
 </Tab>

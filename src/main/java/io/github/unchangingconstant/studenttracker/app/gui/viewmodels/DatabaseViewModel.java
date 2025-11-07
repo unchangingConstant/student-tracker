@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService;
+import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.backend.services.AttendanceService.InvalidDatabaseEntryException;
 import io.github.unchangingconstant.studenttracker.app.gui.models.StudentTableModel;
 import javafx.beans.property.Property;
@@ -32,7 +33,12 @@ public class DatabaseViewModel {
     }
 
     public void onDeleteStudentButtonAction(Integer studentId) {
-        attendanceService.deleteStudent(studentId);
+        try {
+            attendanceService.deleteStudent(studentId);
+        } catch (IllegalDatabaseOperationException e)   {
+            // TODO display error message of sorts
+            System.out.println(e);
+        }
     }
 
     public void onRegisterButtonAction() {

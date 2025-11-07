@@ -98,17 +98,17 @@ public class AttendanceService {
         studentsObserver.triggerInsert(inserted);
     }
 
-    public void deleteStudent(Integer studentId) {
+    public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
         Boolean deleted;
         try {
             deleted = this.dao.deleteStudent(studentId);
         } catch (UnableToExecuteStatementException e) {
             // If unable to delete due to foreign key constraints
+            // TODO Find a better way to check for errors
             if (e.getMessage().contains("FOREIGN KEY constraint")) {
-                throw new IllegalStateException("Cannot delete student with existing visits", e);
+                throw new IllegalDatabaseOperationException("Cannot delete student with existing visits", e);
             }
             throw new RuntimeException("Failed to delete student", e);
-
         }
         if (deleted) {
             studentsObserver.triggerDelete(studentId);
@@ -182,6 +182,7 @@ public class AttendanceService {
     public class IllegalDatabaseOperationException extends Exception{
         public IllegalDatabaseOperationException() {super();}
         public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
+        public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
     }
 
     /*

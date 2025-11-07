@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+
+<Pane xmlns:fx="http://javafx.com/fxml">
+    <VBox>
+        <stylesheets>
+            <URL value="@registerstudentpage.css"/>
+        </stylesheets>
+        <FormField text="First Name"/>
+        <FormField text="Last Name"/>
+        <FormField text="Middle Name"/>
+        <FormField text="Subjects"/>
+    </VBox>
+</Pane>
