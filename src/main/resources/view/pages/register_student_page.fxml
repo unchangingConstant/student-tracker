@@ -13,12 +13,17 @@
         <URL value="@register_student_page.css" />
     </stylesheets>
     <center>
-        <VBox id="form">
-            <FormField fieldName="First Name"/>
-            <FormField fieldName="Last Name"/>
-            <FormField fieldName="Middle Name"/>
-            <FormField fieldName="Subjects"/>
-            <Button text = "Register Student"/>
-        </VBox>
+        <BorderPane id="innerBox">
+            <center>
+            <VBox id="form">
+                <Label text="New Student" id="title"/>
+                <FormField fieldName="First Name"/>
+                <FormField fieldName="Last Name"/>
+                <FormField fieldName="Middle Name"/>
+                <FormField fieldName="Subjects"/>
+                <Button text = "Register Student"/>
+            </VBox>
+            </center>
+        </BorderPane>
     </center>
 </BorderPane>

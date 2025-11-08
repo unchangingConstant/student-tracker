@@ -8,16 +8,12 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
 
-<Pane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.MainController" 
+<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.MainController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">
-    <!-- <MenuPopdown/>
-    <TabPane>
-        <fx:include source="/view/pages/databasepage.fxml"/>
-        <fx:include source="/view/pages/sessionpage.fxml"/>
-    </TabPane> -->
     <stylesheets>
-        <URL value="@main.css" />
+        <URL value="@main.css"/>
     </stylesheets>
     <fx:include source="/view/pages/register_student_page.fxml" 
-        minWidth="${root.width}" minHeight="${root.height}"/>
-</Pane>
+        minWidth="${root.width}" minHeight="${root.height}" 
+        GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+</GridPane>

@@ -1,7 +1,17 @@
 #registerStudentPage {
+    -fx-background-color: #4c435e;
+}
+
+#innerBox   {
+    -fx-max-width: 500;
     -fx-background-color: #8272a3;
 }
 
 #form   {
-    /* -fx-background-color: #FFFFFF; */
+    -fx-max-width: 450;
+    -fx-alignment: TOP-CENTER;
+}
+
+#title  {
+    -fx-font-size: 36;
 }
