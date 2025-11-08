@@ -1,5 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.gui.components;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -10,13 +11,17 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
+import io.github.unchangingconstant.studenttracker.app.gui.Controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -31,29 +36,44 @@ import javafx.util.Duration;
  * Create a custom TableColumn that maintains a single timeline for all of its values.
  * 
  */
-public class OngoingVisitView extends TableView<OngoingVisit> {
+public class OngoingVisitView extends TableView<OngoingVisit> implements Controller {
 
-    private final TableColumn<OngoingVisit, String> nameColumn = new TableColumn<>();
-    private final TableColumn<OngoingVisit, Number> timeRemainingColumn = new TableColumn<>();
-    private final TableColumn<OngoingVisit, String> startTimeColumn = new TableColumn<>();
-    private final TableColumn<OngoingVisit, Number> actionsColumn = new TableColumn<>();
+    @FXML
+    private TableColumn<OngoingVisit, String> nameColumn;
+    @FXML
+    private TableColumn<OngoingVisit, Number> timeRemainingColumn;
+    @FXML
+    private TableColumn<OngoingVisit, String> startTimeColumn;
+    @FXML
+    private TableColumn<OngoingVisit, Number> actionsColumn;
 
     // Upon action button press, passes the OngoingVisit's studentId to this consumer
     private Consumer<Integer> onButtonAction;
+    public void setOnButtonAction(Consumer<Integer> newAction) {onButtonAction = newAction;}
+
     // Corresponds studentId to ongoingVisit's time remaining
     private Map<Integer, SimpleLongProperty> timesRemaining;
     private Timeline timeline;
 
     public OngoingVisitView() {
         super();
-        // Keeps an extra column at the end from rendering
-        columnResizePolicyProperty().set(CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         timesRemaining = new HashMap<>();
-        nameColumn.setText("Student Name");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/ongoing_visit_view.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        try {
+            loader.load();
+        }
+        catch (IOException e)   {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void initialize() {
         nameColumn.setCellValueFactory(cellData -> {
             return new SimpleStringProperty(cellData.getValue().getStudentName());
         });
-        startTimeColumn.setText("Start Time");
         startTimeColumn.setCellValueFactory(cellData -> {
             Instant startTime = cellData.getValue().getStartTime();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
@@ -61,16 +81,6 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
         });
         createTimeRemainingColumn();
         createActionsColumn();
-
-        List<TableColumn<OngoingVisit, ?>> columns = getColumns();
-        columns.add(nameColumn);
-        columns.add(timeRemainingColumn);
-        columns.add(startTimeColumn);
-        columns.add(actionsColumn);
-    }
-
-    public void setOnButtonAction(Consumer<Integer> newAction) {
-        onButtonAction = newAction;
     }
 
     private void createTimeRemainingColumn()    {
@@ -100,7 +110,6 @@ public class OngoingVisitView extends TableView<OngoingVisit> {
                 }
             }
         });
-        timeRemainingColumn.setText("Time Remaining");
         timeRemainingColumn.setCellValueFactory(cell-> {
             return timesRemaining.get(cell.getValue().getStudentId());
         });

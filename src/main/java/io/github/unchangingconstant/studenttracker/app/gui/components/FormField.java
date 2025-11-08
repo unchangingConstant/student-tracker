@@ -24,14 +24,16 @@ public class FormField extends VBox implements Controller {
 
     // The field name of this FormField
     private final StringProperty fieldName = new SimpleStringProperty("");
-    // public StringProperty textProperty() {return text;}
     public void setFieldName(String newText) {fieldName.set(newText);}
     public String getFieldName() {return fieldName.get();}
 
-    private final BooleanProperty messageVisible = new SimpleBooleanProperty(false);
+    private final BooleanProperty messageVisible = new SimpleBooleanProperty(true);
     public void setMessageVisible(boolean newBool) {messageVisible.set(newBool);}
     public Boolean getMessageVisible() {return messageVisible.get();}
-    
+
+    public StringProperty textProperty() {return input.textProperty();}
+    public void setText(String newText) {input.textProperty().set(newText);}
+    public String getText() {return input.textProperty().get();}
 
     public FormField()  {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/form_field.fxml"));

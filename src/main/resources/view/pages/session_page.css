@@ -1,0 +1,15 @@
+#sessionPage    {
+    -fx-alignment: TOP_CENTER;
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-fill-width: false;
+}
+
+#startVisit     {
+    -fx-alignment: TOP_CENTER;
+    -fx-pref-width: 600;
+}
+
+#ongoingVisitsView  {
+    -fx-pref-width: 600;
+}

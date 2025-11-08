@@ -8,7 +8,8 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
 
-<BorderPane styleClass="register-form" xmlns:fx="http://javafx.com/fxml" id="registerStudentPage">
+<BorderPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.RegisterPageController" 
+    styleClass="register-form" xmlns:fx="http://javafx.com/fxml" id="registerStudentPage">
     <stylesheets>
         <URL value="@register_student_page.css" />
     </stylesheets>
@@ -16,12 +17,12 @@
         <BorderPane id="innerBox">
             <center>
             <VBox id="form">
-                <Label text="New Student" id="title"/>
-                <FormField fieldName="First Name"/>
-                <FormField fieldName="Last Name"/>
-                <FormField fieldName="Middle Name"/>
-                <FormField fieldName="Subjects"/>
-                <Button text = "Register Student"/>
+                <Label text="New Student" fx:id="title"/>
+                <FormField fieldName="First Name" fx:id="firstNameInput"/>
+                <FormField fieldName="Last Name" fx:id="lastNameInput"/>
+                <FormField fieldName="Middle Name" fx:id="middleNameInput"/>
+                <FormField fieldName="Subjects" fx:id="subjectsInput"/>
+                <Button text = "Register Student" fx:id="registerButton"/>
             </VBox>
             </center>
         </BorderPane>

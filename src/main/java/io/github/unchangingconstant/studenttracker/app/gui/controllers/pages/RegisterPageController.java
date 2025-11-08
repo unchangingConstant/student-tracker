@@ -1,32 +1,35 @@
 package io.github.unchangingconstant.studenttracker.app.gui.controllers.pages;
 
+import com.google.inject.Inject;
+
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
+import io.github.unchangingconstant.studenttracker.app.gui.components.FormField;
 import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.DatabaseViewModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 
 public class RegisterPageController implements Controller {
 
     @FXML
-    private TextField firstNameInput;
+    private FormField firstNameInput;
     @FXML
-    private TextField middleNameInput;
+    private FormField lastNameInput;
     @FXML
-    private TextField lastNameInput;
+    private FormField middleNameInput;
     @FXML
-    private ComboBox<String> subjectsInput;
+    private FormField subjectsInput;
     @FXML
     private Button registerButton;
-    @FXML
-    private TableView<Student> studentView;
 
     private DatabaseViewModel viewModel;
+
+    @Inject
+    public RegisterPageController(DatabaseViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
 
     @Override
     public void initialize() {
@@ -36,10 +39,9 @@ public class RegisterPageController implements Controller {
                 viewModel.onRegisterButtonAction();
             }
         });
-        viewModel.bindToModelProperty(studentView.itemsProperty());
         viewModel.getFirstNameInput().bindBidirectional(firstNameInput.textProperty());
         viewModel.getMiddleNameInput().bindBidirectional(middleNameInput.textProperty());
         viewModel.getLastNameInput().bindBidirectional(lastNameInput.textProperty());
-        viewModel.getSubjectsInput().bindBidirectional(subjectsInput.getEditor().textProperty());
+        viewModel.getSubjectsInput().bindBidirectional(subjectsInput.textProperty());
     }
 }

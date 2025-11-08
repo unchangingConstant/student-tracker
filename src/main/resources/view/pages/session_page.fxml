@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.SessionPageController" 
+    xmlns:fx="http://javafx.com/fxml" id="sessionPage">
+    <stylesheets>
+        <URL value="@session_page.css"/>
+    </stylesheets>
+    <HBox id="startVisit">
+        <StudentSelector fx:id="studentSelector"
+            HBox.hgrow="ALWAYS"/>
+        <Button fx:id="startVisitButton" text="Start Visit"/>
+    </HBox>
+    <OngoingVisitView fx:id="ongoingVisitsView" />
+</VBox>

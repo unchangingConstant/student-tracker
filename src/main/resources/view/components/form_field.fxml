@@ -6,5 +6,5 @@
 <fx:root type="VBox" xmlns:fx="http://javafx.com/fxml" styleClass="form-field">
     <Label fx:id="fieldLabel" styleClass="form-field-fieldLabel"/>
     <TextField fx:id="input" styleClass="form-field-input"/>
-    <Label fx:id="message" styleClass="form-field-message"/>
+    <Label fx:id="message" styleClass="form-field-message" text="message"/>
 </fx:root>
