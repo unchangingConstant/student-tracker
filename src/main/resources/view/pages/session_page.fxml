@@ -13,10 +13,16 @@
     <stylesheets>
         <URL value="@session_page.css"/>
     </stylesheets>
-    <HBox id="startVisit">
-        <StudentSelector fx:id="studentSelector"
-            HBox.hgrow="ALWAYS"/>
-        <Button fx:id="startVisitButton" text="Start Visit"/>
+    <HBox id="topBar">
+        <Button text="menu" fx:id="menuButton"/>
     </HBox>
-    <OngoingVisitView fx:id="ongoingVisitsView" />
+    <VBox id="body" VBox.vgrow="ALWAYS">
+        <HBox id="startVisit">
+            <StudentSelector fx:id="studentSelector"
+                HBox.hgrow="ALWAYS" />
+            <Button fx:id="startVisitButton" text="Start Visit"/>
+        </HBox>
+        <OngoingVisitView fx:id="ongoingVisitsView" 
+            VBox.vgrow="ALWAYS"/>
+    </VBox>
 </VBox>

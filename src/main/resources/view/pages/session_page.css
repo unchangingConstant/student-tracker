@@ -1,8 +1,19 @@
 #sessionPage    {
     -fx-alignment: TOP_CENTER;
+    -fx-fill-width: true;
+}
+
+#topBar {
+    -fx-alignment: TOP_LEFT;
+    -fx-background-color: #313131;
+}
+
+#body   {
+    -fx-fill-width: false;
+    -fx-alignment: TOP_CENTER;
+    -fx-background-color: #7FCFF4;
     -fx-spacing: 10;
     -fx-padding: 10;
-    -fx-fill-width: false;
 }
 
 #startVisit     {

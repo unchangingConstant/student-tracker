@@ -7,8 +7,13 @@ import io.github.unchangingconstant.studenttracker.app.gui.Controller;
 import io.github.unchangingconstant.studenttracker.app.gui.components.OngoingVisitView;
 import io.github.unchangingconstant.studenttracker.app.gui.components.StudentSelector;
 import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.SessionViewModel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 
 public class SessionPageController implements Controller {
 
@@ -18,6 +23,10 @@ public class SessionPageController implements Controller {
     private StudentSelector studentSelector; 
     @FXML
     private Button startVisitButton;
+    @FXML
+    private Button menuButton;
+
+    private ContextMenu menuPopdown = new ContextMenu();
 
     private SessionViewModel viewModel;
 
@@ -35,6 +44,12 @@ public class SessionPageController implements Controller {
             if (selected != null)  {
                 viewModel.onStartVisitAction();
             }
+        });
+        
+        MenuItem newItem = new MenuItem("Item!");
+        menuPopdown.getItems().add(newItem);
+        menuButton.setOnAction(actionEvent ->   {
+            menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
         });
         viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
         viewModel.getSelected().bindBidirectional(studentSelector.selectedProperty());
