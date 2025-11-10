@@ -4,13 +4,10 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
-import io.github.unchangingconstant.studenttracker.app.gui.components.OngoingVisitView;
-import io.github.unchangingconstant.studenttracker.app.gui.components.StudentSelector;
-import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.SessionViewModel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import io.github.unchangingconstant.studenttracker.app.gui.custom.OngoingVisitView;
+import io.github.unchangingconstant.studenttracker.app.gui.custom.StudentSelector;
+import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.AttendanceDashboardViewModel;
 import javafx.fxml.FXML;
-import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -28,10 +25,10 @@ public class SessionPageController implements Controller {
 
     private ContextMenu menuPopdown = new ContextMenu();
 
-    private SessionViewModel viewModel;
+    private AttendanceDashboardViewModel viewModel;
 
     @Inject
-    public SessionPageController(SessionViewModel viewModel)  {
+    public SessionPageController(AttendanceDashboardViewModel viewModel)  {
         this.viewModel = viewModel;
     }
 
@@ -53,7 +50,7 @@ public class SessionPageController implements Controller {
         //     menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
         // });
         viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
-        viewModel.getSelected().bindBidirectional(studentSelector.selectedProperty());
+        viewModel.getSelected().bind(studentSelector.selectedProperty());
         ongoingVisitsView.setOnButtonAction(studentId -> viewModel.onEndOngoingVisit(studentId));
     }
 

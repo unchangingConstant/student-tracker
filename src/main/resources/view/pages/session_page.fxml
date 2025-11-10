@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
 <VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.SessionPageController" 
     xmlns:fx="http://javafx.com/fxml" id="sessionPage">
@@ -14,7 +14,11 @@
         <URL value="@session_page.css"/>
     </stylesheets>
     <StackPane id="topBar">
-        <Button text="Menu" fx:id="menuButton"/>
+        <MenuBar id="menuBar">
+            <menus>
+                <Menu text="Menu" id="menuButton"/>
+            </menus>
+        </MenuBar>
         <Label text="Live Attendance Dashboard" id="title"
             StackPane.alignment="CENTER"/>
     </StackPane>

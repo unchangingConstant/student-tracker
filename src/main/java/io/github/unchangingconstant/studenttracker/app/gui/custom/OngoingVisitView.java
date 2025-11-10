@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.gui.components;
+package io.github.unchangingconstant.studenttracker.app.gui.custom;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -15,7 +14,6 @@ import io.github.unchangingconstant.studenttracker.app.gui.Controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;

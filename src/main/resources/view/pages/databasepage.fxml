@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
 <Tab xmlns:fx="http://javafx.com/fxml" text="Student Manager" closable="false">
     <VBox>

@@ -1,8 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.gui.models;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

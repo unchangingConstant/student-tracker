@@ -16,7 +16,11 @@
 }
 
 #menuButton {
-    -fx-background-color: #FFFFFF;
+    -fx-text-fill:#FFFFFF;
+}
+
+#menuBar    {
+    -fx-background-color:#313131;
 }
 
 #title  {

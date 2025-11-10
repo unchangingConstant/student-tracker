@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.gui.components;
+package io.github.unchangingconstant.studenttracker.app.gui.custom;
 
 import java.io.IOException;
 

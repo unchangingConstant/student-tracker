@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.gui.components.*?>
+<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
 <GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.MainController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">

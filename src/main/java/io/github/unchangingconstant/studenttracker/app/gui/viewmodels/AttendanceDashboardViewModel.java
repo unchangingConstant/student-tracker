@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import lombok.Getter;
 
-public class SessionViewModel {
+public class AttendanceDashboardViewModel {
 
     private OngoingVisitTableModel ongoingVisitsModel;
     private StudentTableModel studentsModel;
@@ -26,7 +26,7 @@ public class SessionViewModel {
 
     // Corresponds update-second to ongoing visits for efficient updating
     @Inject
-    public SessionViewModel(OngoingVisitTableModel ongoingVisitsModel, StudentTableModel studentsModel, AttendanceService service) {
+    public AttendanceDashboardViewModel(OngoingVisitTableModel ongoingVisitsModel, StudentTableModel studentsModel, AttendanceService service) {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentsModel = studentsModel;
         this.service = service;

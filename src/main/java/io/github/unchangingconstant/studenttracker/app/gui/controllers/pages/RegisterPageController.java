@@ -2,9 +2,8 @@ package io.github.unchangingconstant.studenttracker.app.gui.controllers.pages;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
-import io.github.unchangingconstant.studenttracker.app.gui.components.FormField;
+import io.github.unchangingconstant.studenttracker.app.gui.custom.FormField;
 import io.github.unchangingconstant.studenttracker.app.gui.viewmodels.DatabaseViewModel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
