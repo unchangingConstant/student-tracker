@@ -13,9 +13,11 @@
     <stylesheets>
         <URL value="@session_page.css"/>
     </stylesheets>
-    <HBox id="topBar">
-        <Button text="menu" fx:id="menuButton"/>
-    </HBox>
+    <StackPane id="topBar">
+        <Button text="Menu" fx:id="menuButton"/>
+        <Label text="Live Attendance Dashboard" id="title"
+            StackPane.alignment="CENTER"/>
+    </StackPane>
     <VBox id="body" VBox.vgrow="ALWAYS">
         <HBox id="startVisit">
             <StudentSelector fx:id="studentSelector"

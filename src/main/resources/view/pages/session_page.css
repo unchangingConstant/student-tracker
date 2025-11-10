@@ -11,14 +11,29 @@
 #body   {
     -fx-fill-width: false;
     -fx-alignment: TOP_CENTER;
-    -fx-background-color: #7FCFF4;
     -fx-spacing: 10;
     -fx-padding: 10;
+}
+
+#menuButton {
+    -fx-background-color: #FFFFFF;
+}
+
+#title  {
+    -fx-text-fill: #FFFFFF;
+    -fx-text-alignment: center;
+    -fx-font-weight: bolder;
 }
 
 #startVisit     {
     -fx-alignment: TOP_CENTER;
     -fx-pref-width: 600;
+}
+
+#startVisitButton   {
+    -fx-background-color: #7FCFF4;
+    -fx-text-fill: #FFFFFF;
+    -fx-text-weight: bold;
 }
 
 #ongoingVisitsView  {

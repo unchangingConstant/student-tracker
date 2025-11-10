@@ -48,9 +48,10 @@ public class SessionPageController implements Controller {
         
         MenuItem newItem = new MenuItem("Item!");
         menuPopdown.getItems().add(newItem);
-        menuButton.setOnAction(actionEvent ->   {
-            menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
-        });
+        
+        // menuButton.setOnAction(actionEvent ->   {
+        //     menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
+        // });
         viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
         viewModel.getSelected().bindBidirectional(studentSelector.selectedProperty());
         ongoingVisitsView.setOnButtonAction(studentId -> viewModel.onEndOngoingVisit(studentId));
