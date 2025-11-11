@@ -27,7 +27,7 @@ public class FormField extends VBox implements Controller {
     public void setFieldName(String newText) {fieldName.set(newText);}
     public String getFieldName() {return fieldName.get();}
 
-    private final BooleanProperty messageVisible = new SimpleBooleanProperty(true);
+    private final BooleanProperty messageVisible = new SimpleBooleanProperty(false);
     public void setMessageVisible(boolean newBool) {messageVisible.set(newBool);}
     public Boolean getMessageVisible() {return messageVisible.get();}
 

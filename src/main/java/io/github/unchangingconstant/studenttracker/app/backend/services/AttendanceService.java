@@ -174,12 +174,12 @@ public class AttendanceService {
 
     }
 
-    public class InvalidDatabaseEntryException extends Exception {
+    public static class InvalidDatabaseEntryException extends Exception {
         public InvalidDatabaseEntryException()  {super();}
         public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
     }
 
-    public class IllegalDatabaseOperationException extends Exception{
+    public static class IllegalDatabaseOperationException extends Exception{
         public IllegalDatabaseOperationException() {super();}
         public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
         public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
