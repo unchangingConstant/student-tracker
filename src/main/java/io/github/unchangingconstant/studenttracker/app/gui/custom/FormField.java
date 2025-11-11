@@ -3,6 +3,7 @@ package io.github.unchangingconstant.studenttracker.app.gui.custom;
 import java.io.IOException;
 
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
+import io.github.unchangingconstant.studenttracker.app.gui.CustomComponentUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -36,15 +37,8 @@ public class FormField extends VBox implements Controller {
     public String getText() {return input.textProperty().get();}
 
     public FormField()  {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/form_field.fxml"));
-      loader.setRoot(this);
-      loader.setController(this);
-      try {
-        loader.load();
-      }
-      catch (IOException e)   {
-        throw new RuntimeException(e);
-      }
+      super();
+      CustomComponentUtils.hookIntoFXML(this, "/view/components/form_field.fxml");
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 
 import io.github.unchangingconstant.studenttracker.app.backend.entities.OngoingVisit;
 import io.github.unchangingconstant.studenttracker.app.gui.Controller;
+import io.github.unchangingconstant.studenttracker.app.gui.CustomComponentUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.InvalidationListener;
@@ -56,15 +57,7 @@ public class OngoingVisitView extends TableView<OngoingVisit> implements Control
     public OngoingVisitView() {
         super();
         timesRemaining = new HashMap<>();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/components/ongoing_visit_view.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-            loader.load();
-        }
-        catch (IOException e)   {
-            throw new RuntimeException(e);
-        }
+        CustomComponentUtils.hookIntoFXML(this, "/view/components/ongoing_visit_view.fxml");
     }
 
     @Override

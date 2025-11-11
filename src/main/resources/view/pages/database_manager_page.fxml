@@ -17,22 +17,9 @@
         <MenuBar/>
         <Label text="Database Manager"/>
     </StackPane>
-    <TableView fx:id="studentTable">
+    <StudentTableView fx:id="studentTable">
         <columnResizePolicy>
             <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
         </columnResizePolicy>
-        <columns>
-            <TableColumn/>
-            <TableColumn/>
-            <TableColumn/>
-            <TableColumn/>
-            <TableColumn/>
-            <TableColumn/>
-            <ControlTableColumn>
-                <control>
-                    <Button text="Balls"/>
-                </control>
-            </ControlTableColumn>
-        </columns>
-    </TableView>
+    </StudentTableView>
 </VBox>

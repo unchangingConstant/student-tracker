@@ -13,7 +13,7 @@
     <stylesheets>
         <URL value="@main.css"/>
     </stylesheets>
-    <fx:include source="/view/pages/database_manager_page.fxml" 
+    <fx:include source="/view/pages/session_page.fxml" 
         minWidth="${root.width}" minHeight="${root.height}" 
         GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 </GridPane>
