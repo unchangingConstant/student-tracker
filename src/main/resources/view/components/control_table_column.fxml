@@ -1,0 +1,6 @@
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<fx:root type="TableColumn" xmlns:fx="http://javafx.com/fxml" styleClass="control-table-column"/>

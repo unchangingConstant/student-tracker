@@ -130,6 +130,8 @@ public class OngoingVisitView extends TableView<OngoingVisit> implements Control
                     onButtonAction.accept(buttonCell.itemProperty().get().intValue()); // this code stinks
                 }
             });
+            // Button is only visible when the row has an item
+            cellButton.visibleProperty().bind(buttonCell.itemProperty().isNotNull());
             return buttonCell;
         });
         actionsColumn.setCellValueFactory(cell ->   {
