@@ -1,0 +1,17 @@
+#topBar    {
+    -fx-background-color: #313131;
+}
+
+.combo-box  {
+    -fx-background-color: #7FCFF4;
+}
+
+#title {
+    -fx-text-fill: #FFFFFF;
+    -fx-text-alignment: center;
+    -fx-font-weight: bolder;
+}
+
+#body  {
+    -fx-padding: 10;
+}

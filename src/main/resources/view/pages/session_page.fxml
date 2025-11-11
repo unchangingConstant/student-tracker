@@ -9,11 +9,11 @@
 <?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
 <VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.SessionPageController" 
-    xmlns:fx="http://javafx.com/fxml" id="sessionPage">
+    xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" fillWidth="true">
     <stylesheets>
         <URL value="@session_page.css"/>
     </stylesheets>
-    <StackPane id="topBar">
+    <StackPane id="topBar" alignment="TOP_LEFT">
         <MenuBar id="menuBar">
             <menus>
                 <Menu text="Menu" id="menuButton"/>
@@ -22,13 +22,13 @@
         <Label text="Live Attendance Dashboard" id="title"
             StackPane.alignment="CENTER"/>
     </StackPane>
-    <VBox id="body" VBox.vgrow="ALWAYS">
-        <HBox id="startVisit">
+    <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER">
+        <HBox alignment="TOP_CENTER" prefWidth="600">
             <StudentSelector fx:id="studentSelector"
-                HBox.hgrow="ALWAYS" />
+                HBox.hgrow="ALWAYS"/>
             <Button fx:id="startVisitButton" text="Start Visit"/>
         </HBox>
         <OngoingVisitView fx:id="ongoingVisitsView" 
-            VBox.vgrow="ALWAYS"/>
+            VBox.vgrow="ALWAYS" prefWidth="600"/>
     </VBox>
 </VBox>

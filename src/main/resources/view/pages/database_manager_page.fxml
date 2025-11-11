@@ -9,17 +9,25 @@
 <?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
 <VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.DatabaseManagerPageController"
-    styleClass="database-manager-page" xmlns:fx="http://javafx.com/fxml" id="databaseManagerPage">
+    styleClass="database-manager-page" xmlns:fx="http://javafx.com/fxml" 
+    alignment="TOP_CENTER">
     <stylesheets>
         <URL value="@database_manager_page.css" />
     </stylesheets>
-    <StackPane>
+    <StackPane id="topBar">
         <MenuBar/>
-        <Label text="Database Manager"/>
+        <Label text="Database Manager" id="title"
+            StackPane.alignment="CENTER"/>
     </StackPane>
-    <StudentTableView fx:id="studentTable">
-        <columnResizePolicy>
-            <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
-        </columnResizePolicy>
-    </StudentTableView>
+    <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER"
+        id="body">
+        <HBox alignment="TOP_LEFT" prefWidth="900">
+            <Button text="Add Student" fx:id="addStudentButton"/>
+        </HBox>
+        <StudentTableView fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+                <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </StudentTableView>
+    </VBox>
 </VBox>
