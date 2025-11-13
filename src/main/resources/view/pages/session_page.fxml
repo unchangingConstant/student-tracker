@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
+<?import io.github.unchangingconstant.studenttracker.app.custom.*?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.SessionPageController" 
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.SessionPageController" 
     xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" fillWidth="true">
     <stylesheets>
         <URL value="@session_page.css"/>

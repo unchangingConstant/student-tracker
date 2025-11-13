@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
+<?import io.github.unchangingconstant.studenttracker.app.custom.*?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.DatabaseManagerPageController"
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.DatabaseManagerPageController"
     styleClass="database-manager-page" xmlns:fx="http://javafx.com/fxml" 
     alignment="TOP_CENTER">
     <stylesheets>
@@ -21,13 +21,14 @@
     </StackPane>
     <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER"
         id="body">
-        <HBox alignment="TOP_LEFT" prefWidth="900">
+        <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="editorContainer">
             <Button text="Add Student" fx:id="addStudentButton"/>
+            <StudentEditor fx:id="studentEditor"/>
         </HBox>
-        <StudentTableView fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
+        <StudentTableEditor fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
             <columnResizePolicy>
                 <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
-        </StudentTableView>
+        </StudentTableEditor>
     </VBox>
 </VBox>

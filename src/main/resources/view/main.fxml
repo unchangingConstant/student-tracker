@@ -8,12 +8,12 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
-<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.MainController" 
+<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.MainController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">
     <stylesheets>
         <URL value="@main.css"/>
     </stylesheets>
-    <fx:include source="/view/pages/database_manager_page.fxml" 
+    <fx:include source="/view/pages/session_page.fxml" 
         minWidth="${root.width}" minHeight="${root.height}" 
         GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 </GridPane>

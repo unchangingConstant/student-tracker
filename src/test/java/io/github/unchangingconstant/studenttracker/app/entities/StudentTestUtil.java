@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
-import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
+import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 
 /**
  * When inserting Instant objects into the data base, they get truncated down to
@@ -19,9 +19,9 @@ import io.github.unchangingconstant.studenttracker.app.backend.entities.Student;
  */
 public class StudentTestUtil {
 
-    public static InstancioApi<Student> student() {
-        return Instancio.of(Student.class)
-                .generate(field(Student::getDateAdded), gen -> gen.temporal().instant()
+    public static InstancioApi<StudentDomain> student() {
+        return Instancio.of(StudentDomain.class)
+                .generate(field(StudentDomain::getDateAdded), gen -> gen.temporal().instant()
                         .truncatedTo(ChronoUnit.MILLIS));
     }
 

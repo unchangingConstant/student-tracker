@@ -8,7 +8,7 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
-<BorderPane fx:controller="io.github.unchangingconstant.studenttracker.app.gui.controllers.pages.RegisterPageController" 
+<BorderPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.RegisterPageController" 
     styleClass="register-form" xmlns:fx="http://javafx.com/fxml" id="registerStudentPage">
     <stylesheets>
         <URL value="@register_student_page.css" />
