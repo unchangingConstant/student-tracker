@@ -1,7 +1,6 @@
 package io.github.unchangingconstant.studenttracker;
 
 import java.net.URL;
-import java.time.Instant;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -19,17 +18,18 @@ import javafx.stage.Stage;
  */
 public class StudentTrackerApp extends Application {
 
+        public static Injector appContext = Guice.createInjector(new DatabaseModule());
+
         @Override
         public void start(Stage stage) throws Exception {
-                Injector injector = Guice.createInjector(new DatabaseModule());
 
                 URL location = getClass().getResource("/view/main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
-                fxmlLoader.setControllerFactory(injector::getInstance);
+                fxmlLoader.setControllerFactory(appContext::getInstance);
                 Parent root = fxmlLoader.load();
 
                 Scene scene = new Scene(root, 960, 540);
-                stage.setTitle("StudentTracker");
+                stage.setTitle("Student Tracker");
                 stage.setScene(scene);
                 stage.show();
         }

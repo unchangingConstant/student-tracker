@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -81,21 +80,25 @@ public class AttendanceService {
         return this.dao.getAllStudents();
     }
 
-    public void insertStudent(String firstName, String middleName, String lastName, Integer subjects) throws InvalidDatabaseEntryException {
-        if (!noGaps(firstName) || !noGaps(middleName) || !noGaps(lastName)) {
-            throw new InvalidDatabaseEntryException("Names can not have gaps between characters");
+    public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
+        // Insert students if their full name is less than 150 characters and at least 1 character
+        String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
+        String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
+
+        if (trimmedPrefName.length() > 150 || trimmedFullName.length() > 150) {
+            throw new InvalidDatabaseEntryException("Names can not be more than 150 characters in length");
         }
-        if (!isAlpha(firstName.trim() + middleName.trim() + lastName.trim())) {
-            throw new InvalidDatabaseEntryException("Names must only contain alphabetic characters");
+        if (trimmedFullName.length() < 1)   {
+            throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
         }
-        if (subjects > 2 || subjects < 0)   {
-            throw new InvalidDatabaseEntryException("A student may only take at most 2 subjects at a time");
+        if (subjects != 1 && subjects != 2)  {
+            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
         }
-        Integer inserted = this.dao.insertStudent(
-            firstName.trim(), 
-            middleName.trim().equals("") ? null : middleName.trim(), 
-            lastName.trim(), subjects, Instant.now());
-        studentsObserver.triggerInsert(inserted);
+        if (subjects == null)   {
+            throw new InvalidDatabaseEntryException("Subjects is null. Contact developer for help");
+        }
+        Integer studentId = dao.insertStudent(trimmedFullName, trimmedPrefName, subjects, Instant.now());
+        studentsObserver.triggerInsert(studentId);
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
@@ -174,27 +177,15 @@ public class AttendanceService {
 
     }
 
-    public static class InvalidDatabaseEntryException extends Exception {
+    public class InvalidDatabaseEntryException extends Exception {
         public InvalidDatabaseEntryException()  {super();}
         public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
     }
 
-    public static class IllegalDatabaseOperationException extends Exception{
+    public class IllegalDatabaseOperationException extends Exception{
         public IllegalDatabaseOperationException() {super();}
         public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
         public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
-    }
-
-    /*
-     * Helper methods
-     */
-
-    public static boolean isAlpha(String s)   {
-        return s.matches("[a-zA-Z]+");
-    }
-
-    public static boolean noGaps(String s)  {
-        return new StringTokenizer(s).countTokens() == 1;
     }
 
 }

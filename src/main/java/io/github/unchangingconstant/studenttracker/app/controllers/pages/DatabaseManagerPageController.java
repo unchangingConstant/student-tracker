@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.custom.StudentEditor;
 import io.github.unchangingconstant.studenttracker.app.custom.StudentTableEditor;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.viewmodels.DatabaseManagerViewModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -33,14 +32,25 @@ public class DatabaseManagerPageController implements Controller {
     public void initialize() {
         viewModel.bindToStudentTable(studentTable.itemsProperty());
         studentTable.setOnDeleteAction((studentId) -> viewModel.onDeleteAction(studentId));
-        studentEditor.setOnAction(actionEvent -> viewModel.onSaveAction(new StudentModel(null, 
-            studentEditor.firstNameTextProperty().get(), 
-            studentEditor.middleNameTextProperty().get(), 
-            studentEditor.lastNameTextProperty().get(), 
-            null, 
-            1)));
+        studentEditor.setOnAction(actionEvent -> viewModel.onSaveAction());
+        // If editingEnabled changes, the displayed component changes to reflect that value.
+        // See edittingEnabled property in DatabaseManagerViewModel
+        editorContainer.getChildren().remove(studentEditor);
+        viewModel.editingEnabledProperty().addListener((obs, oldVal, edittingEnabled) -> {
+            if (edittingEnabled)    {
+                editorContainer.getChildren().remove(addStudentButton);
+                editorContainer.getChildren().add(studentEditor);
+            } else  {
+                editorContainer.getChildren().remove(studentEditor);
+                editorContainer.getChildren().add(addStudentButton);
+            }
+        });
 
-        editorContainer.getChildren().remove(addStudentButton);
+        addStudentButton.setOnAction(actionEvent -> viewModel.onAddStudentButtonAction());
 
+        studentEditor.fullLegalNameTextProperty().bindBidirectional(viewModel.currentEditedStudentProperty().get().getFullLegalName());
+        studentEditor.prefNameTextProperty().bindBidirectional(viewModel.currentEditedStudentProperty().get().getPrefName());
+        viewModel.currentEditedStudentProperty().get().getSubjects().bind(studentEditor.subjectsProperty());
+        studentTable.actionsEnabledProperty().bind(viewModel.editingEnabledProperty().not());
     }
 }

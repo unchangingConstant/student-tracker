@@ -1,6 +1,5 @@
 package io.github.unchangingconstant.studenttracker.app.custom;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +19,6 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -131,5 +129,9 @@ public class OngoingVisitView extends TableView<OngoingVisitDomain> implements C
             return new SimpleIntegerProperty(cell.getValue().getStudentId());
         });
     }
+    
+    // Makes this component un-focusable
+    @Override
+    public void requestFocus()  {}
 
 }

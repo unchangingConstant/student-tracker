@@ -1,7 +1,5 @@
 package io.github.unchangingconstant.studenttracker.app.custom;
 
-import java.io.IOException;
-
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import javafx.beans.property.BooleanProperty;
@@ -9,7 +7,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;

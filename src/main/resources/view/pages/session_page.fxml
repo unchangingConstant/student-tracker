@@ -16,7 +16,11 @@
     <StackPane id="topBar" alignment="TOP_LEFT">
         <MenuBar id="menuBar">
             <menus>
-                <Menu text="Menu" id="menuButton"/>
+                <Menu text="Menu" id="menuButton">
+                    <items>
+                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
+                    </items>
+                </Menu>
             </menus>
         </MenuBar>
         <Label text="Live Attendance Dashboard" id="title"

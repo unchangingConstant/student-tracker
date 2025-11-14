@@ -14,9 +14,9 @@ public class RowToStudentMapper implements RowMapper<StudentDomain> {
     @Override
     public StudentDomain map(ResultSet rs, StatementContext ctx) throws SQLException {
         return StudentDomain.builder()
-            .firstName(rs.getString("first_name"))
-            .middleName(rs.getString("middle_name"))
-            .lastName(rs.getString("last_name")).studentId(rs.getInt("student_id"))
+            .fullLegalName(rs.getString("full_legal_name"))
+            .prefName(rs.getString("preferred_name"))
+            .studentId(rs.getInt("student_id"))
             .subjects(rs.getInt("subjects"))
             .dateAdded(Instant.ofEpochMilli(rs.getLong("date_added")))
             .build();

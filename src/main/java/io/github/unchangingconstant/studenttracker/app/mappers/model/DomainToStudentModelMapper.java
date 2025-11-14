@@ -8,9 +8,8 @@ public class DomainToStudentModelMapper {
     public static StudentModel map(StudentDomain domain)   {
         return new StudentModel(
             domain.getStudentId(), 
-            domain.getFirstName(), 
-            domain.getMiddleName(), 
-            domain.getLastName(), 
+            domain.getFullLegalName(), 
+            domain.getPrefName(), 
             domain.getDateAdded(), 
             domain.getSubjects());
     }

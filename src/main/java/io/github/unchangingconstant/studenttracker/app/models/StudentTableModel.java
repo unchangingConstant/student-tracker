@@ -46,11 +46,22 @@ public class StudentTableModel {
         return FXCollections.unmodifiableObservableList(students.get());
     }
 
+    public Boolean containsStudentWithId(Integer studentId) {
+        for (StudentModel student: students)    {
+            if (student.getStudentId().getValue().equals(studentId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void onInsertStudent(Integer studentId) {
+        System.out.println("Insert student event!");
         students.add(DomainToStudentModelMapper.map(attendanceService.getStudent(studentId)));
     }
 
     private void onDeleteStudent(Integer studentId) {
+        System.out.println("Delete student event!");
         students.removeIf(student -> student.getStudentId().get() == studentId);
     }
 

@@ -19,10 +19,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import io.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;
-import io.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 import io.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import io.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 
@@ -41,7 +41,8 @@ public class DatabaseDAOTest {
 
     private final String STUDENT_TABLE = ResourceLoader.loadResource("/sql/schema/studentTable.sql");
     private final String VISIT_TABLE = ResourceLoader.loadResource("/sql/schema/visitTable.sql");
-    private final String INSERT_STUDENT = "INSERT INTO students (student_id, first_name, last_name, middle_name, subjects, date_added) VALUES (:studentId, :firstName, :lastName, :middleName, :subjects, :dateAdded)";
+    private final String ONGOING_VISIT_TABLE = ResourceLoader.loadResource("/sql/schema/ongoingVisitTable.sql");
+    private final String INSERT_STUDENT = "INSERT INTO students (student_id, full_legal_name, preferred_name, subjects, date_added) VALUES (:studentId, :fullLegalName, :prefName, :subjects, :dateAdded)";
     private final String INSERT_VISIT = "INSERT INTO visits (visit_id, student_id, start_time, end_time) VALUES (:visitId, :studentId, :startTime, :endTime)";
     private final String SELECT_STUDENT = "SELECT * FROM students WHERE student_id = ?";
 
@@ -51,6 +52,7 @@ public class DatabaseDAOTest {
         jdbi.registerRowMapper(new RowToStudentMapper()).registerRowMapper(new RowToVisitMapper());
         jdbi.withHandle(handle -> handle.execute(STUDENT_TABLE));
         jdbi.withHandle(handle -> handle.execute(VISIT_TABLE));
+        jdbi.withHandle(handle -> handle.execute(ONGOING_VISIT_TABLE));
         dao = DatabaseModule.provideDatabaseDAO(jdbi);
     }
 
@@ -59,16 +61,7 @@ public class DatabaseDAOTest {
     void testGetStudent_1() {
         StudentDomain expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
-        System.out.println(expected.getDateAdded());
         dao.getStudent(expected.getStudentId());
-        assertEquals(expected, dao.getStudent(expected.getStudentId()));
-    }
-
-    @Test
-    @DisplayName("getStudent() maps NULL middle_name as null middleName in Student object")
-    void testGetStudent_2() {
-        StudentDomain expected = StudentTestUtil.student().set(field(StudentDomain::getMiddleName), null).create();
-        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
         assertEquals(expected, dao.getStudent(expected.getStudentId()));
     }
 
@@ -117,20 +110,7 @@ public class DatabaseDAOTest {
     void testInsertStudent_1() {
         // This sucks. Just hoping the dao assigns it an ID of "1"
         StudentDomain s = StudentTestUtil.student().set(field(StudentDomain::getStudentId), 1).create();
-        Integer resultId = dao.insertStudent(s.getFirstName(), s.getMiddleName(),
-                s.getLastName(), s.getSubjects(), s.getDateAdded());
-        StudentDomain result = jdbi
-                .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(StudentDomain.class).one());
-        assertEquals(s, result);
-    }
-
-    @Test
-    @DisplayName("insertStudent() inserts null middleName correctly")
-    void testInsertStudent_2() {
-        StudentDomain s = StudentTestUtil.student().set(field(StudentDomain::getMiddleName), null)
-                .set(field(StudentDomain::getStudentId), 1).create();
-        Integer resultId = dao.insertStudent(s.getFirstName(), s.getMiddleName(),
-                s.getLastName(), s.getSubjects(), s.getDateAdded());
+        Integer resultId = dao.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getSubjects(), s.getDateAdded());
         StudentDomain result = jdbi
                 .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(StudentDomain.class).one());
         assertEquals(s, result);

@@ -2,7 +2,7 @@ package io.github.unchangingconstant.studenttracker.app.custom;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
-import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,20 +14,17 @@ import javafx.scene.layout.HBox;
 public class StudentEditor extends HBox implements Controller {
     
     @FXML
-    private FormField firstNameField;
+    private FormField fullLegalNameField;
     @FXML 
-    private FormField middleNameField;
-    @FXML 
-    private FormField lastNameField;
+    private FormField prefNameField;
     @FXML 
     private ComboBox<Integer> subjectsField;
     @FXML
     private Button saveButton;
 
-    public StringProperty firstNameTextProperty() {return firstNameField.textProperty();}
-    public StringProperty middleNameTextProperty() {return middleNameField.textProperty();}
-    public StringProperty lastNameTextProperty() {return lastNameField.textProperty();}
-
+    public StringProperty fullLegalNameTextProperty() {return fullLegalNameField.textProperty();}
+    public StringProperty prefNameTextProperty() {return prefNameField.textProperty();}
+    public ReadOnlyObjectProperty<Integer> subjectsProperty() {return subjectsField.getSelectionModel().selectedItemProperty();}
 
     public StudentEditor()  {
         CustomComponentUtils.hookIntoFXML(this, "/view/components/student_editor.fxml");
@@ -35,6 +32,8 @@ public class StudentEditor extends HBox implements Controller {
 
     @Override
     public void initialize() {
+        subjectsField.getItems().addAll(1, 2);
+        subjectsField.getSelectionModel().select(0);
     }
 
     public void setOnAction(EventHandler<ActionEvent> eventHandler)   {

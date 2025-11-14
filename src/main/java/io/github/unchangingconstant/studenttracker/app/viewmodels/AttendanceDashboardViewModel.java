@@ -3,7 +3,6 @@ package io.github.unchangingconstant.studenttracker.app.viewmodels;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;

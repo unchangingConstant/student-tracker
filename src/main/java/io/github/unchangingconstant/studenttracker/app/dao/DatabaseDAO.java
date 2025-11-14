@@ -32,10 +32,9 @@ public interface DatabaseDAO {
     @KeyColumn("student_id")
     public Map<Integer, StudentDomain> getAllStudents();
 
-    @SqlUpdate("INSERT INTO students (first_name, middle_name, last_name, subjects, date_added) VALUES (?, ?, ?, ?, ?)")
+    @SqlUpdate("INSERT INTO students (full_legal_name, preferred_name, subjects, date_added) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student
-    public Integer insertStudent(String firstName, String middleName, String lastName, Integer subjects,
-            Instant dateAdded);
+    public Integer insertStudent(String fullLegalName, String prefName, Integer subjects, Instant dateAdded);
 
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
@@ -65,11 +64,11 @@ public interface DatabaseDAO {
     /*
      * ONGOING VISIT METHODS
      */
-    @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
+    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     public OngoingVisitDomain getOngoingVisit(Integer studentId);
 
-    @SqlQuery("SELECT ov.*, s.first_name, s.middle_name, s.last_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
+    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     @KeyColumn("student_id")
     public Map<Integer, OngoingVisitDomain> getOngoingVisits();

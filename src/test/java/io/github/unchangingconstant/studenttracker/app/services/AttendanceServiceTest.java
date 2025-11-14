@@ -5,7 +5,7 @@ import org.mockito.Mock;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 
-public class StudentEventServiceTest {
+public class AttendanceServiceTest {
 
     @Mock
     private DatabaseDAO dao;

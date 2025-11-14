@@ -44,7 +44,7 @@ public class StudentSelector extends TextField implements Controller {
         textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-                if (selected.getValue() != null && !getText().equals(selected.getValue().getFirstName().get()))   {
+                if (selected.getValue() != null && !getText().equals(selected.getValue().getFullLegalName().get()))   {
                     // when a selection is made, the text changes. When the text changes,
                     // this method is called again. Issues arise from this lol
                     // Hopefully this block fixes it. But there's got to be a better way
@@ -72,8 +72,9 @@ public class StudentSelector extends TextField implements Controller {
     private LinkedList<StudentModel> findMatches()   {
         LinkedList<StudentModel> newMatches = new LinkedList<>();
         options.getValue().forEach(student -> {
-            String name = student.getFirstName().get(); // TODO should check against full name
-            if (name.contains(getText()))  {
+            String fullName = student.getFullLegalName().get();
+            String prefName = student.getPrefName().get();
+            if (fullName.contains(getText()) || prefName.contains(getText()))  {
                 newMatches.add(student);
             }
         });
@@ -85,12 +86,12 @@ public class StudentSelector extends TextField implements Controller {
         matchesPopup.getItems().clear();
         // Repopulate list with new matches
         items.forEach(student ->  {
-            MenuItem newItem = new MenuItem(student.getFirstName().get()); // TODO should display full name
+            MenuItem newItem = new MenuItem(student.getFullLegalName().get());
             newItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     selected.setValue(student);
-                    setText(student.getFirstName().get());
+                    setText(student.getFullLegalName().get());
                 }
             });
             matchesPopup.getItems().add(newItem);
