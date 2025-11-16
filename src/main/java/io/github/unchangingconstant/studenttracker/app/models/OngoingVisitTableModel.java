@@ -50,7 +50,7 @@ public class OngoingVisitTableModel {
         ongoingVisits.addListener(listener);
     }
 
-    public void bind(Property<ObservableList<OngoingVisitDomain>> prop) {
+    public void bindProperty(Property<ObservableList<OngoingVisitDomain>> prop) {
         prop.bind(ongoingVisits);
     }
 

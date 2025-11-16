@@ -2,8 +2,8 @@ package io.github.unchangingconstant.studenttracker.app.custom;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.StringProperty;
+import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 
-public class StudentEditor extends HBox implements Controller {
+public class StudentAdder extends HBox implements Controller {
     
     @FXML
     private FormField fullLegalNameField;
@@ -22,12 +22,12 @@ public class StudentEditor extends HBox implements Controller {
     @FXML
     private Button saveButton;
 
-    public StringProperty fullLegalNameTextProperty() {return fullLegalNameField.textProperty();}
-    public StringProperty prefNameTextProperty() {return prefNameField.textProperty();}
-    public ReadOnlyObjectProperty<Integer> subjectsProperty() {return subjectsField.getSelectionModel().selectedItemProperty();}
+    private final SimpleObjectProperty<StudentModel> addedStudent = new SimpleObjectProperty<>(new StudentModel(null, "", "", null, 1));
+    public SimpleObjectProperty<StudentModel> addedStudentProperty() {return addedStudent;}
 
-    public StudentEditor()  {
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/student_editor.fxml");
+    public StudentAdder()  {
+        super();
+        CustomComponentUtils.hookIntoFXML(this, "/view/components/student_adder.fxml");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class StudentEditor extends HBox implements Controller {
         subjectsField.getSelectionModel().select(0);
     }
 
-    public void setOnAction(EventHandler<ActionEvent> eventHandler)   {
+    public void setOnAddStudent(EventHandler<ActionEvent> eventHandler)   {
         saveButton.setOnAction(eventHandler);
     }
 

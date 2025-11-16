@@ -9,6 +9,7 @@ import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -30,6 +31,12 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
     private TableColumn<StudentModel, String> dateAddedColumn;
     @FXML
     private TableColumn<StudentModel, Integer> actionsColumn;
+
+    /*
+     * This property being null means that no student has been selected for editing yet
+     */
+    private final SimpleObjectProperty<StudentModel> currentEditedStudent = new SimpleObjectProperty<>(null);
+    public SimpleObjectProperty<StudentModel> currentEditedStudentProperty() {return currentEditedStudent;}
 
     private Consumer<Integer> onEditAction;
     public void setOnEditAction(Consumer<Integer> onEditAction) {this.onEditAction = onEditAction;}
@@ -69,8 +76,13 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
             return new SimpleStringProperty(formatter.format(startTime));
         });
         setupActionsColumn();
+        // Actions buttons will be disabled when table is editing a student
+        actionsEnabled.bind(currentEditedStudent.isNull());
     }
 
+    // TODO fix bug. Reproduce by adding two students, and deleting the top-most one from the table
+    // The actions button will say Delete on the student that takes its place for some reason
+    // TODO should render a "Save" button if current student is being edited. Also, fix above.
     private void setupActionsColumn()   {
         actionsColumn.setCellValueFactory(cellData ->   {
             return cellData.getValue().getStudentId();

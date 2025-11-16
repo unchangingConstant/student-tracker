@@ -18,7 +18,7 @@ import javafx.stage.Stage;
  */
 public class StudentTrackerApp extends Application {
 
-        public static Injector appContext = Guice.createInjector(new DatabaseModule());
+        public static final Injector appContext = Guice.createInjector(new DatabaseModule());
 
         @Override
         public void start(Stage stage) throws Exception {

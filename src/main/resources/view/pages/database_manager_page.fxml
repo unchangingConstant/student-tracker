@@ -23,7 +23,7 @@
         id="body">
         <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="editorContainer">
             <Button text="Add Student" fx:id="addStudentButton"/>
-            <StudentEditor fx:id="studentEditor"/>
+            <StudentAdder fx:id="studentAdder"/>
         </HBox>
         <StudentTableEditor fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
             <columnResizePolicy>

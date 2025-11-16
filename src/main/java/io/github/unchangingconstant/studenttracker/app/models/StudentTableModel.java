@@ -38,7 +38,7 @@ public class StudentTableModel {
         this.attendanceService = attendanceService;
     }
 
-    public void bind(Property<ObservableList<StudentModel>> property) {
+    public void bindProperty(Property<ObservableList<StudentModel>> property) {
         property.bind(this.students);
     }
 

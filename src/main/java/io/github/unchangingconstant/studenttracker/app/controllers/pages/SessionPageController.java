@@ -8,8 +8,10 @@ import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.custom.OngoingVisitView;
 import io.github.unchangingconstant.studenttracker.app.custom.StudentSelector;
+import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
-import io.github.unchangingconstant.studenttracker.app.viewmodels.AttendanceDashboardViewModel;
+import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
+import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,30 +32,32 @@ public class SessionPageController implements Controller {
     @FXML
     private MenuItem recordManagerMenuItem;
 
-    private AttendanceDashboardViewModel viewModel;
+    private OngoingVisitTableModel ongoingVisitsModel;
+    private StudentTableModel studentTableModel;
+    private AttendanceService attendanceService;
 
     @Inject
-    public SessionPageController(AttendanceDashboardViewModel viewModel)  {
-        this.viewModel = viewModel;
+    public SessionPageController(OngoingVisitTableModel ongoingVisitsModel, StudentTableModel studentTableModel, AttendanceService attendanceService)  {
+        this.ongoingVisitsModel = ongoingVisitsModel;
+        this.studentTableModel = studentTableModel;
+        this.attendanceService = attendanceService;
     }
 
     @Override
     public void initialize() {
-        viewModel.bindToOngoingVisitsModel(ongoingVisitsView.itemsProperty());
-        viewModel.bindToStudentsModel(studentSelector.optionsProperty());
+        ongoingVisitsModel.bindProperty(ongoingVisitsView.itemsProperty());
+        studentTableModel.bindProperty(studentSelector.optionsProperty());
         startVisitButton.setOnAction(actionEvent -> {
             StudentModel selected = studentSelector.selectedProperty().getValue();
             if (selected != null)  {
-                viewModel.onStartVisitAction();
+                onStartVisitAction(selected);
             }
         });
         
         // menuButton.setOnAction(actionEvent ->   {
         //     menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
         // });
-        viewModel.getStudentSelectorInput().bindBidirectional(studentSelector.textProperty());
-        viewModel.getSelected().bind(studentSelector.selectedProperty());
-        ongoingVisitsView.setOnButtonAction(studentId -> viewModel.onEndOngoingVisit(studentId));
+        ongoingVisitsView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
 
         recordManagerMenuItem.setOnAction(actionEvent -> {
             try {
@@ -69,6 +73,15 @@ public class SessionPageController implements Controller {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void onStartVisitAction(StudentModel selectedStudent) {
+        attendanceService.startOngoingVisit(selectedStudent.getStudentId().get());
+        studentSelector.textProperty().set("");
+    }
+
+    public void onEndOngoingVisit(Integer studentId) {
+        attendanceService.endOngoingVisit(ongoingVisitsModel.get(studentId));
     }
 
 }

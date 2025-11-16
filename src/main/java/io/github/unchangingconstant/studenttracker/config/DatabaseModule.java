@@ -35,11 +35,4 @@ public class DatabaseModule extends AbstractModule {
         return Jdbi.create(dataSource);
     }
 
-    // @Provides
-    // public DataSource provideDataSource() {
-    // SQLiteDataSource dataSource = new SQLiteDataSource();
-    // dataSource.setUrl("jdbc:sqlite:database.db");
-    // return dataSource;
-    // }
-
 }

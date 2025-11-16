@@ -8,12 +8,13 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.custom.*?>
 
-<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-editor">
+<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-adder"
+    alignment="CENTER_LEFT" fillHeight="true" spacing="5">
     <FormField fieldName="Full Legal Name" fx:id="fullLegalNameField"/>
     <FormField fieldName="Preferred Name" fx:id="prefNameField"/>
     <VBox>
         <Label text="Subjects"/>
         <ComboBox fx:id="subjectsField"/>
     </VBox>
-    <Button text="Save" fx:id="saveButton"/>
+    <Button text="Add Student" fx:id="saveButton"/>
 </fx:root>
