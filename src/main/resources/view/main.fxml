@@ -8,7 +8,7 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.gui.custom.*?>
 
-<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.MainController" 
+<GridPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.WindowController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">
     <stylesheets>
         <URL value="@main.css"/>
