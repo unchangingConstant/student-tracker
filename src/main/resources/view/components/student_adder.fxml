@@ -6,15 +6,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.custom.*?>
+<?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
 
-<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-adder"
-    alignment="CENTER_LEFT" fillHeight="true" spacing="5">
-    <FormField fieldName="Full Legal Name" fx:id="fullLegalNameField"/>
-    <FormField fieldName="Preferred Name" fx:id="prefNameField"/>
-    <VBox>
-        <Label text="Subjects"/>
-        <ComboBox fx:id="subjectsField"/>
-    </VBox>
-    <Button text="Add Student" fx:id="saveButton"/>
+
+<fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-adder">
+    <Button text="Add Student" fx:id="displayFormButton"/>
+    <HBox fx:id="addStudentForm" alignment="CENTER_LEFT" fillHeight="true" spacing="5">
+        <FormField fieldName="Full Legal Name" fx:id="fullLegalNameField"/>
+        <FormField fieldName="Preferred Name" fx:id="prefNameField"/>
+        <VBox>
+            <Label text="Subjects"/>
+            <ComboBox fx:id="subjectsField"/>
+        </VBox>
+        <Button text="Save Student" fx:id="saveButton"/>
+    </HBox>
 </fx:root>

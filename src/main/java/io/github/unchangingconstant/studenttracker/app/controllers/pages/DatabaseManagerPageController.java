@@ -10,12 +10,12 @@ import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
 /*
- * TODO Think about memory management. When this controller is garbage collected, do the listeners/models it adds 
+ * TODO Think about memory management. When this controller is garbage collected, do the listeners/bindings it adds 
  * to the Singleton StudentTableModel persist? 
  */
 public class DatabaseManagerPageController implements Controller {
@@ -23,14 +23,21 @@ public class DatabaseManagerPageController implements Controller {
     @FXML 
     private StudentTableEditor studentTable;
     @FXML
-    private Button addStudentButton;
-    @FXML
     private StudentAdder studentAdder;
     @FXML
     private HBox editorContainer;
 
-    private AttendanceService attendanceService;
+    /*
+     * MODELS
+     */
+    // Represents the current editing mode of this page.
+    enum EditMode {ADDING_STUDENT, EDITING_STUDENT, EDIT_OFF}
+    private SimpleObjectProperty<EditMode> editMode = new SimpleObjectProperty<EditMode>(EditMode.EDIT_OFF);
+
+    // State of student table in the database
     private StudentTableModel studentTableModel;
+
+    private AttendanceService attendanceService;
 
     @Inject
     public DatabaseManagerPageController(StudentTableModel studentTableModel, AttendanceService attendanceService)  {
@@ -41,11 +48,8 @@ public class DatabaseManagerPageController implements Controller {
     @Override
     public void initialize() {
         studentTableModel.bindProperty(studentTable.itemsProperty());
-        studentTable.setOnDeleteAction((studentId) -> onDeleteAction(studentId));
-        studentAdder.setOnAddStudent(actionEvent -> onAddStudentAction());
-        // If editingEnabled changes, the displayed component changes to reflect that value.
-        // See edittingEnabled property in DatabaseManagerViewModel
-        editorContainer.getChildren().remove(studentAdder);
+        studentTable.setOnDeleteAction(studentId -> onDeleteAction(studentId));
+        studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }
 
     public void onDeleteAction(Integer studentId) {
@@ -58,9 +62,9 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onAddStudentAction()  {
-        StudentModel student = studentAdder.addedStudentProperty().get();
         try {
-            attendanceService.insertStudent(student.getFullLegalName().get(), student.getPrefName().get(), student.getSubjects().get());
+            attendanceService.insertStudent(studentAdder.getFullLegalNameInput(), studentAdder.getPrefNameInput(), studentAdder.getSubjectsInput());
+            studentAdder.addingEnabledProperty().set(false);
         } catch (InvalidDatabaseEntryException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

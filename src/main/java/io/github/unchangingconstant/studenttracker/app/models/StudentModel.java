@@ -2,7 +2,6 @@ package io.github.unchangingconstant.studenttracker.app.models;
 
 import java.time.Instant;
 
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.Getter;
