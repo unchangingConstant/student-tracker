@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.custom.OngoingVisitView;
-import io.github.unchangingconstant.studenttracker.app.custom.StudentSelector;
+import io.github.unchangingconstant.studenttracker.app.controllers.custom.OngoingVisitView;
+import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentSelector;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;

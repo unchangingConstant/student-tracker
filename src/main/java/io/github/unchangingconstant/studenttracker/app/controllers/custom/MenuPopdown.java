@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.custom;
+package io.github.unchangingconstant.studenttracker.app.controllers.custom;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;

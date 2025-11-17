@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.custom;
+package io.github.unchangingconstant.studenttracker.app.controllers.custom;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,8 +9,6 @@ import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,9 +39,7 @@ public class StudentSelector extends TextField implements Controller {
 
     @Override
     public void initialize() {
-        textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
+        textProperty().addListener((obs,  s,  s2) -> {
                 if (selected.getValue() != null && !getText().equals(selected.getValue().getFullLegalName().get()))   {
                     // when a selection is made, the text changes. When the text changes,
                     // this method is called again. Issues arise from this lol
@@ -66,7 +62,7 @@ public class StudentSelector extends TextField implements Controller {
                     }
                 }
             }
-        });
+        );
     }
 
     private LinkedList<StudentModel> findMatches()   {
