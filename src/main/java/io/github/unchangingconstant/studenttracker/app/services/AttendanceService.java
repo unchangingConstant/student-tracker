@@ -114,7 +114,7 @@ public class AttendanceService {
             throw new RuntimeException("Failed to delete student", e);
         }
         if (deleted) {
-            // TODO when the DAO returns false, what exactly does that mean?
+            // TODO when the DAO returns false, what exactly does that mean? Find out and rewrite this
             studentsObserver.triggerDelete(studentId);
         }
     }

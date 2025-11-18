@@ -69,4 +69,8 @@ public class DatabaseManagerPageController implements Controller {
             e.printStackTrace();
         }
     }
+
+    public void onUpdateStudentAction() {
+        
+    }
 }
