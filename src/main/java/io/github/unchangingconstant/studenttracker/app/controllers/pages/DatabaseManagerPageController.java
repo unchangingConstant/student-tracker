@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentAdder;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentTableEditor;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;

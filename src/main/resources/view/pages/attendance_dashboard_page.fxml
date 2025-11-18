@@ -8,10 +8,11 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.SessionPageController" 
+
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.AttendanceDashboardPageController" 
     xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" fillWidth="true">
     <stylesheets>
-        <URL value="@session_page.css"/>
+        <URL value="@attendance_dashboard_page.css"/>
     </stylesheets>
     <StackPane id="topBar" alignment="TOP_LEFT">
         <MenuBar id="menuBar">

@@ -39,6 +39,9 @@ public interface DatabaseDAO {
     @SqlUpdate("DELETE FROM students WHERE student_id = ?")
     public boolean deleteStudent(Integer studentId);
 
+    @SqlUpdate("UPDATE students SET (full_legal_name = ?, preferred_name = ?, subjects = ?) WHERE student_id = ?")
+    public void updateStudent(String fullLegalName, String prefName, Integer subjects, Integer studentId);
+
     /*
      * VISIT METHODS
      */

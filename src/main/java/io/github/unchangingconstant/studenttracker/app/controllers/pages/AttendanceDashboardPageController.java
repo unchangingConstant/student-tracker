@@ -19,7 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
-public class SessionPageController implements Controller {
+public class AttendanceDashboardPageController implements Controller {
 
     @FXML
     private OngoingVisitView ongoingVisitsView;
@@ -37,7 +37,7 @@ public class SessionPageController implements Controller {
     private AttendanceService attendanceService;
 
     @Inject
-    public SessionPageController(OngoingVisitTableModel ongoingVisitsModel, StudentTableModel studentTableModel, AttendanceService attendanceService)  {
+    public AttendanceDashboardPageController(OngoingVisitTableModel ongoingVisitsModel, StudentTableModel studentTableModel, AttendanceService attendanceService)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;
         this.attendanceService = attendanceService;
@@ -53,10 +53,6 @@ public class SessionPageController implements Controller {
                 onStartVisitAction(selected);
             }
         });
-        
-        // menuButton.setOnAction(actionEvent ->   {
-        //     menuPopdown.show(menuButton, Side.BOTTOM, 0, 0);
-        // });
         ongoingVisitsView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
 
         recordManagerMenuItem.setOnAction(actionEvent -> {
