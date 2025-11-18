@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -38,11 +39,11 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
     private final SimpleObjectProperty<StudentModel> currentEditedStudent = new SimpleObjectProperty<>(null);
     public SimpleObjectProperty<StudentModel> currentEditedStudentProperty() {return currentEditedStudent;}
 
-    private Consumer<Integer> onEditAction;
-    public void setOnEditAction(Consumer<Integer> onEditAction) {this.onEditAction = onEditAction;}
+    private Consumer<Integer> onEditAction = input -> {};
+    public void setOnEditAction(Consumer<Integer> onEditAction) {this.onEditAction = onEditAction == null ? this.onEditAction: onEditAction;}
 
-    private Consumer<Integer> onDeleteAction;
-    public void setOnDeleteAction(Consumer<Integer> onDeleteAction)   {this.onDeleteAction = onDeleteAction;}
+    private Consumer<Integer> onDeleteAction = input -> {};
+    public void setOnDeleteAction(Consumer<Integer> onDeleteAction)   {this.onDeleteAction = onDeleteAction == null ? this.onDeleteAction: onDeleteAction;}
 
     /*
      * The disabled property of all Action ComboBoxes in this table is bound to this
@@ -89,23 +90,35 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
         });
         actionsColumn.setCellFactory(tableColumn -> {
             TableCell<StudentModel, Integer> cell = new TableCell<>();
-            ComboBox<String> actionsMenu = new ComboBox<>();
-            actionsMenu.disableProperty().bind(actionsEnabled.not());
-            actionsMenu.promptTextProperty().set("Actions");
-            actionsMenu.getItems().addAll("Edit", "Delete");
-            actionsMenu.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal.equals("Edit"))    {
-                    onEditAction.accept(cell.getItem().intValue());
-                } else if (newVal.equals("Delete"))   {
-                    onDeleteAction.accept(cell.getItem().intValue());
+
+            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && oldVal == null) {
+                    cell.setGraphic(createActionsCombo(cell));
+                } else if (newVal == null && oldVal != null)   {
+                    cell.setGraphic(null);
                 }
             });
 
-            actionsMenu.visibleProperty().bind(cell.itemProperty().isNotNull());
-            cell.setGraphic(actionsMenu);
             return cell;
         });
     }
+
+    private ComboBox<String> createActionsCombo(TableCell<StudentModel,Integer> cell) {
+        ComboBox<String> actionsMenu = new ComboBox<>();
+        actionsMenu.disableProperty().bind(actionsEnabled.not());
+        actionsMenu.promptTextProperty().set("Actions");
+        actionsMenu.getItems().addAll("Edit", "Delete");
+        actionsMenu.setOnAction(actionEvent ->  {
+            String selected = actionsMenu.getValue();
+            if (selected.equals("Edit"))   {
+                onEditAction.accept(cell.getItem());
+            } else if (selected.equals("Delete"))   {
+                onDeleteAction.accept(cell.getItem());
+            }
+        });
+        return actionsMenu;
+    }
+
 
     // Makes this component un-focusable
     @Override
