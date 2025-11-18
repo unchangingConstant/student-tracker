@@ -2,3 +2,21 @@
     -fx-font-size: 16;
     -fx-text-fill: #313131;
 }
+
+#menuBar {
+    -fx-background-color:#313131;
+}
+
+#menuBar .label {
+    -fx-text-fill:#FFFFFF;
+}
+
+#recordManagerMenuItem .label {
+    -fx-text-fill:#313131;
+}
+
+.root .title  {
+    -fx-text-fill: #FFFFFF;
+    -fx-text-alignment: center;
+    -fx-font-weight: bolder;
+}

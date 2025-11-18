@@ -29,8 +29,6 @@ public class AttendanceDashboardPageController implements Controller {
     private Button startVisitButton;
     @FXML
     private Button menuButton;
-    @FXML
-    private MenuItem recordManagerMenuItem;
 
     private OngoingVisitTableModel ongoingVisitsModel;
     private StudentTableModel studentTableModel;
@@ -55,20 +53,6 @@ public class AttendanceDashboardPageController implements Controller {
         });
         ongoingVisitsView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
 
-        recordManagerMenuItem.setOnAction(actionEvent -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/view/pages/database_manager_page.fxml"));
-                fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
-                Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-                Stage stage = new Stage();
-                stage.setTitle("Student Tracker Record Manager");
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     public void onStartVisitAction(StudentModel selectedStudent) {

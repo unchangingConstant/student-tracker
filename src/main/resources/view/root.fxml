@@ -11,6 +11,20 @@
     <stylesheets>
         <URL value="@root.css"/>
     </stylesheets>
-    <fx:include source="/view/pages/attendance_dashboard_page.fxml" 
-        minWidth="${root.width}" minHeight="${root.height}" fx:id="mainWindowChild"/>
+    <VBox minWidth="${root.width}" minHeight="${root.height}">
+        <StackPane id="topBar" alignment="TOP_LEFT">
+            <MenuBar id="menuBar">
+                <menus>
+                    <Menu text="Menu" id="menuButton">
+                        <items>
+                            <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+            <Label text="Live Attendance Dashboard" id="title"
+                StackPane.alignment="CENTER"/>
+        </StackPane>
+        <fx:include source="/view/pages/attendance_dashboard_page.fxml" fx:id="mainWindowChild"/>
+    </VBox>
 </AnchorPane>

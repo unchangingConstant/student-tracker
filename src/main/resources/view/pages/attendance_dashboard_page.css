@@ -3,24 +3,6 @@
     -fx-padding: 10;
 }
 
-#menuBar {
-    -fx-background-color:#313131;
-}
-
-#menuBar .label {
-    -fx-text-fill:#FFFFFF;
-}
-
-#recordManagerMenuItem .label {
-    -fx-text-fill:#313131;
-}
-
-#title  {
-    -fx-text-fill: #FFFFFF;
-    -fx-text-alignment: center;
-    -fx-font-weight: bolder;
-}
-
 #startVisitButton   {
     -fx-background-color: #7FCFF4;
     -fx-text-fill: #FFFFFF;

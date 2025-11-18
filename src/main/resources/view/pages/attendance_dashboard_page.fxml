@@ -14,19 +14,6 @@
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>
     </stylesheets>
-    <StackPane id="topBar" alignment="TOP_LEFT">
-        <MenuBar id="menuBar">
-            <menus>
-                <Menu text="Menu" id="menuButton">
-                    <items>
-                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-        <Label text="Live Attendance Dashboard" id="title"
-            StackPane.alignment="CENTER"/>
-    </StackPane>
     <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER">
         <HBox alignment="TOP_CENTER" prefWidth="600">
             <StudentSelector fx:id="studentSelector"
