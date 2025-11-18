@@ -5,6 +5,11 @@
 
 #startVisitButton   {
     -fx-background-color: #7FCFF4;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #313131;
     -fx-text-weight: bold;
+}
+
+.ongoing-visit-view .button{
+    -fx-background-color: #BB4040;
+    -fx-text-fill: #FFFFFF;
 }

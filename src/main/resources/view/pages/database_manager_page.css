@@ -1,15 +1,10 @@
-#topBar    {
-    -fx-background-color: #313131;
+.root  {
+    -fx-font-size: 16;
+    -fx-text-fill: #313131;
 }
 
 .student-table-editor .combo-box  {
     -fx-background-color: #7FCFF4;
-}
-
-#title {
-    -fx-text-fill: #FFFFFF;
-    -fx-text-alignment: center;
-    -fx-font-weight: bolder;
 }
 
 #body  {

@@ -6,25 +6,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
+
 <AnchorPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.RootController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">
     <stylesheets>
         <URL value="@root.css"/>
     </stylesheets>
     <VBox minWidth="${root.width}" minHeight="${root.height}">
-        <StackPane id="topBar" alignment="TOP_LEFT">
-            <MenuBar id="menuBar">
-                <menus>
-                    <Menu text="Menu" id="menuButton">
-                        <items>
-                            <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
-                        </items>
-                    </Menu>
-                </menus>
-            </MenuBar>
-            <Label text="Live Attendance Dashboard" id="title"
-                StackPane.alignment="CENTER"/>
-        </StackPane>
+        <Header text="Attendance Dashboard">
+            <menus>
+                <Menu text="Menu" fx:id="menuButton">
+                    <items>
+                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
+                    </items>
+                </Menu>
+            </menus>
+        </Header>
         <fx:include source="/view/pages/attendance_dashboard_page.fxml" fx:id="mainWindowChild"/>
     </VBox>
 </AnchorPane>

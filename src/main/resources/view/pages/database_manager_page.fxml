@@ -13,11 +13,7 @@
     <stylesheets>
         <URL value="@database_manager_page.css" />
     </stylesheets>
-    <StackPane id="topBar">
-        <MenuBar/>
-        <Label text="Database Manager" id="title"
-            StackPane.alignment="CENTER"/>
-    </StackPane>
+    <Header text="Record Manager"/>
     <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER"
         id="body">
         <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="editorContainer">

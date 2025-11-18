@@ -7,15 +7,11 @@
 <?import javafx.scene.text.*?>
 
 <fx:root type="StackPane" xmlns:fx="http://javafx.com/fxml" styleClass="header" alignment="TOP_LEFT">
-    <MenuBar id="menuBar">
-        <menus>
-            <Menu text="Menu" id="menuButton">
-                <items>
-                    <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
-                </items>
-            </Menu>
-        </menus>
-    </MenuBar>
-    <Label text="Live Attendance Dashboard" id="title"
-        StackPane.alignment="CENTER"/>
+    <stylesheets>
+        <URL value="@header.css"/>
+    </stylesheets>
+    <HBox>
+        <MenuBar fx:id="menuBar" styleClass="bar"/>
+    </HBox>
+    <Label fx:id="title" styleClass="title" StackPane.alignment="CENTER"/>
 </fx:root>

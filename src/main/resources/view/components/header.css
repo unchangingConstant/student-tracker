@@ -1,0 +1,10 @@
+.header {
+    -fx-background-color:#313131;
+    -fx-pref-height: 30;
+}
+
+.header .title {
+    -fx-text-fill: #FFFFFF;
+    -fx-text-alignment: center;
+    -fx-font-weight: bolder;
+}
