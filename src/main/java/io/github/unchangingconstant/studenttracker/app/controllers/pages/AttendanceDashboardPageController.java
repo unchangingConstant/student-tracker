@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import io.github.unchangingconstant.studenttracker.app.controllers.custom.ComboxStudentSelector;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.OngoingVisitView;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentSelector;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
@@ -24,7 +25,7 @@ public class AttendanceDashboardPageController implements Controller {
     @FXML
     private OngoingVisitView ongoingVisitsView;
     @FXML
-    private StudentSelector studentSelector; 
+    private ComboxStudentSelector studentSelector; 
     @FXML
     private Button startVisitButton;
     @FXML
@@ -46,7 +47,7 @@ public class AttendanceDashboardPageController implements Controller {
         ongoingVisitsModel.bindProperty(ongoingVisitsView.itemsProperty());
         studentTableModel.bindProperty(studentSelector.optionsProperty());
         startVisitButton.setOnAction(actionEvent -> {
-            StudentModel selected = studentSelector.selectedProperty().getValue();
+            StudentModel selected = studentSelector.valueProperty().getValue();
             if (selected != null)  {
                 onStartVisitAction(selected);
             }

@@ -1,0 +1,6 @@
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<fx:root type="ComboBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-selector"/>

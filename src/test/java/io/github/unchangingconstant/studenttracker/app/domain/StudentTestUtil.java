@@ -6,8 +6,6 @@ import java.time.temporal.ChronoUnit;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
-import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
-
 /**
  * When inserting Instant objects into the data base, they get truncated down to
  * millisecond-precision. This raises a problem in tests. We don't care that the

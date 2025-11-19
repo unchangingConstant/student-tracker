@@ -1,5 +1,6 @@
 package io.github.unchangingconstant.studenttracker.app.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -10,8 +11,13 @@ public class AttendanceServiceTest {
     @Mock
     private DatabaseDAO dao;
 
+    @BeforeEach
+    void setUp() {
+    }
+
     @Test
-    void shouldDoSomething() {
+    void testSomething()    {
+
     }
 
 }

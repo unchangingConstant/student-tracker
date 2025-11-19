@@ -4,9 +4,9 @@ import java.util.List;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,9 +33,9 @@ public class StudentAdder extends HBox implements Controller {
     private SimpleBooleanProperty addingEnabled = new SimpleBooleanProperty(false);
     public SimpleBooleanProperty addingEnabledProperty() {return addingEnabled;}
 
-    public String getFullLegalNameInput() {return fullLegalNameField.getText();}
-    public String getPrefNameInput() {return prefNameField.getText();}
-    public Integer getSubjectsInput() {return subjectsField.getSelectionModel().getSelectedItem();}
+    public StringProperty fullLegalNameProperty() {return fullLegalNameField.textProperty();}
+    public StringProperty prefNameProperty() {return prefNameField.textProperty();}
+    public ReadOnlyObjectProperty<Integer> subjectsProperty() {return subjectsField.getSelectionModel().selectedItemProperty();}
 
     public void setOnSaveButtonAction(EventHandler<ActionEvent> handler) {saveButton.setOnAction(handler);};
 
@@ -52,16 +52,23 @@ public class StudentAdder extends HBox implements Controller {
 
         displayFormButton.setOnAction(evt -> addingEnabled.set(true));
 
-        addingEnabled.addListener((obs, oldVal, newVal) -> {
+        addingEnabled.addListener((obs, oldVal, enabled) -> {
             List<Node> children = getChildren();
-            if (newVal) {
+            if (enabled) {
                 children.add(addStudentForm);
                 children.remove(displayFormButton);
             } else {
                 children.add(displayFormButton);
                 children.remove(addStudentForm);
+                clear();
             }
         });
+    }
+
+    private void clear() {
+        fullLegalNameProperty().set("");
+        prefNameProperty().set("");
+        subjectsField.getSelectionModel().select(0);
     }
 
 }

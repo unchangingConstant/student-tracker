@@ -17,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
@@ -56,6 +55,9 @@ public class DatabaseDAOTest {
         dao = DatabaseModule.provideDatabaseDAO(jdbi);
     }
 
+    /**
+     * STUDENT TESTS START HERE
+     */
     @Test
     @DisplayName("getStudent() maps query result to Student object")
     void testGetStudent_1() {
@@ -103,7 +105,7 @@ public class DatabaseDAOTest {
         assertEquals(s3, map.get(s3.getStudentId()));
     }
 
-    // TODO for the next two methods, at some point refactor to gather results using
+    // TODO for the next method, at some point refactor to gather results using
     // jdbi handle.
     @Test
     @DisplayName("insertStudent() inserts students correctly")
@@ -164,8 +166,9 @@ public class DatabaseDAOTest {
         assertEquals(s, result);
     }
 
-    // VISIT TESTS START HERE
-
+    /**
+     * VISIT TESTS START HERE
+     */
     @Test
     @DisplayName("getVisit() gets the visit with the corresponding id")
     void testGetVisit_1() {

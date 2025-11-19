@@ -32,7 +32,6 @@ public class DatabaseManagerPageController implements Controller {
     // Represents the current editing mode of this page.
     enum EditMode {ADDING_STUDENT, EDITING_STUDENT, EDIT_OFF}
     private SimpleObjectProperty<EditMode> editMode = new SimpleObjectProperty<EditMode>(EditMode.EDIT_OFF);
-
     // State of student table in the database
     private StudentTableModel studentTableModel;
 
@@ -62,7 +61,7 @@ public class DatabaseManagerPageController implements Controller {
 
     public void onAddStudentAction()  {
         try {
-            attendanceService.insertStudent(studentAdder.getFullLegalNameInput(), studentAdder.getPrefNameInput(), studentAdder.getSubjectsInput());
+            attendanceService.insertStudent(studentAdder.fullLegalNameProperty().get(), studentAdder.prefNameProperty().get(), studentAdder.subjectsProperty().get());
             studentAdder.addingEnabledProperty().set(false);
         } catch (InvalidDatabaseEntryException e) {
             // TODO Auto-generated catch block
@@ -71,6 +70,6 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onUpdateStudentAction() {
-        
+        // TODO
     }
 }
