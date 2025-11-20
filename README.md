@@ -26,12 +26,6 @@ A desktop attendance management system built for Kumon learning centers to repla
 - **Testing** – JUnit 5, Mockito, Instancio
 - **Deployment** – Panteleyev JPackage Maven Plugin
 
-## 🚀 Technical Highlights
-- **Offline-First Architecture** – SQLite-based local storage eliminates network latency and internet requirements
-- **Cross-Platform Deployment** – Custom JPackage configuration generates native executables for Windows and Linux
-- **Modular Design** – Dependency injection pattern enables testable, maintainable code architecture
-- **Hardware Integration** – External QR scanner support for rapid check-in workflows
-
 ## 💻 Development Setup
 
 ### Prerequisites
