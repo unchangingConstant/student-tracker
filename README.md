@@ -1,7 +1,8 @@
 # 📚 Student Tracker
 
-[![Build Status](https://github.com/unchangingConstant/student-tracker/workflows/Build%20and%20Coverage/badge.svg)](https://github.com/unchangingConstant/student-tracker/actions)
+[![Coverage Analysis](https://github.com/unchangingConstant/student-tracker/actions/workflows/build.yml/badge.svg)](https://github.com/unchangingConstant/student-tracker/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/unchangingConstant/student-tracker/branch/master/graph/badge.svg)](https://codecov.io/gh/unchangingConstant/student-tracker)
+
 
 ## 🎯 Overview
 A desktop attendance management system built for Kumon learning centers to replace unreliable cloud-based solutions. This application eliminates latency issues and internet dependency while providing front-desk staff with an intuitive interface for managing student check-ins during high-traffic hours.
