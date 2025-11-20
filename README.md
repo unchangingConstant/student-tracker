@@ -1,14 +1,14 @@
 # 📚 Student Tracker
 
+
 ## 🎯 Overview
 A desktop attendance management system built for Kumon learning centers to replace unreliable cloud-based solutions. This application eliminates latency issues and internet dependency while providing front-desk staff with an intuitive interface for managing student check-ins during high-traffic hours.
 
 **The Problem:** A local Kumon center owner struggled with existing software plagued by poor performance, unnecessary cloud dependencies, and a confusing UI that hindered daily operations.
 
 **The Solution:** A lightweight, offline-first desktop application featuring real-time dashboards, QR code integration, and instant data exports—purpose-built for the fast-paced environment of educational centers.
-<div style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-  <img src="assets/demo.png" alt="drawing" width="500"/>
-</div>
+
+![alt text](assets/demo.png "Title")
 
 ## ✨ Key Features
 - 📊 **Live Attendance Dashboard** – Real-time display of student time remaining at the center
