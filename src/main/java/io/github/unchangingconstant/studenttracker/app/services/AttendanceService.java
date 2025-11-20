@@ -138,6 +138,7 @@ public class AttendanceService {
 
     // update!!! Should return request status
     public void endOngoingVisit(OngoingVisitDomain ongoingVisit) {
+        System.out.println(Thread.currentThread());
         // Ends ongoing visit
         dao.deleteOngoingVisit(ongoingVisit.getStudentId());
         ongoingVisitsObserver.triggerDelete(ongoingVisit.getStudentId());

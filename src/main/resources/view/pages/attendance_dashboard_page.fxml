@@ -16,7 +16,7 @@
     </stylesheets>
     <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER">
         <HBox alignment="TOP_CENTER" prefWidth="600">
-            <ComboxStudentSelector fx:id="studentSelector"
+            <StudentSelector fx:id="studentSelector"
                 HBox.hgrow="ALWAYS"/>
             <Button fx:id="startVisitButton" text="Start Visit"/>
         </HBox>

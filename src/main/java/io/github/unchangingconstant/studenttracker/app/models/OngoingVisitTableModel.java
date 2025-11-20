@@ -55,6 +55,7 @@ public class OngoingVisitTableModel {
     }
 
     private void onOngoingVisitDelete(Integer deleted) {
+        System.out.println(Thread.currentThread());
         ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().equals(deleted));
     }
 
