@@ -1,52 +1,67 @@
-# student-tracker
+# 📚 Student Tracker
 
-An application that allows Kumon center owners to track which students are in their center and log the time they spent working there.
+## 🎯 Overview
+A desktop attendance management system built for Kumon learning centers to replace unreliable cloud-based solutions. This application eliminates latency issues and internet dependency while providing front-desk staff with an intuitive interface for managing student check-ins during high-traffic hours.
 
-## Description
+**The Problem:** A local Kumon center owner struggled with existing software plagued by poor performance, unnecessary cloud dependencies, and a confusing UI that hindered daily operations.
 
-An application that will allow Kumon center owners to track which students are in their center and log the time they spent working there.
+**The Solution:** A lightweight, offline-first desktop application featuring real-time dashboards, QR code integration, and instant data exports—purpose-built for the fast-paced environment of educational centers.
+<div style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+  <img src="assets/demo.png" alt="drawing" width="500"/>
+</div>
 
-### Stack
+## ✨ Key Features
+- 📊 **Live Attendance Dashboard** – Real-time display of student time remaining at the center
+- 📱 **QR Code Integration** – Seamless attendance logging via external scanner
+- 🗂️ **Intuitive Record Manager** – GUI-based database editor for effortless data management
+- 📤 **Excel Export** – One-click attendance record exports for reporting
 
-- Maven for project management
-- JavaFX for GUI
-- JDBI/SQLite for database
-- Guice for dependency injection
-- Mockito / Instancio for testing
-- Panteleyev's JPackage plugin for deployment
+## 🛠️ Technical Stack
+- **Build & Package** – Maven 3.9.10
+- **Frontend** – JavaFX 21
+- **Database** – JDBI 3 + SQLite
+- **Dependency Injection** – Google Guice
+- **Testing** – JUnit 5, Mockito, Instancio
+- **Deployment** – Panteleyev JPackage Maven Plugin
 
-## Contribute
+## 🚀 Technical Highlights
+- **Offline-First Architecture** – SQLite-based local storage eliminates network latency and internet requirements
+- **Cross-Platform Deployment** – Custom JPackage configuration generates native executables for Windows and Linux
+- **Modular Design** – Dependency injection pattern enables testable, maintainable code architecture
+- **Hardware Integration** – External QR scanner support for rapid check-in workflows
 
-### Development Environment (Tested on Windows 10 and Linux Mint 22.2)
+## 💻 Development Setup
 
+### Prerequisites
 - Maven 3.9.11
 - Java 21
-- sqlite3 command line tool (Optional, but useful for testing)
+- SQLite3 CLI (optional, for database inspection)
 
-### Deploying
+### Quick Start
+```bash
+# Clone the repository
+git clone https://github.com/unchangingConstant/student-tracker.git
 
-Currently, this package is deployed by copying all dependencies' .jar files into 'target' directory. This is done by reconfiguring the default Maven plugins for Maven's jar and dependency jobs/stages/steps (I don't know the exact Maven lingo for this). This is done so that the jpackage step is simpler.
+# Build and run
+mvn clean javafx:run
+```
 
-The jpackage plugin packages everything from the output directory of the jar/dependency plugins. It packages this program as a non-modular application, so all dependencies, modular or not, are run from class path.
+### Deployment
+This application is packaged as a non-modular executable with all dependencies bundled into the classpath for maximum compatibility.
+```bash
+# Generate native executable
+mvn clean verify jpackage:jpackage
+```
 
-Steps to deployment:
+**Output:** `target/distribution/StudentTrackerApp/`
+- **Windows:** Run `StudentTrackerApp.exe`
+- **Linux:** Run `bin/StudentTrackerApp`
 
-- Run this command `mvn clean verify jpackage:jpackage`
-- Look at the output directory for the jpackage plugin (Currently target/distribution)
-- To run it on Windows 10 or Linux Mint 22.2:
-  - In StudentTrackerApp, double click the deployed.exe to run your program. This should run on any Windows machine.
-  - In StudentTrackerApp/bin, double click on StudentTrackerApp to run the program. This works on Linux Mint 22.2
+> **Note:** Currently generates portable applications without installers.
 
-Currently, no installers are created by these steps, just a portable application.
+## 📝 License
+Unlicensed (All rights reserved)
 
-## Help
+---
 
-Any answers to FAQ will be put here.
-
-## Authors
-
-Me!
-
-## License
-
-No license, for now...
+**Author:** [@unchangingConstant](https://github.com/unchangingConstant)
