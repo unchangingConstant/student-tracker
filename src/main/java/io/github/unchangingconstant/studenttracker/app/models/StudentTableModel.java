@@ -56,12 +56,10 @@ public class StudentTableModel {
     }
 
     private void onInsertStudent(Integer studentId) {
-        System.out.println("Insert student event!");
         students.add(DomainToStudentModelMapper.map(attendanceService.getStudent(studentId)));
     }
 
     private void onDeleteStudent(Integer studentId) {
-        System.out.println("Delete student event!");
         students.removeIf(student -> student.getStudentId().get() == studentId);
     }
 

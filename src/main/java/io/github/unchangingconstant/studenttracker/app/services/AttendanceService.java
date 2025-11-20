@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -38,46 +39,19 @@ public class AttendanceService {
     }
 
     /*
-     * ONGOING VISIT METHODS
-     */
-
-    public Map<Integer, OngoingVisitDomain> getOngoingVisits() {
-        return this.dao.getOngoingVisits();
-    }
-
-    public OngoingVisitDomain getOngoingVisit(Integer studentId)   {
-        return dao.getOngoingVisit(studentId);
-    }
-
-    public void startOngoingVisit(Integer studentId) {
-        // Must not have ongoing visits when starting one
-        if (dao.getOngoingVisit(studentId) != null ) {
-            throw new IllegalStateException("Student is already in the center.");
-        };
-        dao.insertOngoingVisit(studentId, Instant.now());
-        ongoingVisitsObserver.triggerInsert(studentId);
-    }
-
-    // update!!! Should return request status
-    public void endOngoingVisit(OngoingVisitDomain ongoingVisit) {
-        // Ends ongoing visit
-        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
-        ongoingVisitsObserver.triggerDelete(ongoingVisit.getStudentId());
-        // Logs endtime into Visit table
-        Integer visitId = dao.insertVisit(ongoingVisit.getStartTime(), Instant.now(), ongoingVisit.getStudentId());
-        visitsObserver.triggerInsert(visitId);
-    }
-
-    /*
      * STUDENT METHODS
      */
 
     public StudentDomain getStudent(Integer studentId) {
-        return this.dao.getStudent(studentId);
+        StudentDomain result = dao.getStudent(studentId);
+        if (result == null) {
+            throw new NoSuchElementException(String.format("Student with studentId %d does not exist in database", studentId));
+        }
+        return dao.getStudent(studentId);
     }
 
     public Map<Integer, StudentDomain> getAllStudents() {
-        return this.dao.getAllStudents();
+        return dao.getAllStudents();
     }
 
     public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
@@ -142,6 +116,37 @@ public class AttendanceService {
     }
 
     /*
+     * ONGOING VISIT METHODS
+     */
+
+    public Map<Integer, OngoingVisitDomain> getOngoingVisits() {
+        return this.dao.getOngoingVisits();
+    }
+
+    public OngoingVisitDomain getOngoingVisit(Integer studentId)   {
+        return dao.getOngoingVisit(studentId);
+    }
+
+    public void startOngoingVisit(Integer studentId) {
+        // Must not have ongoing visits when starting one
+        if (dao.getOngoingVisit(studentId) != null ) {
+            throw new IllegalStateException("Student is already in the center.");
+        };
+        dao.insertOngoingVisit(studentId, Instant.now());
+        ongoingVisitsObserver.triggerInsert(studentId);
+    }
+
+    // update!!! Should return request status
+    public void endOngoingVisit(OngoingVisitDomain ongoingVisit) {
+        // Ends ongoing visit
+        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
+        ongoingVisitsObserver.triggerDelete(ongoingVisit.getStudentId());
+        // Logs endtime into Visit table
+        Integer visitId = dao.insertVisit(ongoingVisit.getStartTime(), Instant.now(), ongoingVisit.getStudentId());
+        visitsObserver.triggerInsert(visitId);
+    }
+
+    /*
      * Notifies subscribers of database changes
      */
     public class Observer<K, V> {
@@ -187,10 +192,15 @@ public class AttendanceService {
         public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
     }
 
-    static public class IllegalDatabaseOperationException extends Exception{
+    static public class IllegalDatabaseOperationException extends Exception {
         public IllegalDatabaseOperationException() {super();}
         public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
         public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
     }
+
+    // static public class NoSuchDatabaseElementException extends Exception {
+    //     public NoSuchDatabaseElementException() {super();}
+    //     public NoSuchDatabaseElementException(String errorMsg) {super(errorMsg);}
+    // }
 
 }

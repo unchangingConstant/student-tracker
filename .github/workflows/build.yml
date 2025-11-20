@@ -1,4 +1,4 @@
-name: Build and Coverage
+name: Coverage Analysis
 
 on:
   push:
