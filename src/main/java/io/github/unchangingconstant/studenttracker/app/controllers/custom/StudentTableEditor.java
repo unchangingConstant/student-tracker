@@ -12,7 +12,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -89,15 +91,9 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
         });
         actionsColumn.setCellFactory(tableColumn -> {
             TableCell<StudentModel, Integer> cell = new TableCell<>();
-
-            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null && oldVal == null) {
-                    cell.setGraphic(createActionsCombo(cell));
-                } else if (newVal == null && oldVal != null)   {
-                    cell.setGraphic(null);
-                }
-            });
-
+            ComboBox<String> cellCombo = createActionsCombo(cell);
+            cellCombo.visibleProperty().bind(cell.itemProperty().isNotNull());
+            cell.setGraphic(cellCombo);
             return cell;
         });
     }
@@ -105,16 +101,28 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
     private ComboBox<String> createActionsCombo(TableCell<StudentModel,Integer> cell) {
         ComboBox<String> actionsMenu = new ComboBox<>();
         actionsMenu.disableProperty().bind(actionsEnabled.not());
-        actionsMenu.promptTextProperty().set("Actions");
+        actionsMenu.setPromptText("Actions");
         actionsMenu.getItems().addAll("Edit", "Delete");
-        actionsMenu.setOnAction(actionEvent ->  {
-            String selected = actionsMenu.getValue();
-            if (selected.equals("Edit"))   {
-                onEditAction.accept(cell.getItem());
-            } else if (selected.equals("Delete"))   {
-                onDeleteAction.accept(cell.getItem());
-            }
+        actionsMenu.setSelectionModel(null);
+
+        actionsMenu.setCellFactory(listView -> {
+            ListCell<String> comboCell = new ListCell<>();
+            /**
+             * TODO make it so this only executes onClick. Or more specifically, when the the mouse is clicked and released
+             * over the list cell. Not anything else.
+             */
+            comboCell.textProperty().bind(comboCell.itemProperty());
+            comboCell.setOnMouseReleased(mouseEvent -> {
+                String action = comboCell.getItem();
+                if (action.equals("Edit"))  {
+                    onEditAction.accept(cell.getItem());
+                } else if (action.equals("Delete")) {
+                    onDeleteAction.accept(cell.getItem());
+                }
+            });
+            return comboCell;
         });
+
         return actionsMenu;
     }
 
