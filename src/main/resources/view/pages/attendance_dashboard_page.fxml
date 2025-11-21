@@ -20,7 +20,7 @@
                 HBox.hgrow="ALWAYS"/>
             <Button fx:id="startVisitButton" text="Start Visit"/>
         </HBox>
-        <OngoingVisitView fx:id="ongoingVisitsView" 
+        <LiveAttendanceView fx:id="liveAttendanceView" 
             VBox.vgrow="ALWAYS" prefWidth="600"/>
     </VBox>
 </VBox>

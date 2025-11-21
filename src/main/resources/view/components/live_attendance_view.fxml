@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root type="TableView" xmlns:fx="http://javafx.com/fxml" styleClass="ongoing-visit-view">
+<fx:root type="TableView" xmlns:fx="http://javafx.com/fxml" styleClass="live_attendance-view">
     <columnResizePolicy>
         <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
     </columnResizePolicy>

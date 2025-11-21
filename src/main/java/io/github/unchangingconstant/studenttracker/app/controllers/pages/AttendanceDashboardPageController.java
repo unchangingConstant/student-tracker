@@ -1,28 +1,22 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 
-import java.io.IOException;
-
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.OngoingVisitView;
+import io.github.unchangingconstant.studenttracker.app.controllers.custom.LiveAttendanceView;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentSelector;
+import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 
 public class AttendanceDashboardPageController implements Controller {
 
     @FXML
-    private OngoingVisitView ongoingVisitsView;
+    private LiveAttendanceView liveAttendanceView;
     @FXML
     private StudentSelector studentSelector; 
     @FXML
@@ -43,7 +37,7 @@ public class AttendanceDashboardPageController implements Controller {
 
     @Override
     public void initialize() {
-        ongoingVisitsModel.bindProperty(ongoingVisitsView.itemsProperty());
+        ongoingVisitsModel.bindProperty(liveAttendanceView.itemsProperty());
         studentTableModel.bindProperty(studentSelector.optionsProperty());
         startVisitButton.setOnAction(actionEvent -> {
             StudentModel selected = studentSelector.selectedProperty().getValue();
@@ -51,7 +45,7 @@ public class AttendanceDashboardPageController implements Controller {
                 onStartVisitAction(selected);
             }
         });
-        ongoingVisitsView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
+        liveAttendanceView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
 
     }
 
@@ -61,8 +55,8 @@ public class AttendanceDashboardPageController implements Controller {
     }
 
     public void onEndOngoingVisit(Integer studentId) {
-        System.out.println(Thread.currentThread());
-        attendanceService.endOngoingVisit(ongoingVisitsModel.get(studentId));
+        OngoingVisitModel endedVisit = ongoingVisitsModel.get(studentId);
+        attendanceService.endOngoingVisit(endedVisit.getStudentId().get(), endedVisit.getStartTime().get());
     }
 
 }

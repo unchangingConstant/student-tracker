@@ -137,13 +137,12 @@ public class AttendanceService {
     }
 
     // update!!! Should return request status
-    public void endOngoingVisit(OngoingVisitDomain ongoingVisit) {
-        System.out.println(Thread.currentThread());
+    public void endOngoingVisit(Integer studentId, Instant startTime) {
         // Ends ongoing visit
-        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
-        ongoingVisitsObserver.triggerDelete(ongoingVisit.getStudentId());
+        dao.deleteOngoingVisit(studentId);
+        ongoingVisitsObserver.triggerDelete(studentId);
         // Logs endtime into Visit table
-        Integer visitId = dao.insertVisit(ongoingVisit.getStartTime(), Instant.now(), ongoingVisit.getStudentId());
+        Integer visitId = dao.insertVisit(startTime, Instant.now(), studentId);
         visitsObserver.triggerInsert(visitId);
     }
 
