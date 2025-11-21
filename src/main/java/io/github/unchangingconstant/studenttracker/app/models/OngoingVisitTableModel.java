@@ -8,7 +8,7 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.Observer;
+import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

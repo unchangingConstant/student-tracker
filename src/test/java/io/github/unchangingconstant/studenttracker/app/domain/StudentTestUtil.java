@@ -23,4 +23,11 @@ public class StudentTestUtil {
                         .truncatedTo(ChronoUnit.MILLIS));
     }
 
+    public static InstancioApi<StudentDomain> validStudent() {
+        return student()
+            .generate(field(StudentDomain::getFullLegalName), gen -> gen.string().length(1, 150))
+            .generate(field(StudentDomain::getPrefName), gen -> gen.string().length(1, 150))
+            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().range(1, 2));
+    }
+
 }

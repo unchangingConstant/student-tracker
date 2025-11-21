@@ -20,7 +20,7 @@ import lombok.Getter;
 
 @Singleton
 public class AttendanceService {
-    
+
     private DatabaseDAO dao;
 
     @Getter
@@ -47,7 +47,7 @@ public class AttendanceService {
         if (result == null) {
             throw new NoSuchElementException(String.format("Student with studentId %d does not exist in database", studentId));
         }
-        return dao.getStudent(studentId);
+        return result;
     }
 
     public Map<Integer, StudentDomain> getAllStudents() {
@@ -145,47 +145,6 @@ public class AttendanceService {
         // Logs endtime into Visit table
         Integer visitId = dao.insertVisit(ongoingVisit.getStartTime(), Instant.now(), ongoingVisit.getStudentId());
         visitsObserver.triggerInsert(visitId);
-    }
-
-    /*
-     * Notifies subscribers of database changes
-     */
-    public class Observer<K, V> {
-    
-        private List<Consumer<V>> updateSubs;
-        private List<Consumer<K>> deleteSubs;
-        private List<Consumer<K>> insertSubs;
-
-        private Observer()   {
-            updateSubs = new LinkedList<Consumer<V>>();
-            deleteSubs = new LinkedList<Consumer<K>>();
-            insertSubs = new LinkedList<Consumer<K>>();
-        }
-
-        public void subscribeToUpdates(Consumer<V> function) {
-            updateSubs.add(function);
-        }
-
-        public void subscribeToDeletes(Consumer<K> function) {
-            deleteSubs.add(function);
-        }
-
-        public void subscribeToInserts(Consumer<K> function) {
-            insertSubs.add(function);
-        }
-
-        private void triggerUpdate(V data) {
-            updateSubs.forEach(function -> function.accept(data));
-        }
-
-        private void triggerDelete(K dataId) {
-            deleteSubs.forEach(function -> function.accept(dataId));
-        }
-
-        private void triggerInsert(K dataId) {
-            insertSubs.forEach(function -> function.accept(dataId));
-        }
-
     }
 
     static public class InvalidDatabaseEntryException extends Exception {

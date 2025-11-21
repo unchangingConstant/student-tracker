@@ -105,6 +105,12 @@ public class DatabaseDAOTest {
         assertEquals(s3, map.get(s3.getStudentId()));
     }
 
+    @Test
+    @DisplayName("getAllStudents returns empty map if query has no rows")
+    void testGetAllStudents_2() {
+        assertEquals(Instancio.ofMap(Integer.class, StudentDomain.class).size(0).create(), dao.getAllStudents());
+    }
+
     // TODO for the next method, at some point refactor to gather results using
     // jdbi handle.
     @Test
