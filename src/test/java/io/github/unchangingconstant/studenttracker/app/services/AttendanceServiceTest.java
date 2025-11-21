@@ -114,6 +114,50 @@ public class AttendanceServiceTest {
         assertFalse(triggered);
     }
 
+    @Test
+    @DisplayName("Throws error when prefName invalid")
+    void testInsertStudent_3() {
+        StudentDomain s = StudentTestUtil.validStudent()
+            .generate(field(StudentDomain::getPrefName), gen -> gen.string().minLength(151))
+            .create();
+        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+        
+        assertThrows(InvalidDatabaseEntryException.class, 
+            () -> service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getSubjects()));
+        assertFalse(triggered);
+    }
+
+    @Test
+    @DisplayName("Throws error when subjects invalid")
+    void testInsertStudent_4() {
+        StudentDomain s1 = StudentTestUtil.validStudent()
+            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().max(0))
+            .create();
+        StudentDomain s2 = StudentTestUtil.validStudent()
+            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().min(3))
+            .create();
+        StudentDomain s3 = StudentTestUtil.validStudent()
+            .set(field(StudentDomain::getSubjects), null)
+            .create();
+        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+        
+        assertThrows(InvalidDatabaseEntryException.class, 
+            () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
+        assertFalse(triggered);
+
+        triggered = false;
+
+        assertThrows(InvalidDatabaseEntryException.class, 
+            () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
+        assertFalse(triggered);
+
+        triggered = false;
+
+        assertThrows(InvalidDatabaseEntryException.class, 
+            () -> service.insertStudent(s3.getFullLegalName(), s3.getPrefName(), s3.getSubjects()));
+        assertFalse(triggered);
+    }
+
     /**
      * HELPER METHODS
      */

@@ -65,11 +65,11 @@ public class AttendanceService {
         if (trimmedFullName.length() < 1)   {
             throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
         }
-        if (subjects != 1 && subjects != 2)  {
-            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
-        }
         if (subjects == null)   {
             throw new InvalidDatabaseEntryException("Subjects is null. Contact developer for help");
+        }
+        if (subjects != 1 && subjects != 2)  {
+            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
         }
         Integer studentId = dao.insertStudent(trimmedFullName, trimmedPrefName, subjects, Instant.now());
         studentsObserver.triggerInsert(studentId);
