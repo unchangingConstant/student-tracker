@@ -41,15 +41,11 @@ public class OngoingVisitTableModel {
     // This is okay since visits are immutable
     public OngoingVisitModel get(Integer studentId) {
         for (OngoingVisitModel visit : ongoingVisits) {
-            if (visit.getStudentId().equals(studentId)) {
+            if (visit.getStudentId().getValue().equals(studentId)) {
                 return visit;
             }
         }
         throw new NoSuchElementException(String.format("Visit with studentId %d could not be found", studentId));
-    }
-
-    public void addListener(ListChangeListener<OngoingVisitModel> listener) {
-        ongoingVisits.addListener(listener);
     }
 
     public void bindProperty(Property<ObservableList<OngoingVisitModel>> prop) {
@@ -57,7 +53,10 @@ public class OngoingVisitTableModel {
     }
 
     private void onOngoingVisitDelete(Integer deleted) {
-        ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().equals(deleted));
+        Boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted);
+        if (!removed) {
+            throw new NoSuchElementException(String.format("Tried to delete OngoingVisit with studentId %d but it could not be found", deleted));
+        }
     }
 
     private void onOngoingVisitInsert(Integer inserted) {
@@ -67,12 +66,12 @@ public class OngoingVisitTableModel {
 
     private void onOngoingVisitUpdate(OngoingVisitDomain updated) {
         for (int i = 0; i < ongoingVisits.size(); i++){
-            if (ongoingVisits.get(i).getStudentId().equals(updated.getStudentId())) {
+            if (ongoingVisits.get(i).getStudentId().getValue().equals(updated.getStudentId())) {
                 ongoingVisits.set(i, DomainToOngoingVisitModel.map(updated));
                 return;
             }
         }
-        throw new NoSuchElementException(String.format("OngoingVisit with studentId %d not found", updated.getStudentId()));
+        throw new NoSuchElementException(String.format("Tired to update OngoingVisit with studentId %d but it could not be found", updated.getStudentId()));
     }
 
 }

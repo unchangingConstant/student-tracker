@@ -172,6 +172,18 @@ public class DatabaseDAOTest {
         assertEquals(s, result);
     }
 
+    @Test
+    @DisplayName("updateStudent() returns 0 if student with studentId doesn't exist in the database")
+    void testUpdateStudent_1()  {
+        // TODO insert multiple students into database for this test
+        StudentDomain s1 = StudentTestUtil.validStudent().create();
+        StudentDomain s2 = StudentTestUtil.validStudent().set(field(StudentDomain::getStudentId), Math.abs(s1.getStudentId() + 1)).create();
+
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1));
+
+        assertEquals(0, dao.updateStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects(), s2.getStudentId()));
+    }
+
     /**
      * VISIT TESTS START HERE
      */

@@ -76,25 +76,36 @@ public class AttendanceService {
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
-        Boolean deleted;
         try {
-            deleted = this.dao.deleteStudent(studentId);
+            if (dao.deleteStudent(studentId))   {
+                studentsObserver.triggerDelete(studentId);
+                return;
+            }
+            throw new NoSuchElementException();
         } catch (UnableToExecuteStatementException e) {
             // If unable to delete due to foreign key constraints
-            // TODO Find a better way to check for errors
             if (e.getMessage().contains("FOREIGN KEY constraint")) {
                 throw new IllegalDatabaseOperationException("Cannot delete student with existing visits", e);
             }
-            throw new RuntimeException("Failed to delete student", e);
-        }
-        if (deleted) {
-            // TODO when the DAO returns false, what exactly does that mean? Find out and rewrite this
-            studentsObserver.triggerDelete(studentId);
+            throw e;
         }
     }
 
-    public void updateStudent(String fullLegalName, String prefName, Integer subjects)    {
-        
+    public void updateStudent(Integer studentId, String fullLegalName, String prefName, Integer subjects)    {
+        Integer updated = dao.updateStudent(fullLegalName, prefName, subjects, studentId);
+        if (updated == 1)   {
+            studentsObserver.triggerUpdate(StudentDomain.builder()
+                .studentId(studentId)
+                .fullLegalName(fullLegalName)
+                .prefName(prefName)
+                .subjects(subjects)
+                .build());
+            return;
+        }
+        if (updated == 0)   {
+            throw new NoSuchElementException(String.format("Student with studentId %d doesn't exist", studentId));
+        }
+        throw new IllegalStateException("More than one update occurred on AttendanceService.updateStudent(). Something is seriously wrong");
     }
 
     /*
