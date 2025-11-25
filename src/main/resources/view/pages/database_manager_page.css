@@ -3,7 +3,7 @@
     -fx-text-fill: #313131;
 }
 
-.student-table-editor .combo-box  {
+.editable-student-table .combo-box  {
     -fx-background-color: #7FCFF4;
 }
 

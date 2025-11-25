@@ -1,0 +1,8 @@
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
+
+<fx:root type="EditableStudentTable" xmlns:fx="http://javafx.com/fxml" styleClass="editable-student-table"/>
