@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
@@ -55,6 +54,7 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
 
     public StudentTableEditor()   {
         super();
+        this.selectionModelProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
         CustomComponentUtils.hookIntoFXML(this, "/view/components/student_table_view.fxml");
     }
 

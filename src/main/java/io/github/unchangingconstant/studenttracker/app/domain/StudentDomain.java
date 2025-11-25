@@ -3,14 +3,13 @@ package io.github.unchangingconstant.studenttracker.app.domain;
 import java.time.Instant;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Value;
 
-@Value
+@Data
 @Builder
 public class StudentDomain {
 
-    @NonNull
     private Integer studentId;
     @NonNull
     private String fullLegalName;
@@ -18,7 +17,6 @@ public class StudentDomain {
     private String prefName;
     @NonNull
     private Integer subjects;
-    @NonNull
     private Instant dateAdded;
 
 }

@@ -19,10 +19,10 @@
         <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="editorContainer">
             <StudentAdder fx:id="studentAdder"/>
         </HBox>
-        <StudentTableEditor fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
-            <columnResizePolicy>
+        <EditableStudentTable fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS">
+            <!-- <columnResizePolicy>
                 <TableView fx:constant = "CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </StudentTableEditor>
+            </columnResizePolicy> -->
+        </EditableStudentTable>
     </VBox>
 </VBox>

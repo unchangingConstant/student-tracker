@@ -3,6 +3,7 @@ package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableStudentTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentAdder;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentTableEditor;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
@@ -20,7 +21,7 @@ import javafx.scene.layout.HBox;
 public class DatabaseManagerPageController implements Controller {
     
     @FXML 
-    private StudentTableEditor studentTable;
+    private EditableStudentTable studentTable;
     @FXML
     private StudentAdder studentAdder;
     @FXML
@@ -46,7 +47,7 @@ public class DatabaseManagerPageController implements Controller {
     @Override
     public void initialize() {
         studentTableModel.bindProperty(studentTable.itemsProperty());
-        studentTable.setOnDeleteAction(studentId -> onDeleteAction(studentId));
+        studentTable.setOnDeleteAction(student -> onDeleteAction(student.getStudentId().get()));
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }
 

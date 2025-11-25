@@ -1,12 +1,8 @@
 package io.github.unchangingconstant.studenttracker.app.services;
 
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 import com.google.inject.Inject;
@@ -55,23 +51,8 @@ public class AttendanceService {
     }
 
     public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
-        // Insert students if their full name is less than 150 characters and at least 1 character
-        String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
-        String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
-
-        if (trimmedPrefName.length() > 150 || trimmedFullName.length() > 150) {
-            throw new InvalidDatabaseEntryException("Names can not be more than 150 characters in length");
-        }
-        if (trimmedFullName.length() < 1)   {
-            throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
-        }
-        if (subjects == null)   {
-            throw new InvalidDatabaseEntryException("Subjects is null. Contact developer for help");
-        }
-        if (subjects != 1 && subjects != 2)  {
-            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
-        }
-        Integer studentId = dao.insertStudent(trimmedFullName, trimmedPrefName, subjects, Instant.now());
+        StudentDomain validStudent = validateStudent(fullLegalName, prefName, subjects);
+        Integer studentId = dao.insertStudent(validStudent.getFullLegalName(), validStudent.getPrefName(), subjects, Instant.now());
         studentsObserver.triggerInsert(studentId);
     }
 
@@ -91,15 +72,12 @@ public class AttendanceService {
         }
     }
 
-    public void updateStudent(Integer studentId, String fullLegalName, String prefName, Integer subjects)    {
-        Integer updated = dao.updateStudent(fullLegalName, prefName, subjects, studentId);
+    public void updateStudent(Integer studentId, String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException    {
+        StudentDomain validUpdate = validateStudent(fullLegalName, prefName, subjects);
+        Integer updated = dao.updateStudent(validUpdate.getFullLegalName(), validUpdate.getPrefName(), subjects, studentId);
         if (updated == 1)   {
-            studentsObserver.triggerUpdate(StudentDomain.builder()
-                .studentId(studentId)
-                .fullLegalName(fullLegalName)
-                .prefName(prefName)
-                .subjects(subjects)
-                .build());
+            validUpdate.setStudentId(studentId);
+            studentsObserver.triggerUpdate(validUpdate);
             return;
         }
         if (updated == 0)   {
@@ -113,7 +91,7 @@ public class AttendanceService {
      */
 
     public VisitDomain getVisit(Integer visitId) {
-        return this.dao.getVisit(visitId);
+        return dao.getVisit(visitId);
     }
 
     public void insertVisit(Integer studentId, Instant startTime, Instant endTime)  {
@@ -131,7 +109,7 @@ public class AttendanceService {
      */
 
     public Map<Integer, OngoingVisitDomain> getOngoingVisits() {
-        return this.dao.getOngoingVisits();
+        return dao.getOngoingVisits();
     }
 
     public OngoingVisitDomain getOngoingVisit(Integer studentId)   {
@@ -140,6 +118,7 @@ public class AttendanceService {
 
     public void startOngoingVisit(Integer studentId) {
         // Must not have ongoing visits when starting one
+        // TODO accessing the database twice for one operation are we? FIX IT!!!
         if (dao.getOngoingVisit(studentId) != null ) {
             throw new IllegalStateException("Student is already in the center.");
         };
@@ -168,9 +147,27 @@ public class AttendanceService {
         public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
     }
 
-    // static public class NoSuchDatabaseElementException extends Exception {
-    //     public NoSuchDatabaseElementException() {super();}
-    //     public NoSuchDatabaseElementException(String errorMsg) {super(errorMsg);}
-    // }
+    /**
+     * HELPERS
+     */
+    private StudentDomain validateStudent(String fullLegalName, String prefName, Integer subjects)  throws InvalidDatabaseEntryException {
+        String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
+        String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
+
+        if (trimmedPrefName.length() > 150 || trimmedFullName.length() > 150) {
+            throw new InvalidDatabaseEntryException("Names can not be more than 150 characters in length");
+        }
+        if (trimmedFullName.length() < 1)   {
+            throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
+        }
+        if (subjects == null)   {
+            throw new InvalidDatabaseEntryException("Subjects is null. Contact developer for help");
+        }
+        if (subjects != 1 && subjects != 2)  {
+            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
+        }
+
+        return StudentDomain.builder().fullLegalName(trimmedFullName).prefName(trimmedPrefName).subjects(subjects).build();
+    }
 
 }
