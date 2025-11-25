@@ -54,7 +54,6 @@ public class StudentTableEditor extends TableView<StudentModel> implements Contr
 
     public StudentTableEditor()   {
         super();
-        this.selectionModelProperty().addListener((obs, oldVal, newVal) -> System.out.println(newVal));
         CustomComponentUtils.hookIntoFXML(this, "/view/components/student_table_view.fxml");
     }
 
