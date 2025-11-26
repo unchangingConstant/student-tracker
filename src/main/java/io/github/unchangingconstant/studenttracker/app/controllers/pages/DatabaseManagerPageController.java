@@ -21,7 +21,7 @@ import javafx.scene.layout.HBox;
 public class DatabaseManagerPageController implements Controller {
     
     @FXML 
-    private StudentTableEditor studentTable;
+    private EditableStudentTable studentTable;
     @FXML
     private StudentAdder studentAdder;
     @FXML
@@ -47,7 +47,7 @@ public class DatabaseManagerPageController implements Controller {
     @Override
     public void initialize() {
         studentTableModel.bindProperty(studentTable.itemsProperty());
-        studentTable.setOnDeleteAction(studentId -> onDeleteAction(studentId));
+        studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }
 

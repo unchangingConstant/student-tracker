@@ -4,13 +4,25 @@ import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableRowTable;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.util.Callback;
 
-public class EditableStudentTable extends EditableRowTable<StudentModel> implements Controller {
+public class EditableStudentTable extends EditableRowTable<StudentModel, Integer> implements Controller {
     
+    @FXML
+    private TableColumn<StudentModel, Integer> studentIdColumn;
+    @FXML
+    private TableColumn<StudentModel, String> fullLegalNameColumn;
+    @FXML
+    private TableColumn<StudentModel, String> prefNameColumn;
+    @FXML
+    private TableColumn<StudentModel, Integer> subjectsColumn;
+    @FXML
+    private TableColumn<StudentModel, String> dateAddedColumn;
+
     public EditableStudentTable() {
         super();
         CustomComponentUtils.hookIntoFXML(this, "/view/components/editable_student_table.fxml");
@@ -18,26 +30,19 @@ public class EditableStudentTable extends EditableRowTable<StudentModel> impleme
 
     @Override
     public void initialize() {
-        setEditorFactory(student -> createEditor(student));
-        setDisplayFactory(student -> createDisplay(student));
+
+        fullLegalNameColumn.setCellValueFactory(cellData -> {
+            return cellData.getValue().getFullLegalName();
+        });
+
+        // Puts the actions column at the end of the table
+        getColumns().remove(getActionsColumn());
+        getColumns().add(getActionsColumn());
     }
 
-    private HBox createEditor(StudentModel student) {
-        HBox editor = new HBox();
-        ObservableList<Node> children = editor.getChildren();
-        return editor;
-    }
-
-    private HBox createDisplay(StudentModel student) {
-        HBox display = new HBox();
-        ObservableList<Node> children = display.getChildren();
-    
-        children.add(new Label(student.getStudentId().get().toString()));
-        children.add(new Label(student.getFullLegalName().get()));
-        children.add(new Label(student.getPrefName().get()));
-        children.add(new Label(student.getSubjects().get().toString()));
-
-        return display;
+    @Override
+    protected Callback<CellDataFeatures<StudentModel, Integer>, ObservableValue<Integer>> getControlCellValueFactory() {
+        return cellData -> cellData.getValue().getStudentId();
     }
 
 }

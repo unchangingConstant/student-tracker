@@ -2,44 +2,64 @@ package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
 import java.util.function.Consumer;
 
-import javafx.scene.Node;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 
-public class EditableRowTable<T> extends ListView<T> {
+/**
+ * T is the value the table holds, U is the value of the actions column, which as to be manually 
+ * set when this class is extended.
+ */
+public abstract class EditableRowTable<T, U> extends TableView<T> {
 
-    private Callback<T, Node> displayFactory;
-    public void setDisplayFactory(Callback<T, Node> displayFactory) {this.displayFactory = displayFactory;} 
+    // Holds currently edited row item
+    // Seleceted index thingy
 
-    private Callback<T, Node> editorFactory;
-    public void setEditorFactory(Callback<T, Node> editorFactory) {this.editorFactory = editorFactory;}
+    private final TableColumn<T, U> actionsColumn = new TableColumn<>();
+    public TableColumn<T, U> getActionsColumn() {return actionsColumn;}
 
-    private Consumer<T> onDeleteAction = input -> {};
-    public void setOnDeleteAction(Consumer<T> onDeleteAction) {this.onDeleteAction = onDeleteAction == null ? input -> {}: onDeleteAction;}
+    private BooleanProperty actionsDisabled = new SimpleBooleanProperty(true);
+    public BooleanProperty actionsDisabledProperty() {return actionsDisabled;}
 
-    private Runnable onSaveAction = () -> {};
-    public void setOnSaveAction(Runnable onSaveAction) {this.onSaveAction = onSaveAction == null ? () -> {}: onSaveAction;}
+    private ObjectProperty<Consumer<Integer>> onEditAction = new SimpleObjectProperty<>(input -> {});
+    public ObjectProperty<Consumer<Integer>> onEditActionProperty() {return onEditAction;}
+
+    private ObjectProperty<Runnable> onSaveAction = new SimpleObjectProperty<>(() -> {});
+    public ObjectProperty<Runnable> onSaveActionProperty() {return onSaveAction;}
+
+    private ObjectProperty<Consumer<U>> onDeleteAction = new SimpleObjectProperty<>(input -> {});
+    public ObjectProperty<Consumer<U>> onDeleteActionProperty()   {return onDeleteAction;}
 
     public EditableRowTable()   {
         super();
-        setCellFactory(listView -> {
-            EditableListCell<T> cell = new EditableListCell<>();
-            cell.setOnSaveAction(() -> onSaveAction.run());
-            cell.setOnDeleteAction((item) -> onDeleteAction.accept(item));
-            cell.setEditorFactory((student) -> {
-                Node editor = editorFactory.call(student);
-                HBox.setHgrow(editor, Priority.ALWAYS);
-                return editor;
-            });
-            cell.setDisplayFactory((student) -> {
-                Node display = displayFactory.call(student);
-                HBox.setHgrow(display, Priority.ALWAYS);
-                return display;
-            });
-            return cell;
-        });   
+        setupControlColumn();
+    }
+
+    /*
+     * Define the control cell value factory for this
+     */
+    protected abstract Callback<CellDataFeatures<T, U>, ObservableValue<U>> getControlCellValueFactory();
+
+    private void setupControlColumn() {
+        actionsColumn.setCellValueFactory(cellData -> getControlCellValueFactory().call(cellData));
+        // TODO optimize at some point. Do we need to bind a million things?
+        // TODO also think, is there some way to add a listener to the SelectionModel such that work is only done for the rows that need updating?
+        // (as opposed to binding a bunch of properties to the selection model) 
+        actionsColumn.setCellFactory(tableColumn -> {
+            EditableRowTableControlCell<T, U> controlsCell = new EditableRowTableControlCell<>();
+            //controlsCell.rowEditEnabledProperty().bind(selectionModel.selectedIndexProperty().isEqualTo(controlsCell.indexProperty())); // Optimize this
+            controlsCell.onEditActionProperty().bind(onEditAction);
+            controlsCell.onSaveActionProperty().bind(onSaveAction);
+            controlsCell.onDeleteActionProperty().bind(onDeleteAction);
+            return controlsCell;
+        });
+        getColumns().add(actionsColumn);
     }
 
     // Makes this component un-focusable
