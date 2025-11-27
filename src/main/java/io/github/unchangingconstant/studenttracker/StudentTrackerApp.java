@@ -5,6 +5,7 @@ import java.net.URL;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,6 +31,8 @@ public class StudentTrackerApp extends Application {
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
                 fxmlLoader.setControllerFactory(appContext::getInstance);
                 Parent root = fxmlLoader.load();
+
+                ExportCSVService.exportStudentVisitsCSV(8, "");
 
                 Scene scene = new Scene(root, 960, 540);
                 stage.setTitle(TITLE);
