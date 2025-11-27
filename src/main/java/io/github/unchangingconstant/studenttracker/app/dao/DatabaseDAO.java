@@ -67,11 +67,11 @@ public interface DatabaseDAO {
     /*
      * ONGOING VISIT METHODS
      */
-    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
+    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name, s.subjects FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     public OngoingVisitDomain getOngoingVisit(Integer studentId);
 
-    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
+    @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name, s.subjects FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     @KeyColumn("student_id")
     public Map<Integer, OngoingVisitDomain> getOngoingVisits();

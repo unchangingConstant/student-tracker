@@ -13,7 +13,6 @@ import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 @Singleton

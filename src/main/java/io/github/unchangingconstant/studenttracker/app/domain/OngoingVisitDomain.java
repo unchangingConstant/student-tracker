@@ -15,6 +15,8 @@ public class OngoingVisitDomain {
     @NonNull
     private Instant startTime;
     @NonNull
+    private Integer subjects;
+    @NonNull
     private String studentName;
 
 }

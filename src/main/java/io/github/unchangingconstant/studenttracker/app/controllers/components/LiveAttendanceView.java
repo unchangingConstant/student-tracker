@@ -3,6 +3,11 @@ package io.github.unchangingconstant.studenttracker.app.controllers.components;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
@@ -12,6 +17,12 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
+import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -41,8 +52,8 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
     // Upon action button press, passes the OngoingVisit's studentId to this consumer
     private Consumer<Integer> onButtonAction;
     public void setOnButtonAction(Consumer<Integer> newAction) {onButtonAction = newAction;}
-    // Corresponds a list of students to the second their time remaining should be updated
-    private Timeline timeline;
+    private final Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
+
 
     public LiveAttendanceView() {
         super();
@@ -59,22 +70,20 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
             return new SimpleStringProperty(formatter.format(startTime));
         });
-        createTimeRemainingColumn();
+        timeRemainingColumn.setCellValueFactory(cellData -> {
+            return cellData.getValue().getTimeRemaining();
+        });
         createActionsColumn();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
-    private void createTimeRemainingColumn()    {
-        this.timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> updateTimesRemaining()));
-        
-    }
 
     private void updateTimesRemaining() {
         Instant now = Instant.now();
-        
-    }
-
-    private Long getTimeRemaining(OngoingVisitModel ongoingVisit) {
-        return null;
+        for (OngoingVisitModel visit: getItems()) {
+            visit.getTimeRemaining().set((visit.getSubjects().get() * 30) - ChronoUnit.MINUTES.between(visit.getStartTime().get(), now));
+        }
     }
 
     private void createActionsColumn()  {
