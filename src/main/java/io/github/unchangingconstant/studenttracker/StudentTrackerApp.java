@@ -31,9 +31,7 @@ public class StudentTrackerApp extends Application {
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
                 fxmlLoader.setControllerFactory(appContext::getInstance);
                 Parent root = fxmlLoader.load();
-
-                ExportCSVService.exportStudentVisitsCSV(8, "");
-
+                
                 Scene scene = new Scene(root, 960, 540);
                 stage.setTitle(TITLE);
                 stage.setScene(scene);
