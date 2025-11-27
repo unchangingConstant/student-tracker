@@ -33,7 +33,7 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
         setupEditableCellFactories();
         // Puts the actions column at the end of the table
         getColumns().remove(getControlColumn());
-        getColumns().add(getControlColumn());
+        getControlColumn().getColumns().add(getControlColumn());
     }
 
     private void setupCellValueFactories() {

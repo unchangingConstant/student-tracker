@@ -24,12 +24,15 @@
             </VBox>
         </Tab>
         <Tab closable="false" text="Visit Records">
-            <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER" id="body" spacing="10">
-                <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="visitEditorContainer">
-                    <StudentAdder fx:id="visitAdder"/>
-                </HBox>
-                <EditableVisitTable fx:id="visitTable" prefWidth="900" VBox.vgrow="ALWAYS"/>
-            </VBox>
+            <HBox>
+                <ListView fx:id="selectableStudentList"/>
+                <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER" id="body" spacing="10">
+                    <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="visitEditorContainer">
+                        <StudentAdder fx:id="visitAdder"/>
+                    </HBox>
+                    <EditableVisitTable fx:id="visitTable" prefWidth="900" VBox.vgrow="ALWAYS"/>
+                </VBox>
+            </HBox>
         </Tab>
     </TabPane>
 </VBox>
