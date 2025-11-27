@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.custom;
+package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
 import java.util.LinkedList;
 import java.util.List;

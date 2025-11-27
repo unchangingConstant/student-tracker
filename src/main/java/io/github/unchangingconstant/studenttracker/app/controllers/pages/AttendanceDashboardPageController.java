@@ -3,8 +3,8 @@ package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.LiveAttendanceView;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentSelector;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.LiveAttendanceView;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentSelector;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;

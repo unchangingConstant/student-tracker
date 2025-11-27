@@ -63,8 +63,16 @@ public class StudentTableModel {
         students.removeIf(student -> student.getStudentId().get() == studentId);
     }
 
-    private void onUpdateStudent(StudentDomain student) {
-        students.add(DomainToStudentModelMapper.map(student));
+    private void onUpdateStudent(StudentDomain updatedStudent) {
+        for (StudentModel student: students) {
+            if (student.getStudentId().get() == updatedStudent.getStudentId()) {
+                student.getFullLegalName().set(updatedStudent.getFullLegalName());
+                student.getPrefName().set(updatedStudent.getPrefName());
+                student.getSubjects().set(updatedStudent.getSubjects());
+                break;
+            }
+        }
+        // TODO throw exception if loop exists with nothing??
     }
 
 }

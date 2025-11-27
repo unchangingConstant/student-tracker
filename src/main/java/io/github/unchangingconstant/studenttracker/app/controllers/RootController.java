@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.MenuItem;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 
 /*
@@ -31,7 +30,7 @@ public class RootController implements Controller {
         recordManagerMenuItem.setOnAction(actionEvent -> {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/view/pages/database_manager_page.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("/view/pages/record_manager_page.fxml"));
                 fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
                 Scene scene = new Scene(fxmlLoader.load(), 960, 540);
                 Stage stage = new Stage();

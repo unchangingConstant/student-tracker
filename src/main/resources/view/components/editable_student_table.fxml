@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
+<?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
 
 
 <fx:root type="EditableStudentTable" xmlns:fx="http://javafx.com/fxml" styleClass="editable-student-table">
@@ -17,5 +17,5 @@
         <TableColumn text="Subjects" fx:id="subjectsColumn"/>
         <TableColumn text="Date Added" fx:id="dateAddedColumn"/>
     </columns>
-    <actionsColumn text="Actions"/>
+    <controlColumn text="Actions"/>
 </fx:root>

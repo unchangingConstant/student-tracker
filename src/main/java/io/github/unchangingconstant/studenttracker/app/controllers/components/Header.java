@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.custom;
+package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
 import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.Controller;

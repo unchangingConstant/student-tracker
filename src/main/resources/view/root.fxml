@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.controllers.custom.*?>
+<?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
 
 <AnchorPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.RootController" 
     xmlns:fx="http://javafx.com/fxml" fx:id="root">

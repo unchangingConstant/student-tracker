@@ -3,9 +3,9 @@ package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableStudentTable;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentAdder;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.StudentTableEditor;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentAdder;
+import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
@@ -48,6 +48,8 @@ public class DatabaseManagerPageController implements Controller {
     public void initialize() {
         studentTableModel.bindProperty(studentTable.itemsProperty());
         studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
+        studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
+
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }
 
@@ -71,6 +73,16 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onUpdateStudentAction() {
-        // TODO
+        StudentModel update = studentTable.getEditedStudentModel();
+        try {
+            attendanceService.updateStudent(
+            update.getStudentId().get(), 
+            update.getFullLegalName().get(), 
+            update.getPrefName().get(), 
+            update.getSubjects().get());
+        } catch (InvalidDatabaseEntryException e) {
+            e.printStackTrace();
+        }
+        studentTable.editedRowIndexProperty().set(-1);
     }
 }

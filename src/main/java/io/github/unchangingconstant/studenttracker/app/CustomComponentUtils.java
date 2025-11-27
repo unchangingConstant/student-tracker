@@ -3,10 +3,9 @@ package io.github.unchangingconstant.studenttracker.app;
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 
 public class CustomComponentUtils {
-    public static void hookIntoFXML(Node component, String fxmlPath)    {
+    public static void hookIntoFXML(Object component, String fxmlPath)    {
         FXMLLoader loader = new FXMLLoader(component.getClass().getResource(fxmlPath));
         loader.setRoot(component);
         loader.setController(component);
