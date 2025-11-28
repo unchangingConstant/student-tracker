@@ -15,6 +15,10 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/*
+ *  TODO make it so it updates if any field in the ongoingVisit model is updated behind the scenes
+ *  (Student name, subjects, etc.) 
+ */
 @Singleton
 public class OngoingVisitTableModel {
 
