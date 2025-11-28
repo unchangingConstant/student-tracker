@@ -5,6 +5,7 @@ import java.net.URL;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
 import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,10 +15,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/**
- * TODO Consider more event driven approach, should DAO be accessible via a
- * service and send events to the model? Avoids hard-coded model-dao sync
- */
 public class StudentTrackerApp extends Application {
 
         public static final Injector appContext = Guice.createInjector(new DatabaseModule());

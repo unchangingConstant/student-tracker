@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.dao;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
@@ -53,6 +54,10 @@ public interface DatabaseDAO {
     @RegisterRowMapper(RowToVisitMapper.class)
     @KeyColumn("visit_id")
     public Map<Integer, VisitDomain> getAllVisits();
+
+    @SqlQuery("SELECT * FROM visits WHERE student_id = ?")
+    @RegisterRowMapper(RowToVisitMapper.class)
+    public List<VisitDomain> getStudentVisits(Integer studentId);
 
     @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the visit
