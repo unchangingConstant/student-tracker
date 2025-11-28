@@ -32,11 +32,6 @@ import javafx.util.Duration;
 
 /*
  * Used to view students current at the center
- * 
- * Plan to implement time remaining:
- * 
- * Create a custom TableColumn that maintains a single timeline for all of its values.
- * 
  */
 public class LiveAttendanceView extends TableView<OngoingVisitModel> implements Controller {
 
