@@ -31,7 +31,7 @@ public class OngoingVisitTableModel {
         Collection<OngoingVisitDomain> initialData = attendanceService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
         initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));
-        Observer<Integer, OngoingVisitDomain> observer = attendanceService.getOngoingVisitsObserver();
+        Observer<OngoingVisitDomain> observer = attendanceService.getOngoingVisitsObserver();
         observer.subscribeToDeletes(visit -> onOngoingVisitDelete(visit));
         observer.subscribeToInserts(visit -> onOngoingVisitInsert(visit));
         observer.subscribeToUpdates(visit -> onOngoingVisitUpdate(visit));
@@ -55,15 +55,17 @@ public class OngoingVisitTableModel {
         prop.bind(ongoingVisits);
     }
 
-    private void onOngoingVisitDelete(Integer deleted) {
-        Boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted);
+    private void onOngoingVisitDelete(OngoingVisitDomain deleted) {
+        Boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted.getStudentId());
         if (!removed) {
             throw new NoSuchElementException(String.format("Tried to delete OngoingVisit with studentId %d but it could not be found", deleted));
         }
     }
 
-    private void onOngoingVisitInsert(Integer inserted) {
-        OngoingVisitModel newVisit = DomainToOngoingVisitModelMapper.map(attendanceService.getOngoingVisit(inserted));
+    private void onOngoingVisitInsert(OngoingVisitDomain inserted) {
+        // TODO Service can't provide all OngoingVisitDomain info which is why the model must pull from the disk
+        // Find some solution to this. A cache for the AttendanceService is becoming an increasingly good idea
+        OngoingVisitModel newVisit = DomainToOngoingVisitModelMapper.map(attendanceService.getOngoingVisit(inserted.getStudentId()));
         ongoingVisits.add(newVisit);
     }
 

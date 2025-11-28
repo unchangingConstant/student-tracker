@@ -21,11 +21,11 @@ public class AttendanceService {
     private DatabaseDAO dao;
 
     @Getter
-    private Observer<Integer, OngoingVisitDomain> ongoingVisitsObserver;
+    private Observer<OngoingVisitDomain> ongoingVisitsObserver;
     @Getter
-    private Observer<Integer, VisitDomain> visitsObserver;
+    private Observer<VisitDomain> visitsObserver;
     @Getter
-    private Observer<Integer, StudentDomain> studentsObserver;
+    private Observer<StudentDomain> studentsObserver;
 
     @Inject
     public AttendanceService(DatabaseDAO dao)  {
@@ -53,14 +53,17 @@ public class AttendanceService {
 
     public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
         StudentDomain validStudent = validateStudent(fullLegalName, prefName, subjects);
-        Integer studentId = dao.insertStudent(validStudent.getFullLegalName(), validStudent.getPrefName(), subjects, Instant.now());
-        studentsObserver.triggerInsert(studentId);
+        Instant dateAdded = Instant.now();
+        Integer studentId = dao.insertStudent(validStudent.getFullLegalName(), validStudent.getPrefName(), subjects, dateAdded);
+        validStudent.setStudentId(studentId);
+        validStudent.setDateAdded(dateAdded);
+        studentsObserver.triggerInsert(validStudent);
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
         try {
             if (dao.deleteStudent(studentId))   {
-                studentsObserver.triggerDelete(studentId);
+                studentsObserver.triggerDelete(StudentDomain.builder().studentId(studentId).build());
                 return;
             }
             throw new NoSuchElementException();
@@ -97,12 +100,14 @@ public class AttendanceService {
 
     public void insertVisit(Integer studentId, Instant startTime, Instant endTime)  {
         Integer visitId = dao.insertVisit(startTime, endTime, studentId);
-        visitsObserver.triggerInsert(visitId);
+        VisitDomain visit = VisitDomain.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build();
+        visitsObserver.triggerInsert(visit);
     }
 
     public void deleteVisit(Integer visitId)   {
-        dao.deleteVisit(visitId);
-        visitsObserver.triggerDelete(visitId);
+        dao.deleteVisit(visitId); // TODO wtf is this
+        VisitDomain visit = VisitDomain.builder().visitId(visitId).build();
+        visitsObserver.triggerDelete(visit);
     }
 
     public List<VisitDomain> getStudentVisits(Integer studentId) {
@@ -127,18 +132,20 @@ public class AttendanceService {
         if (dao.getOngoingVisit(studentId) != null ) {
             throw new IllegalStateException("Student is already in the center.");
         };
-        dao.insertOngoingVisit(studentId, Instant.now());
-        ongoingVisitsObserver.triggerInsert(studentId);
+        Instant startTime = Instant.now();
+        dao.insertOngoingVisit(studentId, startTime);
+        ongoingVisitsObserver.triggerInsert(OngoingVisitDomain.builder().studentId(studentId).startTime(startTime).build());
     }
 
     // update!!! Should return request status
     public void endOngoingVisit(Integer studentId, Instant startTime) {
         // Ends ongoing visit
         dao.deleteOngoingVisit(studentId);
-        ongoingVisitsObserver.triggerDelete(studentId);
+        ongoingVisitsObserver.triggerDelete(OngoingVisitDomain.builder().studentId(studentId).build());
         // Logs endtime into Visit table
-        Integer visitId = dao.insertVisit(startTime, Instant.now(), studentId);
-        visitsObserver.triggerInsert(visitId);
+        Instant endTime = Instant.now();
+        Integer visitId = dao.insertVisit(startTime, endTime, studentId);
+        visitsObserver.triggerInsert(VisitDomain.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build());
     }
 
     static public class InvalidDatabaseEntryException extends Exception {

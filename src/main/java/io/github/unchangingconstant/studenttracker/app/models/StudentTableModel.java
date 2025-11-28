@@ -31,9 +31,9 @@ public class StudentTableModel {
         this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
         initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
         // Ensures model state is synced to database at all times
-        Observer<Integer, StudentDomain> observer = attendanceService.getStudentsObserver();
-        observer.subscribeToDeletes(studentId -> this.onDeleteStudent(studentId));
-        observer.subscribeToInserts(studentId -> this.onInsertStudent(studentId));
+        Observer<StudentDomain> observer = attendanceService.getStudentsObserver();
+        observer.subscribeToDeletes(student -> this.onDeleteStudent(student));
+        observer.subscribeToInserts(student -> this.onInsertStudent(student));
         observer.subscribeToUpdates(student -> this.onUpdateStudent(student));
 
         this.attendanceService = attendanceService;
@@ -56,12 +56,12 @@ public class StudentTableModel {
         throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + "not found");
     }
 
-    private void onInsertStudent(Integer studentId) {
-        students.add(DomainToStudentModelMapper.map(attendanceService.getStudent(studentId)));
+    private void onInsertStudent(StudentDomain student) {
+        students.add(DomainToStudentModelMapper.map(student));
     }
 
-    private void onDeleteStudent(Integer studentId) {
-        students.removeIf(student -> student.getStudentId().get() == studentId);
+    private void onDeleteStudent(StudentDomain student) {
+        students.removeIf(studentModel -> studentModel.getStudentId().get() == student.getStudentId());
     }
 
     private void onUpdateStudent(StudentDomain updatedStudent) {

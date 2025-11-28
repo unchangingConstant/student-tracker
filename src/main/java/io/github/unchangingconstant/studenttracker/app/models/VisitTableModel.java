@@ -36,9 +36,9 @@ public class VisitTableModel {
         this.attendanceService = attendanceService;
         setupCurrentStudentProperty();
 
-        Observer<Integer, VisitDomain> obs = attendanceService.getVisitsObserver();
-        obs.subscribeToInserts(visitId -> onVisitInsert(visitId));
-        obs.subscribeToDeletes(visitId -> onVisitDelete(visitId));
+        Observer<VisitDomain> obs = attendanceService.getVisitsObserver();
+        obs.subscribeToInserts(visit -> onVisitInsert(visit));
+        obs.subscribeToDeletes(visit -> onVisitDelete(visit));
         obs.subscribeToUpdates(visit -> onVisitUpdate(visit));
     }
 
@@ -50,15 +50,21 @@ public class VisitTableModel {
         prop.bind(visits);
     }
 
-    private void onVisitInsert(Integer visitId) {
-        visits.add(DomainToVisitModelMapper.map(attendanceService.getVisit(visitId)));
+    private void onVisitInsert(VisitDomain visit) {
+        if (!visit.getStudentId().equals(currentStudent.get()))  {
+            return;
+        }
+        visits.add(DomainToVisitModelMapper.map(visit));
     }
 
-    private void onVisitDelete(Integer visitId) {
-        visits.removeIf(visit -> visit.getVisitId().get().equals(visitId));
+    private void onVisitDelete(VisitDomain visit) {
+        visits.removeIf(visitModel -> visitModel.getVisitId().get().equals(visit.getStudentId()));
     }
 
     private void onVisitUpdate(VisitDomain updatedVisit) {
+        if (!updatedVisit.getStudentId().equals(currentStudent.get()))  {
+            return;
+        }
         for (VisitModel visit: visits) {
             if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
                 visit.getStudentId().set(updatedVisit.getStudentId());

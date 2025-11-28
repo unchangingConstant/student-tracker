@@ -10,13 +10,9 @@ import lombok.Value;
 @Builder
 public class OngoingVisitDomain {
     
-    @NonNull
     private Integer studentId;
-    @NonNull
     private Instant startTime;
-    @NonNull
     private Integer subjects;
-    @NonNull
     private String studentName;
 
 }

@@ -4,18 +4,15 @@ import java.time.Instant;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
+// See issue #16
 @Data
 @Builder
 public class StudentDomain {
 
     private Integer studentId;
-    @NonNull
     private String fullLegalName;
-    @NonNull // Cannot be null but CAN be empty
     private String prefName;
-    @NonNull
     private Integer subjects;
     private Instant dateAdded;
 
