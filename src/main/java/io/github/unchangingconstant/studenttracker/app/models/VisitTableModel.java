@@ -1,12 +1,16 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
+import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import javafx.beans.property.Property;
@@ -23,21 +27,55 @@ public class VisitTableModel {
     private final SimpleListProperty<VisitModel> visits;  
     
     private final SimpleIntegerProperty currentStudent;
+    public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
 
     @Inject
     public VisitTableModel(AttendanceService attendanceService) {
         this.currentStudent = new SimpleIntegerProperty(-1);
-        this.visits = new SimpleListProperty<>();
+        this.visits = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.attendanceService = attendanceService;
+        setupCurrentStudentProperty();
+
+        Observer<Integer, VisitDomain> obs = attendanceService.getVisitsObserver();
+        obs.subscribeToInserts(visitId -> onVisitInsert(visitId));
+        obs.subscribeToDeletes(visitId -> onVisitDelete(visitId));
+        obs.subscribeToUpdates(visit -> onVisitUpdate(visit));
     }
 
-    public void bind(Property<ObservableList<VisitModel>> prop) {
+    public ObservableList<VisitModel> getVisits() {
+        return FXCollections.unmodifiableObservableList(visits.get());
+    }
+
+    public void bindProperty(Property<ObservableList<VisitModel>> prop) {
         prop.bind(visits);
+    }
+
+    private void onVisitInsert(Integer visitId) {
+        visits.add(DomainToVisitModelMapper.map(attendanceService.getVisit(visitId)));
+    }
+
+    private void onVisitDelete(Integer visitId) {
+        visits.removeIf(visit -> visit.getVisitId().get().equals(visitId));
+    }
+
+    private void onVisitUpdate(VisitDomain updatedVisit) {
+        for (VisitModel visit: visits) {
+            if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
+                visit.getStudentId().set(updatedVisit.getStudentId());
+                visit.getStartTime().set(updatedVisit.getStartTime());
+                visit.getEndTime().set(updatedVisit.getEndTime());
+                break;
+            }
+        }
     }
 
     private void setupCurrentStudentProperty() {
         currentStudent.addListener((obs, oldVal, newVal) -> {
-            
+            visits.clear();
+            if (!newVal.equals(-1)) {
+                List<VisitDomain> studentVisits = attendanceService.getStudentVisits(newVal.intValue());
+                studentVisits.forEach(visitDomain -> visits.add(DomainToVisitModelMapper.map(visitDomain)));
+            }
         });
     }
 

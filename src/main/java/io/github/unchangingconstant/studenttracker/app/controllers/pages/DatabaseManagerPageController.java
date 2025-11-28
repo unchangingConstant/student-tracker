@@ -4,14 +4,19 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableVisitTable;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.SelectableStudentListView;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentAdder;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
+import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
 /*
@@ -23,25 +28,28 @@ public class DatabaseManagerPageController implements Controller {
     @FXML 
     private EditableStudentTable studentTable;
     @FXML
+    private EditableVisitTable visitTable;
+    @FXML
     private StudentAdder studentAdder;
     @FXML
     private HBox editorContainer;
+    @FXML
+    private SelectableStudentListView selectableStudentList;
 
     /*
      * MODELS
      */
-    // Represents the current editing mode of this page.
-    enum EditMode {ADDING_STUDENT, EDITING_STUDENT, EDIT_OFF}
-    private SimpleObjectProperty<EditMode> editMode = new SimpleObjectProperty<EditMode>(EditMode.EDIT_OFF);
-    // State of student table in the database
+    // State of the database 
     private StudentTableModel studentTableModel;
+    private VisitTableModel visitTableModel;
 
     private AttendanceService attendanceService;
 
     @Inject
-    public DatabaseManagerPageController(StudentTableModel studentTableModel, AttendanceService attendanceService)  {
+    public DatabaseManagerPageController(StudentTableModel studentTableModel, VisitTableModel visitTableModel, AttendanceService attendanceService)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;
+        this.visitTableModel = visitTableModel;
     }
 
     @Override
@@ -49,6 +57,18 @@ public class DatabaseManagerPageController implements Controller {
         studentTableModel.bindProperty(studentTable.itemsProperty());
         studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
         studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
+
+        visitTableModel.bindProperty(visitTable.itemsProperty());
+        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty());
+
+        visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
+            String studentFirstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
+            visitTable.titleProperty().set("Viewing " + studentFirstName + "'s Attendance");
+        });
+
+        visitTableModel.currentStudentProperty().set(8);
+
+        studentTableModel.bindProperty(selectableStudentList.itemsProperty());
 
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }

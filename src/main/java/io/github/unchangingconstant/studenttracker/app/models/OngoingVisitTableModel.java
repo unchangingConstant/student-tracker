@@ -7,7 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModel;
+import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import javafx.beans.property.Property;
@@ -30,7 +30,7 @@ public class OngoingVisitTableModel {
         this.attendanceService = attendanceService;
         Collection<OngoingVisitDomain> initialData = attendanceService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
-        initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModel.map(domain)));
+        initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));
         Observer<Integer, OngoingVisitDomain> observer = attendanceService.getOngoingVisitsObserver();
         observer.subscribeToDeletes(visit -> onOngoingVisitDelete(visit));
         observer.subscribeToInserts(visit -> onOngoingVisitInsert(visit));
@@ -63,14 +63,14 @@ public class OngoingVisitTableModel {
     }
 
     private void onOngoingVisitInsert(Integer inserted) {
-        OngoingVisitModel newVisit = DomainToOngoingVisitModel.map(attendanceService.getOngoingVisit(inserted));
+        OngoingVisitModel newVisit = DomainToOngoingVisitModelMapper.map(attendanceService.getOngoingVisit(inserted));
         ongoingVisits.add(newVisit);
     }
 
     private void onOngoingVisitUpdate(OngoingVisitDomain updated) {
         for (int i = 0; i < ongoingVisits.size(); i++){
             if (ongoingVisits.get(i).getStudentId().getValue().equals(updated.getStudentId())) {
-                ongoingVisits.set(i, DomainToOngoingVisitModel.map(updated));
+                ongoingVisits.set(i, DomainToOngoingVisitModelMapper.map(updated));
                 return;
             }
         }

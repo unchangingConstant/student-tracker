@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -102,6 +103,10 @@ public class AttendanceService {
     public void deleteVisit(Integer visitId)   {
         dao.deleteVisit(visitId);
         visitsObserver.triggerDelete(visitId);
+    }
+
+    public List<VisitDomain> getStudentVisits(Integer studentId) {
+        return dao.getStudentVisits(studentId);
     }
 
     /*

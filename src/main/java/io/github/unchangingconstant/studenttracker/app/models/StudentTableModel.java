@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -46,13 +47,13 @@ public class StudentTableModel {
         return FXCollections.unmodifiableObservableList(students.get());
     }
 
-    public Boolean containsStudentWithId(Integer studentId) {
-        for (StudentModel student: students)    {
-            if (student.getStudentId().getValue().equals(studentId)) {
-                return true;
+    public StudentModel getStudent(Integer studentId) {
+        for (StudentModel student: students) {
+            if (student.getStudentId().get().equals(studentId)) {
+                return student;
             }
         }
-        return false;
+        throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + "not found");
     }
 
     private void onInsertStudent(Integer studentId) {

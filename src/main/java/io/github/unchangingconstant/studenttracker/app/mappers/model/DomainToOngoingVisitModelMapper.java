@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
 
-public class DomainToOngoingVisitModel {
+public class DomainToOngoingVisitModelMapper {
     
     public static OngoingVisitModel map(OngoingVisitDomain domain)   {
         return new OngoingVisitModel(
