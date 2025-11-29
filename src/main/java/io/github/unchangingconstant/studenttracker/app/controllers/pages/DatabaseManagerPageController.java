@@ -14,9 +14,6 @@ import io.github.unchangingconstant.studenttracker.app.services.AttendanceServic
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
 /*
@@ -64,12 +61,13 @@ public class DatabaseManagerPageController implements Controller {
 
         // Binds the table's title to the currentStudentProperty
         visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.equals(-1)) return;
             String studentFirstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
             visitTable.titleProperty().set("Viewing " + studentFirstName + "'s Attendance");
         });
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
         selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            visitTableModel.currentStudentProperty().set(newVal == null ? null : newVal.getStudentId().get());
+            visitTableModel.currentStudentProperty().set(newVal == null ? -1 : newVal.getStudentId().get());
         });
 
         studentTableModel.bindProperty(selectableStudentList.itemsProperty());

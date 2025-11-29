@@ -61,6 +61,13 @@ public class AttendanceService {
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
+        // First deletes visits
+        List<VisitDomain> deletedVisits = dao.getStudentVisits(studentId); 
+        dao.deleteStudentVisits(studentId);
+        visitsObserver.triggerDelete(deletedVisits);
+
+        // Then deletes students
+        // TODO refactor? Check if the try-catch block is necessary after the issue 17 change
         try {
             if (dao.deleteStudent(studentId))   {
                 studentsObserver.triggerDelete(StudentDomain.builder().studentId(studentId).build());

@@ -8,7 +8,6 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
@@ -37,9 +36,9 @@ public class VisitTableModel {
         setupCurrentStudentProperty();
 
         Observer<VisitDomain> obs = attendanceService.getVisitsObserver();
-        obs.subscribeToInserts(visit -> onVisitInsert(visit));
-        obs.subscribeToDeletes(visit -> onVisitDelete(visit));
-        obs.subscribeToUpdates(visit -> onVisitUpdate(visit));
+        obs.subscribeToInserts(visits -> onVisitInsert(visits));
+        obs.subscribeToDeletes(visits -> onVisitDelete(visits));
+        obs.subscribeToUpdates(visits -> onVisitUpdate(visits));
     }
 
     public ObservableList<VisitModel> getVisits() {
@@ -50,29 +49,32 @@ public class VisitTableModel {
         prop.bind(visits);
     }
 
-    private void onVisitInsert(VisitDomain visit) {
-        if (!visit.getStudentId().equals(currentStudent.get()))  {
-            return;
-        }
-        visits.add(DomainToVisitModelMapper.map(visit));
+    private void onVisitInsert(List<VisitDomain> insertedVisits) {
+        insertedVisits.forEach(visit -> {
+            if (!visit.getStudentId().equals(currentStudent.get())) return;
+            visits.add(DomainToVisitModelMapper.map(visit));
+        });
     }
 
-    private void onVisitDelete(VisitDomain visit) {
-        visits.removeIf(visitModel -> visitModel.getVisitId().get().equals(visit.getStudentId()));
+    private void onVisitDelete(List<VisitDomain> deletedVisits) {
+        deletedVisits.forEach(visit -> {
+            if (!visit.getStudentId().equals(currentStudent.get())) return;
+            visits.removeIf(otherVisit -> visit.getStudentId().equals(otherVisit.getStudentId().get()));
+        });
     }
 
-    private void onVisitUpdate(VisitDomain updatedVisit) {
-        if (!updatedVisit.getStudentId().equals(currentStudent.get()))  {
-            return;
-        }
-        for (VisitModel visit: visits) {
-            if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
-                visit.getStudentId().set(updatedVisit.getStudentId());
-                visit.getStartTime().set(updatedVisit.getStartTime());
-                visit.getEndTime().set(updatedVisit.getEndTime());
-                break;
+    private void onVisitUpdate(List<VisitDomain> updatedVisits) {
+        updatedVisits.forEach(updatedVisit -> {
+            if (!updatedVisit.getStudentId().equals(currentStudent.get())) return;
+            for (VisitModel visit: visits) {
+                if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
+                    visit.getStudentId().set(updatedVisit.getStudentId());
+                    visit.getStartTime().set(updatedVisit.getStartTime());
+                    visit.getEndTime().set(updatedVisit.getEndTime());
+                    break;
+                }
             }
-        }
+        });
     }
 
     private void setupCurrentStudentProperty() {

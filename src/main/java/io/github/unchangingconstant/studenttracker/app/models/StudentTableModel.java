@@ -1,6 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.google.inject.Inject;
@@ -32,9 +33,9 @@ public class StudentTableModel {
         initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
         // Ensures model state is synced to database at all times
         Observer<StudentDomain> observer = attendanceService.getStudentsObserver();
-        observer.subscribeToDeletes(student -> this.onDeleteStudent(student));
-        observer.subscribeToInserts(student -> this.onInsertStudent(student));
-        observer.subscribeToUpdates(student -> this.onUpdateStudent(student));
+        observer.subscribeToDeletes(students -> this.onDeleteStudent(students));
+        observer.subscribeToInserts(students -> this.onInsertStudent(students));
+        observer.subscribeToUpdates(students -> this.onUpdateStudent(students));
 
         this.attendanceService = attendanceService;
     }
@@ -53,27 +54,33 @@ public class StudentTableModel {
                 return student;
             }
         }
-        throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + "not found");
+        throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + " not found");
     }
 
-    private void onInsertStudent(StudentDomain student) {
-        students.add(DomainToStudentModelMapper.map(student));
+    private void onInsertStudent(List<StudentDomain> insertedStudents) {
+        insertedStudents.forEach(student -> {
+            students.add(DomainToStudentModelMapper.map(student));
+        });
     }
 
-    private void onDeleteStudent(StudentDomain student) {
-        students.removeIf(studentModel -> studentModel.getStudentId().get() == student.getStudentId());
+    private void onDeleteStudent(List<StudentDomain> deletedStudents) {
+        deletedStudents.forEach(student -> {
+            students.removeIf(studentModel -> studentModel.getStudentId().get() == student.getStudentId());
+        });
     }
 
-    private void onUpdateStudent(StudentDomain updatedStudent) {
-        for (StudentModel student: students) {
-            if (student.getStudentId().get() == updatedStudent.getStudentId()) {
-                student.getFullLegalName().set(updatedStudent.getFullLegalName());
-                student.getPrefName().set(updatedStudent.getPrefName());
-                student.getSubjects().set(updatedStudent.getSubjects());
-                break;
+    private void onUpdateStudent(List<StudentDomain> updatedStudents) {
+        updatedStudents.forEach(updatedStudent -> {
+            for (StudentModel student: students) {
+                if (student.getStudentId().get() == updatedStudent.getStudentId()) {
+                    student.getFullLegalName().set(updatedStudent.getFullLegalName());
+                    student.getPrefName().set(updatedStudent.getPrefName());
+                    student.getSubjects().set(updatedStudent.getSubjects());
+                    break;
+                }
             }
-        }
-        // TODO throw exception if loop exists with nothing??
+        });
+        // TODO throw exception if loop exits with nothing??
     }
 
 }

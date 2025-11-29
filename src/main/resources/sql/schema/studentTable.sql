@@ -5,4 +5,3 @@ CREATE TABLE IF NOT EXISTS students (
     subjects INTEGER NOT NULL,
     date_added INTEGER NOT NULL
 );
-
