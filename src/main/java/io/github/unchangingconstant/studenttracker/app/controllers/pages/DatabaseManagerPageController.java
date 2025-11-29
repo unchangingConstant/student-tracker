@@ -69,9 +69,8 @@ public class DatabaseManagerPageController implements Controller {
         });
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
         selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+            visitTableModel.currentStudentProperty().set(newVal == null ? null : newVal.getStudentId().get());
         });
-
 
         studentTableModel.bindProperty(selectableStudentList.itemsProperty());
 

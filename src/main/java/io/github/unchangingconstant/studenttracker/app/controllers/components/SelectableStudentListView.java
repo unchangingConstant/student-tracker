@@ -31,9 +31,6 @@ public class SelectableStudentListView extends ListView<StudentModel> implements
             cell.setGraphic(cellContent);
             return cell;
         });
-        focusModelProperty().get().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println(newVal);
-        });
     }
 
     @Override
