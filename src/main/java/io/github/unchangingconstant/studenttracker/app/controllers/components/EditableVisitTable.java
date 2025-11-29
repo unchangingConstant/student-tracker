@@ -1,5 +1,8 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
@@ -7,7 +10,10 @@ import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableRowTable;
 import io.github.unchangingconstant.studenttracker.app.models.VisitModel;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -38,22 +44,43 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
 
     public void initialize() {
         setupCellValueFactories();
-        setupEditableCellFactories();
         // Puts the actions column at the end of the table
         getColumns().remove(getControlColumn());
         getControlColumn().getColumns().add(getControlColumn());
     }
 
     private void setupCellValueFactories() {
-        startTimeColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTime().asString());
-        endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTime().asString());
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm").withZone(ZoneId.systemDefault());
+
+        startTimeColumn.setCellValueFactory(cellData -> {
+            ObjectProperty<Instant> startTime = cellData.getValue().getStartTime();
+            StringProperty startTimeStr = new SimpleStringProperty(dateFormatter.format(startTime.get()));
+            startTime.addListener((obs, oldVal, newVal) -> {
+                startTimeStr.set(dateFormatter.format(newVal));
+            });
+            return startTimeStr;
+        });
+
+        endTimeColumn.setCellValueFactory(cellData -> {
+            ObjectProperty<Instant> endTime = cellData.getValue().getEndTime();
+            StringProperty endTimeStr = new SimpleStringProperty(dateFormatter.format(endTime.get()));
+            endTime.addListener((obs, oldVal, newVal) -> {
+                endTimeStr.set(dateFormatter.format(newVal));
+            });
+            return endTimeStr;
+        });
+
         durationColumn.setCellValueFactory(cellData -> {
-            VisitModel visit = cellData.getValue();
-            return new SimpleLongProperty(ChronoUnit.MINUTES.between(visit.getStartTime().get(), visit.getEndTime().get()));
+            SimpleLongProperty duration = new SimpleLongProperty(visitDuration(cellData.getValue()));
+            cellData.getValue().getStartTime().addListener((obs, oldVal, newVal) -> duration.set(visitDuration(cellData.getValue())));
+            cellData.getValue().getEndTime().addListener((obs, oldVal, newVal) -> duration.set(visitDuration(cellData.getValue())));
+            return duration;
         });
     }
 
-    private void setupEditableCellFactories() {
+    private Long visitDuration(VisitModel visit) {
+        return ChronoUnit.MINUTES.between(visit.getStartTime().get(), visit.getEndTime().get());
     }
 
     @Override
