@@ -14,13 +14,13 @@
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>
     </stylesheets>
-    <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER">
-        <HBox alignment="TOP_CENTER" prefWidth="600">
+    <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER">
+        <HBox alignment="TOP_CENTER" maxWidth="600">
             <StudentSelector fx:id="studentSelector"
                 HBox.hgrow="ALWAYS"/>
             <Button fx:id="startVisitButton" text="Start Visit"/>
         </HBox>
         <LiveAttendanceView fx:id="liveAttendanceView" 
-            VBox.vgrow="ALWAYS" prefWidth="600"/>
+            VBox.vgrow="ALWAYS"/>
     </VBox>
 </VBox>

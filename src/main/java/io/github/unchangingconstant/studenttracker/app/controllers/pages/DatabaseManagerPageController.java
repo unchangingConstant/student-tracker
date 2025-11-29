@@ -58,15 +58,20 @@ public class DatabaseManagerPageController implements Controller {
         studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
         studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
 
+        // Binds the visitTable to the visitTableModel
         visitTableModel.bindProperty(visitTable.itemsProperty());
         visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty());
 
+        // Binds the table's title to the currentStudentProperty
         visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
             String studentFirstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
             visitTable.titleProperty().set("Viewing " + studentFirstName + "'s Attendance");
         });
+        // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
+        selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
+            visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+        });
 
-        visitTableModel.currentStudentProperty().set(8);
 
         studentTableModel.bindProperty(selectableStudentList.itemsProperty());
 
