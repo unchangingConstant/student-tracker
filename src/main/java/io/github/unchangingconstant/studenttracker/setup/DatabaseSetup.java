@@ -1,7 +1,5 @@
 package io.github.unchangingconstant.studenttracker.setup;
 
-import java.io.IOException;
-
 import org.jdbi.v3.core.Jdbi;
 
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;

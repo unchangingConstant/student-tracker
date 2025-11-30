@@ -7,8 +7,10 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.scene.control.MenuItem;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -20,27 +22,59 @@ import javafx.scene.Scene;
 @Singleton
 public class WindowController {
 
+    private Stage recordManager;
+    private Stage exportDialog;
+
     @Inject
     public WindowController()   {
     }
 
-    public void initialize() {
-        recordManagerMenuItem.setOnAction(actionEvent -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/view/pages/record_manager_page.fxml"));
-                fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
-                Scene scene = new Scene(fxmlLoader.load(), 960, 540);
-                Stage stage = new Stage();
-                stage.setTitle(StudentTrackerApp.TITLE);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void openExportDialog() {
+        if (exportDialog != null) {
+            exportDialog.toFront();
+            return;
+        };
+        exportDialog = createStage("/view/pages/export_dialog.fxml");
+        exportDialog.setAlwaysOnTop(true);
+        exportDialog.onCloseRequestProperty().addListener((obs, oldVal, newVal) -> {
+            onCloseExportDialog();
         });
     }
 
-    private 
+    public void openRecordManager() {
+        if (recordManager != null) {
+            recordManager.toFront();
+            return;
+        };
+        recordManager = createStage("/view/pages/record_manager_page.fxml");
+        recordManager.onCloseRequestProperty().addListener((obs, oldVal, newVal) -> {
+            onCloseRecordManager();
+        });
+    }
+
+    private void onCloseExportDialog() {
+        exportDialog = null;
+    }
+
+    private void onCloseRecordManager() {
+        recordManager = null;
+    }
+
+    private Stage createStage(String fxmlPath) {
+        Stage stage = null;
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(fxmlPath));
+            fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
+            Scene scene = new Scene(fxmlLoader.load(), 960, 540);
+            stage = new Stage();
+            stage.setTitle(StudentTrackerApp.TITLE);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stage;
+    }
 
 }

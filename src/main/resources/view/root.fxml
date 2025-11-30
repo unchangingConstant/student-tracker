@@ -8,7 +8,8 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="root">
+<AnchorPane fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.WindowController"
+    xmlns:fx="http://javafx.com/fxml" fx:id="root">
     <stylesheets>
         <URL value="@root.css"/>
     </stylesheets>
@@ -17,7 +18,8 @@
             <menus>
                 <Menu text="Menu" fx:id="menuButton">
                     <items>
-                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
+                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"
+                            onAction="#openRecordManager"/>
                     </items>
                 </Menu>
             </menus>

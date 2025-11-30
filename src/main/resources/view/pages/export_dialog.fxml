@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
+
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.ExportDialogController"
+    xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER">
+    <Header text="Export Records"/>
+    <Label fx:id="message"/>
+    <Button fx:id="button"/>
+</VBox>

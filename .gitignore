@@ -4,3 +4,5 @@ target
 .vscode
 # database created upon application run to be ignored
 database.db
+# folder to which records are exported
+exports
