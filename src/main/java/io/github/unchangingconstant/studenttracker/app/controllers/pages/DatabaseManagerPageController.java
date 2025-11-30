@@ -15,6 +15,7 @@ import io.github.unchangingconstant.studenttracker.app.services.AttendanceServic
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
@@ -36,6 +37,8 @@ public class DatabaseManagerPageController implements Controller {
     private HBox editorContainer;
     @FXML
     private SelectableStudentListView selectableStudentList;
+    @FXML
+    private Button exportButton;
 
     /*
      * MODELS

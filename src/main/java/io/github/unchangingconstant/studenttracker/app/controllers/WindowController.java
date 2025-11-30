@@ -3,6 +3,7 @@ package io.github.unchangingconstant.studenttracker.app.controllers;
 import java.io.IOException;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
@@ -16,16 +17,13 @@ import javafx.scene.Scene;
 /*
  * Will "manage" all GUI windows
  */
-public class RootController implements Controller {
-
-    @FXML
-    private MenuItem recordManagerMenuItem;
+@Singleton
+public class WindowController {
 
     @Inject
-    public RootController()   {
+    public WindowController()   {
     }
 
-    @Override
     public void initialize() {
         recordManagerMenuItem.setOnAction(actionEvent -> {
             try {
@@ -42,5 +40,7 @@ public class RootController implements Controller {
             }
         });
     }
+
+    private 
 
 }
