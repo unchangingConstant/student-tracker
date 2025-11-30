@@ -1,14 +1,11 @@
 package io.github.unchangingconstant.studenttracker.app.models;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;

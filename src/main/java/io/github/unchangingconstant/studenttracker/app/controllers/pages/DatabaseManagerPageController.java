@@ -13,7 +13,9 @@ import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 /*
@@ -22,6 +24,8 @@ import javafx.scene.layout.HBox;
  */
 public class DatabaseManagerPageController implements Controller {
     
+    @FXML
+    private Label title;
     @FXML 
     private EditableStudentTable studentTable;
     @FXML
@@ -59,15 +63,18 @@ public class DatabaseManagerPageController implements Controller {
         visitTableModel.bindProperty(visitTable.itemsProperty());
         visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty());
 
-        // Binds the table's title to the currentStudentProperty
-        visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.equals(-1)) return;
-            String studentFirstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
-            visitTable.titleProperty().set("Viewing " + studentFirstName + "'s Attendance");
-        });
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
         selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            visitTableModel.currentStudentProperty().set(newVal == null ? -1 : newVal.getStudentId().get());
+            visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+        });
+        // Binds title to visitTableModel's currently selected student
+        visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
+            title.textProperty().bind(Bindings.createStringBinding(
+                () -> {
+                    String firstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
+                    return "Viewing " + firstName + "'s attendance...";
+                }, 
+                studentTableModel.getStudent(newVal.intValue()).getFullLegalName()));
         });
 
         studentTableModel.bindProperty(selectableStudentList.itemsProperty());

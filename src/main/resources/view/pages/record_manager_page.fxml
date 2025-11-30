@@ -27,6 +27,7 @@
             <HBox>
                 <SelectableStudentListView fx:id="selectableStudentList"/>
                 <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER" id="body" spacing="10">
+                    <Label fx:id="title"/>
                     <EditableVisitTable fx:id="visitTable" prefWidth="900" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </HBox>

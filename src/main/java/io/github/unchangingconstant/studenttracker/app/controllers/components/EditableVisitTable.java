@@ -20,10 +20,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
 
+/**
+ * I have a feeling this will need to be editable some day
+ */
 public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> implements Controller {
 
-    @FXML
-    private TableColumn<VisitModel, String> titleColumn;
     @FXML
     private TableColumn<VisitModel, String> startTimeColumn;
     @FXML
@@ -33,9 +34,7 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
 
     private final SimpleIntegerProperty currentStudent = new SimpleIntegerProperty(-1);
     public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
-
-    public final StringProperty titleProperty() {return titleColumn.textProperty();}
-
+    
     public EditableVisitTable() {
         super();
         CustomComponentUtils.hookIntoFXML(this, "/view/components/editable_visit_table.fxml");
@@ -43,9 +42,7 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
 
     public void initialize() {
         setupCellValueFactories();
-        // Puts the actions column at the end of the table
         getColumns().remove(getControlColumn());
-        getControlColumn().getColumns().add(getControlColumn());
     }
 
     private void setupCellValueFactories() {
