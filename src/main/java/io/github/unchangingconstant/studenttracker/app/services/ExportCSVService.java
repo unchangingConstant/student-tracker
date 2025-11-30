@@ -31,7 +31,7 @@ public class ExportCSVService {
             "." + File.separator +
             "exports" + File.separator + 
             service.getStudent(studentId).getFullLegalName().replaceAll("\\s", "") + "_" +
-            dateFormatter.format(now) + "_" + timeFormatter.format(now);
+            dateFormatter.format(now) + "_" + timeFormatter.format(now) + ".csv";
 
         try {
             Writer writer = new FileWriter(exportName);
