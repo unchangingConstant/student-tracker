@@ -36,7 +36,7 @@ public class WindowController {
         };
         exportDialog = createStage("/view/pages/export_dialog.fxml");
         exportDialog.setAlwaysOnTop(true);
-        exportDialog.onCloseRequestProperty().addListener((obs, oldVal, newVal) -> {
+        exportDialog.setOnCloseRequest(windowEvent -> {
             onCloseExportDialog();
         });
     }
@@ -47,7 +47,7 @@ public class WindowController {
             return;
         };
         recordManager = createStage("/view/pages/record_manager_page.fxml");
-        recordManager.onCloseRequestProperty().addListener((obs, oldVal, newVal) -> {
+        recordManager.setOnCloseRequest(windowEvent -> {
             onCloseRecordManager();
         });
     }
