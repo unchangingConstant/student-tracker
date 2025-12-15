@@ -24,7 +24,7 @@ public class StudentTrackerApp extends Application {
         @Override
         public void start(Stage stage) throws Exception {
 
-                URL location = getClass().getResource("/view/root.fxml");
+                URL location = getClass().getResource("/view/pages/attendance_dashboard_page.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
                 fxmlLoader.setControllerFactory(appContext::getInstance);
                 Parent root = fxmlLoader.load();

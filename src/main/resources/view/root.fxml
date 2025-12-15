@@ -18,7 +18,7 @@
             <menus>
                 <Menu text="Menu" fx:id="menuButton">
                     <items>
-                        <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"
+                        <MenuItem text="Record Manager" fx:id="openRecordManagerMenuItem"
                             onAction="#openRecordManager"/>
                     </items>
                 </Menu>

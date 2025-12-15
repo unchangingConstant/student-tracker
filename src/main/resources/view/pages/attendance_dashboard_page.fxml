@@ -14,6 +14,15 @@
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>
     </stylesheets>
+    <Header text="Attendance Dashboard">
+        <menus>
+            <Menu text="Menu" fx:id="menuButton">
+                <items>
+                    <MenuItem text="Record Manager" fx:id="recordManagerMenuItem"/>
+                </items>
+            </Menu>
+        </menus>
+    </Header>
     <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER">
         <HBox alignment="TOP_CENTER" maxWidth="600">
             <StudentSelector fx:id="studentSelector"

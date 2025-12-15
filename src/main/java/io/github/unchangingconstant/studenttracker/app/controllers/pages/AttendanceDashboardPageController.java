@@ -2,7 +2,9 @@ package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 
 import com.google.inject.Inject;
 
+import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.LiveAttendanceView;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentSelector;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
@@ -12,6 +14,8 @@ import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 
 public class AttendanceDashboardPageController implements Controller {
 
@@ -22,7 +26,9 @@ public class AttendanceDashboardPageController implements Controller {
     @FXML
     private Button startVisitButton;
     @FXML
-    private Button menuButton;
+    private Menu menuButton;
+    @FXML
+    private MenuItem recordManagerMenuItem;
 
     private OngoingVisitTableModel ongoingVisitsModel;
     private StudentTableModel studentTableModel;
@@ -46,7 +52,8 @@ public class AttendanceDashboardPageController implements Controller {
             }
         });
         liveAttendanceView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
-
+        recordManagerMenuItem.setOnAction((actionEvent) -> 
+            {StudentTrackerApp.appContext.getInstance(WindowController.class).openRecordManager();});
     }
 
     public void onStartVisitAction(StudentModel selectedStudent) {
