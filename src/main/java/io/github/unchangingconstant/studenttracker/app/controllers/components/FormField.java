@@ -1,7 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,7 +35,7 @@ public class FormField extends VBox implements Controller {
 
   public FormField()  {
     super();
-    CustomComponentUtils.hookIntoFXML(this, "/view/components/form_field.fxml");
+    ComponentUtils.hookIntoFXML(this, "/view/components/form_field.fxml");
   }
 
   @Override

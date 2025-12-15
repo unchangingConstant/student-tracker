@@ -1,7 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -14,7 +14,7 @@ public class SelectableStudentListView extends ListView<StudentModel> implements
 
     public SelectableStudentListView() {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/selectable_student_list_view.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/selectable_student_list_view.fxml");
     }
 
     @Override

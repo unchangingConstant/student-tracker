@@ -3,7 +3,7 @@ package io.github.unchangingconstant.studenttracker.app.controllers.components;
 import java.util.List;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -41,7 +41,7 @@ public class StudentAdder extends HBox implements Controller {
 
     public StudentAdder()  {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/student_adder.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/student_adder.fxml");
     }
 
     @Override

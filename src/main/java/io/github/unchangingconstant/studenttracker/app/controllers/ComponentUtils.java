@@ -1,10 +1,10 @@
-package io.github.unchangingconstant.studenttracker.app;
+package io.github.unchangingconstant.studenttracker.app.controllers;
 
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;
 
-public class CustomComponentUtils {
+public class ComponentUtils  {
     public static void hookIntoFXML(Object component, String fxmlPath)    {
         FXMLLoader loader = new FXMLLoader(component.getClass().getResource(fxmlPath));
         loader.setRoot(component);

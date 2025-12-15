@@ -5,7 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableRowTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableRowTableCell;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
@@ -41,7 +41,7 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
 
     public EditableStudentTable() {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/editable_student_table.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/editable_student_table.fxml");
     }
 
     @Override

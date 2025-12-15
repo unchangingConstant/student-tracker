@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableVisitTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.SelectableStudentListView;
@@ -12,7 +13,6 @@ import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
 import javafx.beans.binding.Bindings;
@@ -87,7 +87,7 @@ public class DatabaseManagerPageController implements Controller {
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
 
         exportButton.setOnAction((actionEvent) -> {
-            ExportCSVService.exportStudentVisitsCSV(visitTableModel.currentStudentProperty().get());
+            StudentTrackerApp.appContext.getInstance(WindowController.class).openExportDialog();
         });
 
     }

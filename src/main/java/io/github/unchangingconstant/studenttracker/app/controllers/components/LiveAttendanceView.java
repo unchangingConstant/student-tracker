@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -42,7 +42,7 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
 
     public LiveAttendanceView() {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/live_attendance_view.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/live_attendance_view.fxml");
     }
 
     @Override

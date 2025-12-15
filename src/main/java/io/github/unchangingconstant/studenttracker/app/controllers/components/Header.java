@@ -1,7 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.components;
 
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.Controller;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -26,7 +26,7 @@ public class Header extends StackPane implements Controller {
 
     public Header() {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/header.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/header.fxml");
     }
 
     @Override

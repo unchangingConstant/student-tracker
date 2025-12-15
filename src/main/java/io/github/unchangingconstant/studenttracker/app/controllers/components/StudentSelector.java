@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
@@ -34,7 +34,7 @@ public class StudentSelector extends TextField implements Controller {
 
     public StudentSelector()  {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/student_selector.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/student_selector.fxml");
     }
 
     @Override

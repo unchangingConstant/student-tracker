@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.CustomComponentUtils;
+import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
 import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableRowTable;
 import io.github.unchangingconstant.studenttracker.app.models.VisitModel;
 import javafx.beans.property.SimpleLongProperty;
@@ -37,7 +37,7 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
     
     public EditableVisitTable() {
         super();
-        CustomComponentUtils.hookIntoFXML(this, "/view/components/editable_visit_table.fxml");
+        ComponentUtils.hookIntoFXML(this, "/view/components/editable_visit_table.fxml");
     }
 
     public void initialize() {

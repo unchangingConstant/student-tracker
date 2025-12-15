@@ -12,14 +12,24 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 
+@Singleton
 public class ExportCSVService {
     
-    // TODO How are you gonna mock the DAO? Will you at all? How are you going to handle stateless services?
-    public static void exportStudentVisitsCSV(Integer studentId) {
-        AttendanceService service = StudentTrackerApp.appContext.getInstance(AttendanceService.class);        
+    AttendanceService service;
+
+    @Inject
+    public ExportCSVService(AttendanceService attendanceService) {
+        this.service = attendanceService;
+    }
+
+    // TODO do you seriously need a library to export CSVs? Maybe to export an xlsx, yes. 
+    // Write the CSV code yourself, pussy
+    public void exportStudentVisitsCSV(Integer studentId) {      
         List<VisitDomain> visits = service.getStudentVisits(studentId);
         String[] headers = new String[]{"StartDate", "StartTime", "Duration"};
 
