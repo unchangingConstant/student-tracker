@@ -1,5 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 
+import java.util.List;
+
 import com.google.inject.Inject;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
@@ -7,6 +9,7 @@ import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableVisitTable;
+import io.github.unchangingconstant.studenttracker.app.controllers.components.ExportDialog;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.SelectableStudentListView;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentAdder;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
@@ -15,9 +18,12 @@ import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
@@ -49,13 +55,22 @@ public class DatabaseManagerPageController implements Controller {
     private StudentTableModel studentTableModel;
     private VisitTableModel visitTableModel;
 
+    // Services / utils
     private AttendanceService attendanceService;
+    private ExportCSVService csvService;
 
     @Inject
-    public DatabaseManagerPageController(StudentTableModel studentTableModel, VisitTableModel visitTableModel, AttendanceService attendanceService)  {
+    public DatabaseManagerPageController(
+        StudentTableModel studentTableModel, 
+        VisitTableModel visitTableModel, 
+        AttendanceService attendanceService, 
+        WindowController windowController,
+        ExportCSVService csvService)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
+        this.csvService = csvService;
+
     }
 
     @Override
@@ -66,20 +81,29 @@ public class DatabaseManagerPageController implements Controller {
 
         // Binds the visitTable to the visitTableModel
         visitTableModel.bindProperty(visitTable.itemsProperty());
-        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty());
+        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks
 
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
-        selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
-        });
+        // selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
+        //     if (newVal != null) {
+        //         visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+        //     } else {
+        //         visitTableModel.currentStudentProperty().set(-1);
+        //     }
+        // });
         // Binds title to visitTableModel's currently selected student
         visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
-            title.textProperty().bind(Bindings.createStringBinding(
+            title.textProperty().unbind();
+            if (!newVal.equals(-1)) {
+                title.textProperty().bind(Bindings.createStringBinding(
                 () -> {
                     String firstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
                     return "Viewing " + firstName + "'s attendance...";
                 }, 
                 studentTableModel.getStudent(newVal.intValue()).getFullLegalName()));
+            } else {
+                title.setText("No student selected");
+            }
         });
 
         studentTableModel.bindProperty(selectableStudentList.itemsProperty());
@@ -87,8 +111,16 @@ public class DatabaseManagerPageController implements Controller {
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
 
         exportButton.setOnAction((actionEvent) -> {
-            StudentTrackerApp.appContext.getInstance(WindowController.class).openExportDialog();
+            Dialog<List<Integer>> dialog = new Dialog<>();
+            dialog.setDialogPane(new ExportDialog());
+            dialog.showAndWait()
+                .filter(response -> response != null)
+                .ifPresent(response -> response.forEach((item) -> System.out.println(item)));
         });
+
+        System.out.println("Before select");
+        selectableStudentList.selectionModelProperty().get().selectAll(); // Read only property?
+        System.out.println("After select");
 
     }
 

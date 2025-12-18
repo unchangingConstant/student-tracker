@@ -8,8 +8,10 @@
 
 <?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.ExportDialogController"
-    xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER">
-    <Header text="Export Attendance Records"/>
-    <ListView/>
-</VBox>
+<fx:root type="ExportDialog" xmlns:fx="http://javafx.com/fxml">
+    <graphic>
+        <VBox alignment="TOP_CENTER">
+            <ListView/>
+        </VBox>
+    </graphic>
+</fx:root >

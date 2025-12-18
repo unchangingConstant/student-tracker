@@ -6,12 +6,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.scene.control.MenuItem;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
@@ -34,7 +29,7 @@ public class WindowController {
             exportDialog.toFront();
             return;
         };
-        exportDialog = createStage("/view/pages/export_dialog.fxml");
+        exportDialog = createStage("/view/pages/export_dialog.fxml", 480, 270);
         exportDialog.setAlwaysOnTop(true);
         exportDialog.setOnCloseRequest(windowEvent -> {
             onCloseExportDialog();
@@ -46,7 +41,7 @@ public class WindowController {
             recordManager.toFront();
             return;
         };
-        recordManager = createStage("/view/pages/record_manager_page.fxml");
+        recordManager = createStage("/view/pages/record_manager_page.fxml", 960, 540);
         recordManager.setOnCloseRequest(windowEvent -> {
             onCloseRecordManager();
         });
@@ -60,13 +55,13 @@ public class WindowController {
         recordManager = null;
     }
 
-    private Stage createStage(String fxmlPath) {
+    private Stage createStage(String fxmlPath, int width, int height) {
         Stage stage = null;
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(fxmlPath));
             fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
-            Scene scene = new Scene(fxmlLoader.load(), 960, 540);
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
             stage = new Stage();
             stage.setTitle(StudentTrackerApp.TITLE);
             stage.setScene(scene);
