@@ -26,7 +26,7 @@
         <Tab closable="false" text="Visit Records">
             <HBox>
                 <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" spacing="10">
-                    <SelectableStudentListView fx:id="selectableStudentList"/>
+                    <ListView fx:id="selectableStudentList"/>
                 </VBox>
                 <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" id="body" spacing="10">
                     <StackPane alignment="CENTER_RIGHT">

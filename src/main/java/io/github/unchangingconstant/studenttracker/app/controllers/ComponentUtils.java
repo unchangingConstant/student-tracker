@@ -14,6 +14,6 @@ public class ComponentUtils  {
         }
         catch (IOException e)   {
             throw new RuntimeException(e);
-      }
+        }
     }   
 }

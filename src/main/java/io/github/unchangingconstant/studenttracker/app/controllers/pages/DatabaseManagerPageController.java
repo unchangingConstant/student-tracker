@@ -4,13 +4,10 @@ import java.util.List;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableVisitTable;
-import io.github.unchangingconstant.studenttracker.app.controllers.components.ExportDialog;
-import io.github.unchangingconstant.studenttracker.app.controllers.components.SelectableStudentListView;
 import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentAdder;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
@@ -22,9 +19,10 @@ import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 
 /*
@@ -44,7 +42,7 @@ public class DatabaseManagerPageController implements Controller {
     @FXML
     private HBox editorContainer;
     @FXML
-    private SelectableStudentListView selectableStudentList;
+    private ListView<StudentModel> selectableStudentList;
     @FXML
     private Button exportButton;
 
@@ -57,7 +55,7 @@ public class DatabaseManagerPageController implements Controller {
 
     // Services / utils
     private AttendanceService attendanceService;
-    private ExportCSVService csvService;
+    private WindowController windowController;
 
     @Inject
     public DatabaseManagerPageController(
@@ -69,8 +67,7 @@ public class DatabaseManagerPageController implements Controller {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
-        this.csvService = csvService;
-
+        this.windowController = windowController;
     }
 
     @Override
@@ -84,13 +81,13 @@ public class DatabaseManagerPageController implements Controller {
         visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks
 
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
-        // selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-        //     if (newVal != null) {
-        //         visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
-        //     } else {
-        //         visitTableModel.currentStudentProperty().set(-1);
-        //     }
-        // });
+        selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+            } else {
+                visitTableModel.currentStudentProperty().set(-1);
+            }
+        });
         // Binds title to visitTableModel's currently selected student
         visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
             title.textProperty().unbind();
@@ -111,16 +108,21 @@ public class DatabaseManagerPageController implements Controller {
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
 
         exportButton.setOnAction((actionEvent) -> {
-            Dialog<List<Integer>> dialog = new Dialog<>();
-            dialog.setDialogPane(new ExportDialog());
-            dialog.showAndWait()
-                .filter(response -> response != null)
-                .ifPresent(response -> response.forEach((item) -> System.out.println(item)));
+            windowController.openExportPage();
         });
 
-        System.out.println("Before select");
-        selectableStudentList.selectionModelProperty().get().selectAll(); // Read only property?
-        System.out.println("After select");
+        selectableStudentList.setCellFactory(listView -> {
+            ListCell<StudentModel> cell = new ListCell<StudentModel>();
+            Label cellContent = new Label();
+            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
+                cellContent.textProperty().unbind();
+                if (newVal != null) {
+                    cellContent.textProperty().bind(cell.getItem().getFullLegalName());
+                }
+            });
+            cell.setGraphic(cellContent);
+            return cell;
+        });
 
     }
 

@@ -1,39 +1,43 @@
 package io.github.unchangingconstant.studenttracker.app.controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.StudentTrackerApp;
+
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
-
 /*
- * Will "manage" all GUI windows
+ * Will manage all GUI windows
  */
 @Singleton
 public class WindowController {
 
     private Stage recordManager;
-    private Stage exportDialog;
+    private Stage exportPage;
 
     @Inject
     public WindowController()   {
     }
 
-    public void openExportDialog() {
-        if (exportDialog != null) {
-            exportDialog.toFront();
+    public void openExportPage() {
+        if (exportPage != null) {
+            exportPage.toFront();
             return;
-        };
-        exportDialog = createStage("/view/pages/export_dialog.fxml", 480, 270);
-        exportDialog.setAlwaysOnTop(true);
-        exportDialog.setOnCloseRequest(windowEvent -> {
-            onCloseExportDialog();
+        }
+        exportPage = createStage("/view/pages/export_page.fxml", 960, 540);
+        exportPage.setOnCloseRequest(windowEvent -> {
+            onCloseExportPage();
         });
+    }
+
+    public void closeExportPage() {
+        exportPage.close();
     }
 
     public void openRecordManager() {
@@ -47,8 +51,8 @@ public class WindowController {
         });
     }
 
-    private void onCloseExportDialog() {
-        exportDialog = null;
+    private void onCloseExportPage() {
+        exportPage = null;
     }
 
     private void onCloseRecordManager() {
