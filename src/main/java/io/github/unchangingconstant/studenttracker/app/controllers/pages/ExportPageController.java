@@ -3,7 +3,6 @@ package io.github.unchangingconstant.studenttracker.app.controllers.pages;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.google.inject.Inject;
 
@@ -13,22 +12,14 @@ import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleMapProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
+import javafx.beans.binding.BooleanBinding;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.util.StringConverter;
-import javafx.scene.control.SelectionMode;
 
 public class ExportPageController implements Controller {
 
@@ -38,6 +29,8 @@ public class ExportPageController implements Controller {
     private Button exportButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private CheckBox selectAllCheckBox;
 
     // Represents students currently selected by selectionModel
     private final Map<StudentModel, BooleanProperty> selectionMap = new HashMap<>();
@@ -60,12 +53,30 @@ public class ExportPageController implements Controller {
         cancelButton.setOnAction(actionEvent -> onCancelButtonPress());
     }
 
+    // TODO ew, so large. Chop this up bruh
     private void setupStudentSelector() {
         // Populates selection
         studentSelector.getItems().addAll(studentTableModel.getStudents());
+
         // Maps each student to a boolean property
         studentTableModel.getStudents().forEach(
-            item -> selectionMap.put(item, new SimpleBooleanProperty(false)));
+            item -> {
+                BooleanProperty boolProp = new SimpleBooleanProperty(false);
+                // If a single box is false, the selectAllCheckBox will also be false
+                boolProp.addListener((obs, oldVal, newVal) -> {
+                    if (!newVal) {
+                        selectAllCheckBox.setSelected(false);
+                    }
+                });
+                selectionMap.put(item, boolProp);
+            });
+        
+        // When selectAllCheckBox is clicked, all boxes in list must match its state
+        selectAllCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            selectionMap.forEach((key, val) -> {
+                val.set(newVal);
+            });
+        });
 
         // Sets up checkboxes
         studentSelector.setCellFactory(
@@ -87,7 +98,11 @@ public class ExportPageController implements Controller {
             .map(student -> student.getStudentId().get())
             .toList();
         // TODO Handle exceptions
-        csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
+        try {
+            csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void onCancelButtonPress() {

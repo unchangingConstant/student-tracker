@@ -11,6 +11,9 @@
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.ExportPageController"
     alignment="TOP_CENTER" fillWidth="true">
     <Header text="Export Records"/>
+    <HBox>
+        <CheckBox text="Select all students" fx:id="selectAllCheckBox"/>
+    </HBox>
     <VBox maxWidth="600" fillWidth="true"> 
         <Label text="Select students' records to export"/>
         <ListView fx:id="studentSelector"/>

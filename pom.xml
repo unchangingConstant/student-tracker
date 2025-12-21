@@ -49,7 +49,16 @@
       <scope>provided</scope>
     </dependency>
     <!-- For Excel file operations -->
-    
+    <dependency>
+      <groupId>org.dhatim</groupId>
+      <artifactId>fastexcel-reader</artifactId>
+      <version>0.19.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.dhatim</groupId>
+        <artifactId>fastexcel</artifactId>
+        <version>0.19.0</version>
+    </dependency>
     <!-- jdbi dependencies' versions are managed by jdbi3-bom -->
     <dependency>
         <groupId>org.jdbi</groupId>
