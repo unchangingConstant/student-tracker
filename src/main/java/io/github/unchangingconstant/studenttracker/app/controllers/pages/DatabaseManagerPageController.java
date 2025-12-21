@@ -15,7 +15,7 @@ import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
-import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
+import io.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -63,7 +63,7 @@ public class DatabaseManagerPageController implements Controller {
         VisitTableModel visitTableModel, 
         AttendanceService attendanceService, 
         WindowController windowController,
-        ExportCSVService csvService)  {
+        ExportExcelService csvService)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;

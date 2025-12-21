@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
+import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -28,6 +29,10 @@ public interface DatabaseDAO {
     @RegisterRowMapper(RowToStudentMapper.class)
     public StudentDomain getStudent(Integer studentId);
 
+    @SqlQuery("SELECT * FROM students WHERE student_id IN (<studentIds>)")
+    @RegisterRowMapper(RowToStudentMapper.class)
+    public List<StudentDomain> getStudents(@BindList("studentIds") List<Integer> studentIds);
+
     @SqlQuery("SELECT * FROM students")
     @RegisterRowMapper(RowToStudentMapper.class)
     @KeyColumn("student_id")
@@ -43,8 +48,9 @@ public interface DatabaseDAO {
     @SqlUpdate("UPDATE students SET full_legal_name = ?, preferred_name = ?, subjects = ? WHERE student_id = ?")
     public Integer updateStudent(String fullLegalName, String prefName, Integer subjects, Integer studentId);
 
-    @SqlUpdate("DELETE FROM students")
-    public boolean hardDeleteStudent();
+    // You didn't finish this one
+    // @SqlUpdate("DELETE FROM students")
+    // public boolean hardDeleteStudent();
 
     /*
      * VISIT METHODS
@@ -71,6 +77,10 @@ public interface DatabaseDAO {
 
     @SqlUpdate("DELETE FROM visits WHERE student_id = ?")
     public boolean deleteStudentVisits(Integer studentId);
+
+    @SqlQuery("SELECT * FROM visits WHERE student_id IN (<studentIds>)")
+    @RegisterRowMapper(RowToVisitMapper.class)
+    public List<VisitDomain> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
 
     /*
      * ONGOING VISIT METHODS

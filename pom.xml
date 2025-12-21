@@ -48,12 +48,8 @@
       <version>${lombok.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- For CSV file operations -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>1.8</version>
-  </dependency>
+    <!-- For Excel file operations -->
+    
     <!-- jdbi dependencies' versions are managed by jdbi3-bom -->
     <dependency>
         <groupId>org.jdbi</groupId>

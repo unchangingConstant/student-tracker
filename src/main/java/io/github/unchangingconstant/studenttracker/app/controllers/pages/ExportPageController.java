@@ -11,7 +11,7 @@ import io.github.unchangingconstant.studenttracker.app.Controller;
 import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
 import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
-import io.github.unchangingconstant.studenttracker.app.services.ExportCSVService;
+import io.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -43,11 +43,11 @@ public class ExportPageController implements Controller {
     private final Map<StudentModel, BooleanProperty> selectionMap = new HashMap<>();
 
     private final StudentTableModel studentTableModel;
-    private final ExportCSVService csvService;
+    private final ExportExcelService csvService;
     private final WindowController windowController;
 
     @Inject
-    public ExportPageController(StudentTableModel studentTableModel, ExportCSVService csvService, WindowController windowController) {
+    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService, WindowController windowController) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
         this.windowController = windowController;
@@ -86,8 +86,8 @@ public class ExportPageController implements Controller {
             .filter(student -> selectionMap.get(student).getValue())
             .map(student -> student.getStudentId().get())
             .toList();
-        // Handle CSV errors 
-        csvService.exportStudentVisitsCSV(selectedStudentsIds);
+        // TODO Handle exceptions
+        csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
     }
 
     private void onCancelButtonPress() {
