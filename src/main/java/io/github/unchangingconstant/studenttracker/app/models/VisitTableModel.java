@@ -9,6 +9,7 @@ import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
