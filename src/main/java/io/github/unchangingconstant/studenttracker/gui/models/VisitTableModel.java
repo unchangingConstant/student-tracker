@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.gui.models;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
+import io.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -34,9 +36,13 @@ public class VisitTableModel {
         setupCurrentStudentProperty();
 
         Observer<VisitDomain> obs = attendanceService.getVisitsObserver();
-        obs.subscribeToInserts(visits -> onVisitInsert(visits));
-        obs.subscribeToDeletes(visits -> onVisitDelete(visits));
-        obs.subscribeToUpdates(visits -> onVisitUpdate(visits));
+        /**
+         * These Runnables will be called from the background thread and potentially
+         * affect the JavaFX thread. So, Platform.runLater() is necessary here.
+         */
+        obs.subscribeToInserts(visits -> Platform.runLater(() -> onVisitInsert(visits)));
+        obs.subscribeToDeletes(visits -> Platform.runLater(() -> onVisitDelete(visits)));
+        obs.subscribeToUpdates(visits -> Platform.runLater(() -> onVisitUpdate(visits)));
     }
 
     public ObservableList<VisitModel> getVisits() {
@@ -79,8 +85,16 @@ public class VisitTableModel {
         currentStudent.addListener((obs, oldVal, newVal) -> {
             visits.clear();
             if (!newVal.equals(-1)) {
-                List<VisitDomain> studentVisits = attendanceService.getStudentVisits(newVal.intValue());
-                studentVisits.forEach(visitDomain -> visits.add(DomainToVisitModelMapper.map(visitDomain)));
+                ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        List<VisitDomain> studentVisits = attendanceService.getStudentVisits(newVal.intValue());
+                        Platform.runLater(() -> {
+                            studentVisits.forEach(visitDomain -> visits.add(DomainToVisitModelMapper.map(visitDomain)));
+                        });
+                        return null;
+                    }
+                });
             }
         });
     }

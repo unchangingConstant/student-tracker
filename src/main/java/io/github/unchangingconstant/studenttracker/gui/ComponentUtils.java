@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.controllers;
+package io.github.unchangingconstant.studenttracker.gui;
 
 import java.io.IOException;
 

@@ -7,6 +7,8 @@ public class Launcher {
     public static void main(String[] args) throws Exception {
         ApplicationSetup.setUp();
         StudentTrackerApp.launch(StudentTrackerApp.class, args);
+        System.out.println("Closing...");
+        ApplicationTearDown.tearDown();
     }
 
 }

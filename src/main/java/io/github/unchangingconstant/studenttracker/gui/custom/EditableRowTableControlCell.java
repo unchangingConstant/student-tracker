@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.custom;
+package io.github.unchangingconstant.studenttracker.gui.custom;
 
 import java.util.function.Consumer;
 

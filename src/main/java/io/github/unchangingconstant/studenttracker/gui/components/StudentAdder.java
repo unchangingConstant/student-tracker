@@ -1,9 +1,9 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.components;
+package io.github.unchangingconstant.studenttracker.gui.components;
 
 import java.util.List;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;

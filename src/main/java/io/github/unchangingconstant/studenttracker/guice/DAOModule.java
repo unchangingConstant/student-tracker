@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.config;
+package io.github.unchangingconstant.studenttracker.guice;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.HandleListener;
@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 
-public class DatabaseModule extends AbstractModule {
+public class DAOModule extends AbstractModule {
 
     @Provides
     @Singleton

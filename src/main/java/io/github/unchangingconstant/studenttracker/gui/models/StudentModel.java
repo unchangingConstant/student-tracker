@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.gui.models;
 
 import java.time.Instant;
 

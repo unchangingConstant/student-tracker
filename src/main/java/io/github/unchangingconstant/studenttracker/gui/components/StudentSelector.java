@@ -1,11 +1,11 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.components;
+package io.github.unchangingconstant.studenttracker.gui.components;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
+import io.github.unchangingconstant.studenttracker.gui.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
+import io.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -1,7 +1,6 @@
-package io.github.unchangingconstant.studenttracker.app.controllers;
+package io.github.unchangingconstant.studenttracker.gui;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

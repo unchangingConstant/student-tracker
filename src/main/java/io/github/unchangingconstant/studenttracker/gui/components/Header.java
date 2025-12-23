@@ -1,7 +1,7 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.components;
+package io.github.unchangingconstant.studenttracker.gui.components;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;

@@ -1,21 +1,24 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.pages;
+package io.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.util.List;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
-import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableStudentTable;
-import io.github.unchangingconstant.studenttracker.app.controllers.components.EditableVisitTable;
-import io.github.unchangingconstant.studenttracker.app.controllers.components.StudentAdder;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
-import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
-import io.github.unchangingconstant.studenttracker.app.models.VisitTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
+import io.github.unchangingconstant.studenttracker.gui.WindowController;
+import io.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
+import io.github.unchangingconstant.studenttracker.gui.components.EditableVisitTable;
+import io.github.unchangingconstant.studenttracker.gui.components.StudentAdder;
+import io.github.unchangingconstant.studenttracker.gui.models.StudentModel;
+import io.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
+import io.github.unchangingconstant.studenttracker.gui.models.VisitTableModel;
+import io.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import io.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -127,35 +130,58 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onDeleteAction(Integer studentId) {
-        try {
-            attendanceService.deleteStudent(studentId);
-        } catch (IllegalDatabaseOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    attendanceService.deleteStudent(studentId);
+                } catch (IllegalDatabaseOperationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
     }
 
     public void onAddStudentAction()  {
-        try {
-            attendanceService.insertStudent(studentAdder.fullLegalNameProperty().get(), studentAdder.prefNameProperty().get(), studentAdder.subjectsProperty().get());
-            studentAdder.addingEnabledProperty().set(false);
-        } catch (InvalidDatabaseEntryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        String fullName = studentAdder.fullLegalNameProperty().get();
+        String prefName = studentAdder.prefNameProperty().get();
+        Integer subjects = studentAdder.subjectsProperty().get();
+
+        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    attendanceService.insertStudent(fullName, prefName, subjects);
+                } catch (InvalidDatabaseEntryException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> studentAdder.addingEnabledProperty().set(false));
+                return null;
+            }
+        });
     }
 
     public void onUpdateStudentAction() {
         StudentModel update = studentTable.getEditedStudentModel();
-        try {
-            attendanceService.updateStudent(
-            update.getStudentId().get(), 
-            update.getFullLegalName().get(), 
-            update.getPrefName().get(), 
-            update.getSubjects().get());
-        } catch (InvalidDatabaseEntryException e) {
-            e.printStackTrace();
-        }
-        studentTable.editedRowIndexProperty().set(-1);
+        Integer studentId = update.getStudentId().get();
+        String fullName = update.getFullLegalName().get();
+        String prefName = update.getPrefName().get();
+        Integer subjects = update.getSubjects().get();
+
+        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    attendanceService.updateStudent(studentId, fullName, prefName, subjects);
+                } catch (InvalidDatabaseEntryException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> studentTable.editedRowIndexProperty().set(-1));
+                return null;
+            }
+        });
     }
 }

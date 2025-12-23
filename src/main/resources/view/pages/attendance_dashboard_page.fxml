@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.app.controllers.components.*?>
+<?import io.github.unchangingconstant.studenttracker.gui.components.*?>
 
-
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.app.controllers.pages.AttendanceDashboardPageController" 
+<VBox fx:controller="io.github.unchangingconstant.studenttracker.gui.pages.AttendanceDashboardPageController" 
     xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" fillWidth="true">
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>

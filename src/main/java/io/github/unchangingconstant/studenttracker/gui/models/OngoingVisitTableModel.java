@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.gui.models;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +11,9 @@ import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
+import io.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -33,9 +36,13 @@ public class OngoingVisitTableModel {
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
         initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));
         Observer<OngoingVisitDomain> observer = attendanceService.getOngoingVisitsObserver();
-        observer.subscribeToDeletes(visits -> onOngoingVisitDelete(visits));
-        observer.subscribeToInserts(visits -> onOngoingVisitInsert(visits));
-        observer.subscribeToUpdates(visits -> onOngoingVisitUpdate(visits));
+        /**
+         * These Runnables will be called from the background thread and potentially
+         * affect the JavaFX thread. So, Platform.runLater() is necessary here.
+         */
+        observer.subscribeToDeletes(visits -> Platform.runLater(() -> onOngoingVisitDelete(visits)));
+        observer.subscribeToInserts(visits -> Platform.runLater(() -> onOngoingVisitInsert(visits)));
+        observer.subscribeToUpdates(visits -> Platform.runLater(() -> onOngoingVisitUpdate(visits)));
     }
 
     public ObservableList<OngoingVisitModel> ongoingVisits() {
@@ -68,10 +75,7 @@ public class OngoingVisitTableModel {
 
     private void onOngoingVisitInsert(List<OngoingVisitDomain> insertedVisits) {
         insertedVisits.forEach(inserted -> {
-            // TODO Service can't provide all OngoingVisitDomain info which is why the model must pull from the disk
-            // Find some solution to this. A cache for the AttendanceService is becoming an increasingly good idea
-            OngoingVisitModel newVisit = DomainToOngoingVisitModelMapper.map(attendanceService.getOngoingVisit(inserted.getStudentId()));
-            ongoingVisits.add(newVisit);
+            ongoingVisits.add(DomainToOngoingVisitModelMapper.map(inserted));
         });
     }
 

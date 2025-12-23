@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.models;
+package io.github.unchangingconstant.studenttracker.gui.models;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +11,7 @@ import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import io.github.unchangingconstant.studenttracker.app.services.Observer;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -28,14 +29,23 @@ public class StudentTableModel {
 
     @Inject
     public StudentTableModel(AttendanceService attendanceService) {
+        /**
+         * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
+         * For this reason I have made all Service methods synchronized
+         */
         Collection<StudentDomain> initialData = attendanceService.getAllStudents().values();
         this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
         initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
         // Ensures model state is synced to database at all times
         Observer<StudentDomain> observer = attendanceService.getStudentsObserver();
-        observer.subscribeToDeletes(students -> this.onDeleteStudent(students));
-        observer.subscribeToInserts(students -> this.onInsertStudent(students));
-        observer.subscribeToUpdates(students -> this.onUpdateStudent(students));
+
+        /**
+         * These Runnables will be called from the background thread and potentially
+         * affect the JavaFX thread. So, Platform.runLater() is necessary here.
+         */
+        observer.subscribeToDeletes(students -> Platform.runLater(() -> this.onDeleteStudent(students)));
+        observer.subscribeToInserts(students -> Platform.runLater(() -> this.onInsertStudent(students)));
+        observer.subscribeToUpdates(students -> Platform.runLater(() -> this.onUpdateStudent(students)));
 
         this.attendanceService = attendanceService;
     }

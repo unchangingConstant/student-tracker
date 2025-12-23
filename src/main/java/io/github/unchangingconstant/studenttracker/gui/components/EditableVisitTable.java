@@ -1,14 +1,14 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.components;
+package io.github.unchangingconstant.studenttracker.gui.components;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.ComponentUtils;
-import io.github.unchangingconstant.studenttracker.app.controllers.custom.EditableRowTable;
-import io.github.unchangingconstant.studenttracker.app.models.VisitModel;
+import io.github.unchangingconstant.studenttracker.gui.ComponentUtils;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
+import io.github.unchangingconstant.studenttracker.gui.custom.EditableRowTable;
+import io.github.unchangingconstant.studenttracker.gui.models.VisitModel;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

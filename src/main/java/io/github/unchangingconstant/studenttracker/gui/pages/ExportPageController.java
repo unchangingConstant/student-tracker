@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.controllers.pages;
+package io.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,18 +6,19 @@ import java.util.Map;
 
 import com.google.inject.Inject;
 
-import io.github.unchangingconstant.studenttracker.app.Controller;
-import io.github.unchangingconstant.studenttracker.app.controllers.WindowController;
-import io.github.unchangingconstant.studenttracker.app.models.StudentModel;
-import io.github.unchangingconstant.studenttracker.app.models.StudentTableModel;
 import io.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
+import io.github.unchangingconstant.studenttracker.gui.Controller;
+import io.github.unchangingconstant.studenttracker.gui.WindowController;
+import io.github.unchangingconstant.studenttracker.gui.models.StudentModel;
+import io.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
+import io.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
-import javafx.beans.binding.BooleanBinding;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.util.StringConverter;
 
@@ -98,11 +99,17 @@ public class ExportPageController implements Controller {
             .map(student -> student.getStudentId().get())
             .toList();
         // TODO Handle exceptions
-        try {
-            csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
     }
 
     private void onCancelButtonPress() {

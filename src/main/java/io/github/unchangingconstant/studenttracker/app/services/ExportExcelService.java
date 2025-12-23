@@ -32,7 +32,7 @@ public class ExportExcelService {
     }
 
     // TODO create database method to retrieve visits from multiple students
-    public void exportStudentsVisitsToExcel(List<Integer> studentIds) throws Exception {
+    public synchronized void exportStudentsVisitsToExcel(List<Integer> studentIds) throws Exception {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<VisitDomain> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
@@ -66,8 +66,8 @@ public class ExportExcelService {
                 Instant startTime = currVisit.getStartTime();
                 Instant endTime = currVisit.getEndTime();
                 ws.value(row, 0, studentNames.get(currVisit.getStudentId()));
-                ws.value(row, 1, dateFormatter.format(startTime) + timeFormatter.format(startTime));
-                ws.value(row, 2, dateFormatter.format(endTime) + timeFormatter.format(endTime));
+                ws.value(row, 1, dateFormatter.format(startTime) + "_" + timeFormatter.format(startTime));
+                ws.value(row, 2, dateFormatter.format(endTime) + "_" + timeFormatter.format(endTime));
                 ws.value(row, 3, ChronoUnit.MINUTES.between(startTime, endTime));
             }
         }
