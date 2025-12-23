@@ -20,10 +20,10 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import io.github.unchangingconstant.studenttracker.config.DatabaseModule;
 import io.github.unchangingconstant.studenttracker.utils.ResourceLoader;
 import io.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import io.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
+import io.github.unchangingconstant.studenttracker.guice.DAOModule;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -52,7 +52,7 @@ public class DatabaseDAOTest {
         jdbi.withHandle(handle -> handle.execute(STUDENT_TABLE));
         jdbi.withHandle(handle -> handle.execute(VISIT_TABLE));
         jdbi.withHandle(handle -> handle.execute(ONGOING_VISIT_TABLE));
-        dao = DatabaseModule.provideDatabaseDAO(jdbi);
+        dao = DAOModule.provideDatabaseDAO(jdbi);
     }
 
     /**

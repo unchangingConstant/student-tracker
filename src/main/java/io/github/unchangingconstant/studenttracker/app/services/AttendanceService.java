@@ -47,7 +47,7 @@ public class AttendanceService {
         return result;
     }
 
-    public Map<Integer, StudentDomain> getAllStudents() {
+    public synchronized Map<Integer, StudentDomain> getAllStudents() {
         return dao.getAllStudents();
     }
 
@@ -135,13 +135,20 @@ public class AttendanceService {
 
     public void startOngoingVisit(Integer studentId) {
         // Must not have ongoing visits when starting one
-        // TODO accessing the database twice for one operation are we? FIX IT!!!
+        // TODO accessing the database thrice for one operation are we? FIX IT!!!
         if (dao.getOngoingVisit(studentId) != null ) {
             throw new IllegalStateException("Student is already in the center.");
         };
         Instant startTime = Instant.now();
         dao.insertOngoingVisit(studentId, startTime);
-        ongoingVisitsObserver.triggerInsert(OngoingVisitDomain.builder().studentId(studentId).startTime(startTime).build());
+        OngoingVisitDomain newOngoingVisit = dao.getOngoingVisit(studentId);
+        ongoingVisitsObserver.triggerInsert(
+            OngoingVisitDomain.builder()
+                .studentId(studentId)
+                .startTime(startTime)
+                .subjects(newOngoingVisit.getSubjects())
+                .studentName(newOngoingVisit.getStudentName())
+                .build());
     }
 
     // update!!! Should return request status

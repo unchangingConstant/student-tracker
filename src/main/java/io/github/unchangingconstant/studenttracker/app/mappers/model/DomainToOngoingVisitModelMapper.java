@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import io.github.unchangingconstant.studenttracker.app.models.OngoingVisitModel;
+import io.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
 
 public class DomainToOngoingVisitModelMapper {
     

@@ -1,7 +1,7 @@
 package io.github.unchangingconstant.studenttracker.app.mappers.model;
 
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import io.github.unchangingconstant.studenttracker.app.models.VisitModel;
+import io.github.unchangingconstant.studenttracker.gui.models.VisitModel;
 
 public class DomainToVisitModelMapper {
     
