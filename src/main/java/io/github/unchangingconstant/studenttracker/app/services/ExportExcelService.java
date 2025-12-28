@@ -32,7 +32,7 @@ public class ExportExcelService {
     }
 
     // TODO create database method to retrieve visits from multiple students
-    public synchronized void exportStudentsVisitsToExcel(List<Integer> studentIds) throws Exception {
+    public void exportStudentsVisitsToExcel(List<Integer> studentIds) throws Exception {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<VisitDomain> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values

@@ -13,6 +13,7 @@ import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import io.github.unchangingconstant.studenttracker.app.services.observers.AttendanceObserver;
 import lombok.Getter;
 
 @Singleton
@@ -21,18 +22,18 @@ public class AttendanceService {
     private DatabaseDAO dao;
 
     @Getter
-    private Observer<OngoingVisitDomain> ongoingVisitsObserver;
+    private AttendanceObserver<OngoingVisitDomain> ongoingVisitsObserver;
     @Getter
-    private Observer<VisitDomain> visitsObserver;
+    private AttendanceObserver<VisitDomain> visitsObserver;
     @Getter
-    private Observer<StudentDomain> studentsObserver;
+    private AttendanceObserver<StudentDomain> studentsObserver;
 
     @Inject
     public AttendanceService(DatabaseDAO dao)  {
         this.dao = dao;
-        this.ongoingVisitsObserver = new Observer<>();
-        this.visitsObserver = new Observer<>();
-        this.studentsObserver = new Observer<>();
+        this.ongoingVisitsObserver = new AttendanceObserver<>();
+        this.visitsObserver = new AttendanceObserver<>();
+        this.studentsObserver = new AttendanceObserver<>();
     }
 
     /*
