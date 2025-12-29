@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.gui.components.*?>
+<?import com.github.unchangingconstant.studenttracker.gui.components.*?>
 
-<VBox fx:controller="io.github.unchangingconstant.studenttracker.gui.pages.DatabaseManagerPageController"
+<VBox fx:controller="com.github.unchangingconstant.studenttracker.gui.pages.DatabaseManagerPageController"
     styleClass="database-manager-page" xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER">
     <stylesheets>
         <URL value="@record_manager_page.css"/>

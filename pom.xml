@@ -22,7 +22,7 @@
     <lombok.version>1.18.40</lombok.version>
     <guice.version>7.0.0</guice.version>
     
-    <launcher-class>io.github.unchangingconstant.studenttracker.Launcher</launcher-class>
+    <launcher-class>com.github.unchangingconstant.studenttracker.Launcher</launcher-class>
     <environment>dev</environment>
   </properties>
 

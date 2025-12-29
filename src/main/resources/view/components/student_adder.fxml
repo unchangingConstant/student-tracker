@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import io.github.unchangingconstant.studenttracker.gui.components.*?>
+<?import com.github.unchangingconstant.studenttracker.gui.components.*?>
 
 <fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-adder">
     <Button text="Add Student" fx:id="displayFormButton"/>
