@@ -9,8 +9,8 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
+import io.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
@@ -37,7 +37,7 @@ public class StudentTableModel {
         this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
         initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
         // Ensures model state is synced to database at all times
-        Observer<StudentDomain> observer = attendanceService.getStudentsObserver();
+        AttendanceObserver<StudentDomain> observer = attendanceService.getStudentsObserver();
 
         /**
          * These Runnables will be called from the background thread and potentially

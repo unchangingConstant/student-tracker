@@ -13,7 +13,6 @@ import io.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import io.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import io.github.unchangingconstant.studenttracker.app.services.observers.AttendanceObserver;
 import lombok.Getter;
 
 @Singleton

@@ -7,6 +7,7 @@ import com.google.inject.Injector;
 
 import io.github.unchangingconstant.studenttracker.gui.WindowController;
 import io.github.unchangingconstant.studenttracker.guice.DAOModule;
+import io.github.unchangingconstant.studenttracker.guice.QRScanModule;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,11 @@ import javafx.stage.WindowEvent;
 
 public class StudentTrackerApp extends Application {
 
-        public static final Injector appContext = Guice.createInjector(new DAOModule());
+        public static final Injector appContext = 
+                Guice.createInjector(
+                        new DAOModule(),
+                        new QRScanModule()
+                );
         public static final WindowController windowController = appContext.getInstance(WindowController.class);
         public static final String TITLE = "Student Tracker";
 

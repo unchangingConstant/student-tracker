@@ -7,8 +7,8 @@ import com.google.inject.Singleton;
 
 import io.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import io.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
+import io.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import io.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import io.github.unchangingconstant.studenttracker.app.services.Observer;
 import io.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
 import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import javafx.application.Platform;
@@ -35,7 +35,7 @@ public class VisitTableModel {
         this.attendanceService = attendanceService;
         setupCurrentStudentProperty();
 
-        Observer<VisitDomain> obs = attendanceService.getVisitsObserver();
+        AttendanceObserver<VisitDomain> obs = attendanceService.getVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
