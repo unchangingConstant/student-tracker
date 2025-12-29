@@ -11,6 +11,7 @@ import io.github.unchangingconstant.studenttracker.gui.Controller;
 import io.github.unchangingconstant.studenttracker.gui.WindowController;
 import io.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
 import io.github.unchangingconstant.studenttracker.gui.components.EditableVisitTable;
+import io.github.unchangingconstant.studenttracker.gui.components.QRCodeTableView;
 import io.github.unchangingconstant.studenttracker.gui.components.StudentAdder;
 import io.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import io.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
@@ -26,6 +27,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 
 /*
@@ -48,6 +50,8 @@ public class DatabaseManagerPageController implements Controller {
     private ListView<StudentModel> selectableStudentList;
     @FXML
     private Button exportButton;
+    @FXML
+    private QRCodeTableView qrCodeView;
 
     /*
      * MODELS
@@ -127,6 +131,7 @@ public class DatabaseManagerPageController implements Controller {
             return cell;
         });
 
+        studentTableModel.bindProperty(qrCodeView.itemsProperty());
     }
 
     public void onDeleteAction(Integer studentId) {

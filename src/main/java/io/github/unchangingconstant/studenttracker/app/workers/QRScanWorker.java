@@ -17,8 +17,8 @@ import io.github.unchangingconstant.studenttracker.threads.ThreadManager;
 /**
  * What is a worker?
  * 
- * I figure services are components called by some client. Workers do all of their work
- * autonomously in the background.
+ * I figure services are components called by some client. Workers are not called, they
+ * do all of their work autonomously in the background.
  * 
  * This way, when I leave methods public in workers, it's still apparent that they're not
  * meant to be called by the client. They are meant to be called for testing, however.
@@ -46,7 +46,6 @@ public class QRScanWorker {
     public QRScanWorker(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
 		GlobalScreen.addNativeKeyListener(new KeyEventHook());
-        System.out.println("Created!");
     }
 
     public String findQRCode() {
@@ -54,8 +53,10 @@ public class QRScanWorker {
             .map(String::valueOf)
             .collect(Collectors.joining())
             .toLowerCase();
+        System.out.println("Buffer: " + bufferStr);
         // Checks that the QRCode format is right
-        Matcher matcher = Pattern.compile(QR_CODE_HEADER + "[0-9]x[0-9a-e]").matcher(bufferStr);
+        Matcher matcher = Pattern.compile(QR_CODE_HEADER + "(\\d+)x([0-9a-f]+)").matcher(bufferStr);
+        System.out.println("QRCode: " + matcher.group());
         if (matcher.find()) { // Dunno if this good or not, honestly
             return matcher.group();
         }
@@ -64,9 +65,9 @@ public class QRScanWorker {
 
     public void processQRCode(String qrCode) {
         // Searches for leading decimal number
-        Matcher decMatcher = Pattern.compile("[0-9]x").matcher(qrCode);
+        Matcher decMatcher = Pattern.compile("(\\d+)x").matcher(qrCode);
         // Searches for trailing hex number
-        Matcher hexMatcher = Pattern.compile("x[0-9a-e]").matcher(qrCode);
+        Matcher hexMatcher = Pattern.compile("x([0-9a-f]+)").matcher(qrCode);
 
         if (!decMatcher.find() || !hexMatcher.find()) {
             System.out.println("QRScan format incorrect");
@@ -74,7 +75,7 @@ public class QRScanWorker {
         }
 
         Integer decStudentId = Integer.valueOf(decMatcher.group().replace("x", ""));
-        Integer hexStudentId = Integer.valueOf(hexMatcher.group().replace("x", ""));
+        Integer hexStudentId = Integer.valueOf(hexMatcher.group().replace("x", ""), 16);
 
         if (decStudentId != hexStudentId) {
             System.out.println("QRScan validation failed");

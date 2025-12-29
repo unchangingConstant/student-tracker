@@ -37,5 +37,11 @@
                 </VBox>
             </HBox>
         </Tab>
+        <Tab closable="false" text="QR-Code View">
+            <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" spacing="10">
+                <Label text="Note: QRCodes are not case-sensitive"/>
+                <QRCodeTableView fx:id="qrCodeView"/>
+            </VBox>
+        </Tab>
     </TabPane>
 </VBox>
