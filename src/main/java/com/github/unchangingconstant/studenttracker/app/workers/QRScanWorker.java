@@ -1,7 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.workers;
 
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,7 +32,7 @@ import com.google.inject.Singleton;
  * STA1x1STA OR STA266x10aSTA OR STA12xcSTA
  * 
  * This service will be subscribed to the global key event logger (GlobalScreen, from 
- * jnativehook), track the last 25 characters typed and search for QR patterns upon an
+ * jnativehook), track the last 26 characters typed and search for QR patterns upon an
  * ENTER key press
  */
 @Singleton
@@ -43,9 +43,9 @@ public class QRScanWorker {
     private AttendanceService attendanceService;
 
     @Inject
-    public QRScanWorker(AttendanceService attendanceService) {
+    public QRScanWorker(AttendanceService attendanceService, KeyLoggerService keyLoggerService) {
         this.attendanceService = attendanceService;
-		GlobalScreen.addNativeKeyListener(new KeyEventHook());
+		keyLoggerService.addNativeKeyListener(new KeyEventHook());
     }
 
     public String findQRCode(LinkedBlockingDeque<Character> buffer) {
@@ -88,6 +88,7 @@ public class QRScanWorker {
     }
 
     // Public for testing purposes no mas
+    // TODO put this into the KeyLoggerService
     public class KeyEventHook implements NativeKeyListener {
 
         @Override
