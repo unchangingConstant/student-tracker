@@ -1,15 +1,23 @@
 package com.github.unchangingconstant.studenttracker.gui.components;
 
+import java.util.function.Consumer;
+
 import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
 import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 
 public class QRCodeTableView extends TableView<StudentModel> implements Controller {
 
@@ -19,6 +27,12 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
     private TableColumn<StudentModel, String> fullNameColumn;
     @FXML
     private TableColumn<StudentModel, String> qrCodeColumn;
+
+    private final Property<Consumer<String>> onCopyButtonActionProperty =
+        new SimpleObjectProperty<>(qrCode -> {});
+    public void setOnCopyButtonAction(Consumer<String> function) {
+        onCopyButtonActionProperty.setValue(function == null ? qrCode -> {} : function);
+    }
 
     public QRCodeTableView() {
         super();
@@ -34,10 +48,12 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
 
     private void setupQRCodeColumn() {
 
-        // qrCodeColumn.setCellFactory(tableView -> {
-        //     TableCell<StudentModel, String> cell = new TableCell<>();
-        //     return null;
-        // });
+        qrCodeColumn.setCellFactory(tableView -> {
+            QRCodeTableCell cell = new QRCodeTableCell();
+            cell.onCopyButtonActionProperty().bind(onCopyButtonActionProperty);
+            cell.labelTextProperty().bind(cell.itemProperty());
+            return cell;
+        });
 
         qrCodeColumn.setCellValueFactory(cellData -> {
             return Bindings.createStringBinding(
@@ -52,6 +68,33 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
                 cellData.getValue().getStudentId()
             );
         });
+    }
+
+    private class QRCodeTableCell extends TableCell<StudentModel, String> {
+
+        private final Label label = new Label();
+        private final Button copyButton = new Button("Copy");
+        
+        private final Property<Consumer<String>> onCopyButtonActionProperty = 
+            new SimpleObjectProperty<>(qrCode -> {});
+        private Property<Consumer<String>> onCopyButtonActionProperty() 
+            {return onCopyButtonActionProperty;}
+
+        private QRCodeTableCell() {
+            copyButton.onActionProperty().bind(
+                Bindings.createObjectBinding(
+                    () -> actionEvent -> onCopyButtonActionProperty.getValue(), 
+                    onCopyButtonActionProperty)
+            );
+            HBox graphic = new HBox(); 
+            graphic.getChildren().addAll(label, copyButton);
+            setGraphic(graphic);
+        }
+
+        private StringProperty labelTextProperty() {
+            return label.textProperty();
+        }
+
     }
 
     @Override
