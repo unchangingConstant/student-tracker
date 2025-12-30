@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
 <?import javafx.geometry.*?>
@@ -26,4 +26,4 @@
         </Header>
         <fx:include source="/view/pages/attendance_dashboard_page.fxml" fx:id="mainWindowChild"/>
     </VBox>
-</AnchorPane>
+</AnchorPane> -->
