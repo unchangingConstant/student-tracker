@@ -15,6 +15,8 @@ import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
+
 import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.genBufferWith;
 import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.regexGen;
 
@@ -27,7 +29,9 @@ public class QRScanWorkerTest {
     private final RandomGen regexNumGen = new RandomBoundsGen();
 
     @Mock
-    private AttendanceService service;
+    private AttendanceService attendanceServie;
+    @Mock
+    private KeyLoggerService keyLoggerService;
 
     @InjectMocks
     private QRScanWorker worker;
