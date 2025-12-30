@@ -50,7 +50,7 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
 
         qrCodeColumn.setCellFactory(tableView -> {
             QRCodeTableCell cell = new QRCodeTableCell();
-            cell.onCopyButtonActionProperty().bind(onCopyButtonActionProperty);
+            cell.onCopyButtonActionProperty.bind(onCopyButtonActionProperty);
             cell.labelTextProperty().bind(cell.itemProperty());
             return cell;
         });
@@ -83,7 +83,13 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
         private QRCodeTableCell() {
             copyButton.onActionProperty().bind(
                 Bindings.createObjectBinding(
-                    () -> actionEvent -> onCopyButtonActionProperty.getValue(), 
+                    // Factory that creates EventHandler according to new Consumer
+                    () -> {
+                        // EventHandler with the new Consumer
+                        return actionEvent -> {
+                            onCopyButtonActionProperty.getValue().accept(this.getItem());
+                        };
+                    }, 
                     onCopyButtonActionProperty)
             );
             HBox graphic = new HBox(); 

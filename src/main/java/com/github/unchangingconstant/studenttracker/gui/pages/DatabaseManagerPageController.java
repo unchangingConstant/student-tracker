@@ -28,6 +28,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 
 /*
@@ -132,6 +135,12 @@ public class DatabaseManagerPageController implements Controller {
         });
 
         studentTableModel.bindProperty(qrCodeView.itemsProperty());
+
+        qrCodeView.setOnCopyButtonAction(qrCode -> {
+            ClipboardContent content = new ClipboardContent();
+            content.put(DataFormat.PLAIN_TEXT, qrCode);
+            Clipboard.getSystemClipboard().setContent(content);
+        });
     }
 
     public void onDeleteAction(Integer studentId) {
