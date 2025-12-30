@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,11 +20,9 @@ import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
-
-import io.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 
 public class AttendanceServiceTest {
 

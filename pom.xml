@@ -86,6 +86,13 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <!-- Gen-from-regex libary to test QR code scanner -->
+    <!-- https://mvnrepository.com/artifact/org.cornutum.regexp/regexp-gen -->
+    <dependency>
+        <groupId>org.cornutum.regexp</groupId>
+        <artifactId>regexp-gen</artifactId>
+        <version>3.0.0</version>
+    </dependency>
     <!-- For dependency injection and management -->
     <dependency>
       <groupId>com.google.inject</groupId>

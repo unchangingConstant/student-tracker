@@ -1,4 +1,4 @@
-package io.github.unchangingconstant.studenttracker.app.dao;
+package com.github.unchangingconstant.studenttracker.app.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.instancio.Select.field;
@@ -19,13 +19,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 import com.github.unchangingconstant.studenttracker.guice.DAOModule;
 import com.github.unchangingconstant.studenttracker.utils.ResourceLoader;
-
-import io.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
