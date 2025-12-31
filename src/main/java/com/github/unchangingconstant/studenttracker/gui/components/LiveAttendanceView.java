@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
@@ -12,6 +13,8 @@ import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -48,13 +51,20 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
 
     @Override
     public void initialize() {
+        // Makes table sorted by times remaining
+
+
         nameColumn.setCellValueFactory(cellData -> {
-            return new SimpleStringProperty(cellData.getValue().getStudentName().get());
+            return cellData.getValue().getStudentName();
         });
         startTimeColumn.setCellValueFactory(cellData -> {
-            Instant startTime = cellData.getValue().getStartTime().get();
+            Property<Instant> startTimeProp = cellData.getValue().getStartTime();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault());
-            return new SimpleStringProperty(formatter.format(startTime));
+            return Bindings.createStringBinding(
+                () -> {
+                    return formatter.format(startTimeProp.getValue());
+                }, startTimeProp
+            );
         });
         timeRemainingColumn.setCellValueFactory(cellData -> {
             return cellData.getValue().getTimeRemaining();

@@ -25,12 +25,6 @@ public class ThreadManager {
         return mainBackgroundThread;
     }
 
-    // Given a thread, will ensure it closes upon app exit
-    // This is solely because jnativehook offers no way to easily run on a user-made thread
-    public static void manageExternalThread(Thread externalThread) {
-        managedExternalThreads.add(externalThread);
-    }
-
     public static void closeThreads() {
         /**
          * TODO the main background thread will mostly only do small tasks, and will

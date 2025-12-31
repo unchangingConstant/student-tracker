@@ -8,8 +8,6 @@ import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomai
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModelMapper;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -27,11 +25,9 @@ import javafx.collections.ObservableList;
 public class OngoingVisitTableModel {
 
     private SimpleListProperty<OngoingVisitModel> ongoingVisits;
-    private AttendanceService attendanceService;
 
     @Inject
     public OngoingVisitTableModel(AttendanceService attendanceService) {
-        this.attendanceService = attendanceService;
         Collection<OngoingVisitDomain> initialData = attendanceService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
         initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));

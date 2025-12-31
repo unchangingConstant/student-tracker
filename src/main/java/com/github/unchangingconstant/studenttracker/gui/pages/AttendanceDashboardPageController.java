@@ -1,6 +1,7 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.time.Instant;
+import java.util.Comparator;
 
 import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
@@ -17,6 +18,7 @@ import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 
 import javafx.application.Platform;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -55,7 +57,6 @@ public class AttendanceDashboardPageController implements Controller {
 
     @Override
     public void initialize() {
-        ongoingVisitsModel.bindProperty(liveAttendanceView.itemsProperty());
         studentTableModel.bindProperty(studentSelector.optionsProperty());
         startVisitButton.setOnAction(actionEvent -> {
             StudentModel selected = studentSelector.selectedProperty().getValue();
@@ -63,6 +64,18 @@ public class AttendanceDashboardPageController implements Controller {
                 onStartVisitAction(selected);
             }
         });
+        // Makes table sorted by times remaining
+        SortedList<OngoingVisitModel> liveAttendanceList = 
+            new SortedList<>(ongoingVisitsModel.ongoingVisits(),
+            new Comparator<OngoingVisitModel>() {
+                @Override
+                public int compare(OngoingVisitModel arg0, OngoingVisitModel arg1) {
+                    return arg1.getTimeRemaining().get() < arg0.getTimeRemaining().get() ? 1 : -1;
+                }
+            }
+        );
+        liveAttendanceView.setItems(liveAttendanceList);
+
         liveAttendanceView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
         recordManagerMenuItem.setOnAction(actionEvent -> windowController.openRecordManager());
     }
