@@ -17,6 +17,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -51,9 +52,6 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
 
     @Override
     public void initialize() {
-        // Makes table sorted by times remaining
-
-
         nameColumn.setCellValueFactory(cellData -> {
             return cellData.getValue().getStudentName();
         });

@@ -3,10 +3,9 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 import java.time.Instant;
 import java.util.Comparator;
 
-import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
-import com.github.unchangingconstant.studenttracker.gui.WindowController;
+import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.LiveAttendanceView;
 import com.github.unchangingconstant.studenttracker.gui.components.StudentSelector;
 import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
@@ -19,7 +18,6 @@ import com.google.inject.Inject;
 
 import javafx.application.Platform;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -41,14 +39,14 @@ public class AttendanceDashboardPageController implements Controller {
     private OngoingVisitTableModel ongoingVisitsModel;
     private StudentTableModel studentTableModel;
     private AttendanceService attendanceService;
-    private WindowController windowController;
+    private WindowManager windowController;
 
     @Inject
     public AttendanceDashboardPageController(
         OngoingVisitTableModel ongoingVisitsModel, 
         StudentTableModel studentTableModel, 
         AttendanceService attendanceService, 
-        WindowController windowController)  {
+        WindowManager windowController)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;
         this.attendanceService = attendanceService;

@@ -16,7 +16,7 @@ public class DAOModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public static DatabaseDAO provideDatabaseDAO(Jdbi jdbi) {
+    public DatabaseDAO provideDatabaseDAO(Jdbi jdbi) {
         jdbi.getConfig(Handles.class).addListener(new HandleListener() {
             @Override
             public void handleCreated(Handle handle) {
@@ -28,7 +28,7 @@ public class DAOModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public static Jdbi provideJdbi() {
+    public Jdbi provideJdbi() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl("jdbc:sqlite:database.db");
         return Jdbi.create(dataSource);

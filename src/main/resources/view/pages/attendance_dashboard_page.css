@@ -1,4 +1,4 @@
-#body   {
+/* #body   {
     -fx-spacing: 10;
     -fx-padding: 10;
 }
@@ -12,12 +12,12 @@
 .live-attendance-view .button{
     -fx-background-color: #BB4040;
     -fx-text-fill: #FFFFFF;
-}
+} */
 
 /* TODO PLEASE delete at some point */
 /* Some of this styling should be global */
 
-.root  {
+/* .root  {
     -fx-font-size: 16;
     -fx-text-fill: #313131;
 }
@@ -28,4 +28,4 @@
 
 #recordManagerMenuItem .label {
     -fx-text-fill:#313131;
-}
+} */

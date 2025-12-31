@@ -7,9 +7,6 @@
 <?import javafx.scene.text.*?>
 
 <fx:root type="StackPane" xmlns:fx="http://javafx.com/fxml" styleClass="header" alignment="TOP_LEFT">
-    <stylesheets>
-        <URL value="@header.css"/>
-    </stylesheets>
     <HBox>
         <MenuBar fx:id="menuBar" styleClass="bar"/>
     </HBox>

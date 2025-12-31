@@ -7,7 +7,7 @@ import com.github.unchangingconstant.studenttracker.app.services.ExportExcelServ
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
-import com.github.unchangingconstant.studenttracker.gui.WindowController;
+import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
 import com.github.unchangingconstant.studenttracker.gui.components.EditableVisitTable;
 import com.github.unchangingconstant.studenttracker.gui.components.QRCodeTableView;
@@ -65,14 +65,14 @@ public class DatabaseManagerPageController implements Controller {
 
     // Services / utils
     private AttendanceService attendanceService;
-    private WindowController windowController;
+    private WindowManager windowController;
 
     @Inject
     public DatabaseManagerPageController(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
         AttendanceService attendanceService, 
-        WindowController windowController,
+        WindowManager windowController,
         ExportExcelService csvService)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;

@@ -68,10 +68,11 @@ public class StudentSelector extends TextField implements Controller {
 
     private LinkedList<StudentModel> findMatches()   {
         LinkedList<StudentModel> newMatches = new LinkedList<>();
+        String text = getText().toLowerCase();
         options.getValue().forEach(student -> {
-            String fullName = student.getFullLegalName().get();
-            String prefName = student.getPrefName().get();
-            if (fullName.contains(getText()) || prefName.contains(getText()))  {
+            String fullName = student.getFullLegalName().get().toLowerCase();
+            String prefName = student.getPrefName().get().toLowerCase();
+            if (fullName.contains(text) || prefName.contains(text))  {
                 newMatches.add(student);
             }
         });

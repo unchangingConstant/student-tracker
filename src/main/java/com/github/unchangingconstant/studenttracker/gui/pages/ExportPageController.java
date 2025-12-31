@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
-import com.github.unchangingconstant.studenttracker.gui.WindowController;
+import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
 import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
@@ -38,10 +38,10 @@ public class ExportPageController implements Controller {
 
     private final StudentTableModel studentTableModel;
     private final ExportExcelService csvService;
-    private final WindowController windowController;
+    private final WindowManager windowController;
 
     @Inject
-    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService, WindowController windowController) {
+    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService, WindowManager windowController) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
         this.windowController = windowController;

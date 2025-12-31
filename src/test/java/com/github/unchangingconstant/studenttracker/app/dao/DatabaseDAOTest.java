@@ -53,7 +53,7 @@ public class DatabaseDAOTest {
         jdbi.withHandle(handle -> handle.execute(STUDENT_TABLE));
         jdbi.withHandle(handle -> handle.execute(VISIT_TABLE));
         jdbi.withHandle(handle -> handle.execute(ONGOING_VISIT_TABLE));
-        dao = DAOModule.provideDatabaseDAO(jdbi);
+        dao = (new DAOModule()).provideDatabaseDAO(jdbi); // Figure out how Guice fits into testing
     }
 
     /**

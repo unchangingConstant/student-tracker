@@ -15,7 +15,4 @@ public class ApplicationTearDown {
             e.printStackTrace();
         }
     }
-
-    
-
 }

@@ -1,4 +1,11 @@
-/* .header {
+/* Styles to be applied across the entire application */
+
+.root  {
+    -fx-font-size: 16;
+    -fx-text-fill: #313131;
+}
+
+.header {
     -fx-background-color:#313131;
     -fx-pref-height: 30;
 }
@@ -7,4 +14,4 @@
     -fx-text-fill: #FFFFFF;
     -fx-text-alignment: center;
     -fx-font-weight: bolder;
-} */
+}
