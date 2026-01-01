@@ -1,7 +1,7 @@
 /* Styles to be applied across the entire application */
 
 .root  {
-    -fx-font-size: 16;
+    -fx-font-size: 20;
     -fx-text-fill: #313131;
 }
 

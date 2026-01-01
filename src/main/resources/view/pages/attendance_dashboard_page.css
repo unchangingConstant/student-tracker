@@ -1,4 +1,4 @@
-/* #body   {
+#body   {
     -fx-spacing: 10;
     -fx-padding: 10;
 }
@@ -9,17 +9,26 @@
     -fx-text-weight: bold;
 }
 
-.live-attendance-view .button{
+#startVisitButton:hover   {
+    -fx-background-color: #BFFFFF;
+}
+
+.table-row-cell .button {
     -fx-background-color: #BB4040;
     -fx-text-fill: #FFFFFF;
-} */
+}
 
-/* TODO PLEASE delete at some point */
-/* Some of this styling should be global */
+.table-row-cell .button:hover {
+    -fx-background-color: #FB8080;
+    -fx-text-fill: #FFFFFF;
+}
 
-/* .root  {
-    -fx-font-size: 16;
-    -fx-text-fill: #313131;
+.table-row-cell:over {
+    -fx-background-color: #cd5c5c;
+}
+
+.table-row-cell:almostDone {
+    -fx-background-color: #fad550;
 }
 
 #menuBar .label {
@@ -28,4 +37,4 @@
 
 #recordManagerMenuItem .label {
     -fx-text-fill:#313131;
-} */
+} 

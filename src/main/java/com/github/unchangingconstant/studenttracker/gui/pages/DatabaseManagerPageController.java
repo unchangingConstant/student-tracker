@@ -141,6 +141,8 @@ public class DatabaseManagerPageController implements Controller {
             content.put(DataFormat.PLAIN_TEXT, qrCode);
             Clipboard.getSystemClipboard().setContent(content);
         });
+
+        
     }
 
     public void onDeleteAction(Integer studentId) {

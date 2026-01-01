@@ -129,6 +129,8 @@ public class AttendanceService {
         return dao.getOngoingVisits();
     }
 
+    // Returns null if nothing found TODO returning null better than throwing exception in some cases
+    // Fix other service methods
     public OngoingVisitDomain getOngoingVisit(Integer studentId)   {
         return dao.getOngoingVisit(studentId);
     }

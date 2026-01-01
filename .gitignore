@@ -4,5 +4,7 @@ target
 .vscode
 # database created upon application run to be ignored
 database.db
+# mock data created by script should be ignored
+mock/database.db
 # folder to which records are exported
 exports

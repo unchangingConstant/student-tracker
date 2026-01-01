@@ -13,10 +13,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 public class QRCodeTableView extends TableView<StudentModel> implements Controller {
@@ -72,15 +72,14 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
 
     private class QRCodeTableCell extends TableCell<StudentModel, String> {
 
-        private final Label label = new Label();
+        private final TextField qrCodeDisplay = new TextField();
         private final Button copyButton = new Button("Copy");
         
         private final Property<Consumer<String>> onCopyButtonActionProperty = 
             new SimpleObjectProperty<>(qrCode -> {});
-        private Property<Consumer<String>> onCopyButtonActionProperty() 
-            {return onCopyButtonActionProperty;}
 
         private QRCodeTableCell() {
+            qrCodeDisplay.setEditable(false);
             copyButton.onActionProperty().bind(
                 Bindings.createObjectBinding(
                     // Factory that creates EventHandler according to new Consumer
@@ -93,12 +92,12 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
                     onCopyButtonActionProperty)
             );
             HBox graphic = new HBox(); 
-            graphic.getChildren().addAll(label, copyButton);
+            graphic.getChildren().addAll(qrCodeDisplay, copyButton);
             setGraphic(graphic);
         }
 
         private StringProperty labelTextProperty() {
-            return label.textProperty();
+            return qrCodeDisplay.textProperty();
         }
 
     }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
@@ -83,7 +84,12 @@ public class QRScanWorker {
 
         // Keeps the service from being called by the jnativehook thread
         ThreadManager.mainBackgroundExecutor().submit(() -> {
-            attendanceService.startOngoingVisit(decStudentId);
+            OngoingVisitDomain ongoingVisit = attendanceService.getOngoingVisit(decStudentId);
+            if (ongoingVisit == null) {
+                attendanceService.startOngoingVisit(decStudentId);
+            } else {
+                attendanceService.endOngoingVisit(decStudentId, ongoingVisit.getStartTime());
+            }
         });
     }
 

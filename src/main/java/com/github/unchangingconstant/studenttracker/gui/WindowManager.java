@@ -27,9 +27,10 @@ public class WindowManager {
 
     public void openMainPage(Stage stage) {
         Parent root = loadFXML("/view/pages/attendance_dashboard_page.fxml");
-        Scene scene = provideScene(root, 960, 540);  
+        Scene scene = provideScene(root, 100, 100);  
         stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);
+        stage.setMaximized(true);
         stage.show();
     }
 

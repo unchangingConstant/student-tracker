@@ -13,6 +13,9 @@
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>
     </stylesheets>
+    <!-- This node keeps the text field from being focused on by default -->
+    <!-- Most attendance logging will be done by QRScanner -->
+    <Pane focusTraversable="true" managed="false" opacity="0.0" prefHeight="0.0" prefWidth="0.0"/>
     <Header text="Attendance Dashboard">
         <menus>
             <Menu text="Menu" fx:id="menuButton">
