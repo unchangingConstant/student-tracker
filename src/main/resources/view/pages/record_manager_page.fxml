@@ -16,7 +16,7 @@
     <Header text="Record Manager"/>
     <TabPane>
         <Tab closable="false" text="Student Records">
-            <VBox VBox.vgrow="ALWAYS" fillWidth="false" alignment="TOP_CENTER" id="body" spacing="10">
+            <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" id="body" spacing="10">
                 <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="studentEditorContainer">
                     <StudentAdder fx:id="studentAdder"/>
                 </HBox>
@@ -40,7 +40,7 @@
         <Tab closable="false" text="QR-Code View">
             <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" spacing="10">
                 <Label text="Note: QRCodes are not case-sensitive"/>
-                <QRCodeTableView fx:id="qrCodeView"/>
+                <QRCodeTableView fx:id="qrCodeView" VBox.vgrow="ALWAYS"/>
             </VBox>
         </Tab>
     </TabPane>
