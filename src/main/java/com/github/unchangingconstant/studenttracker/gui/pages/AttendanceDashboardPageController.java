@@ -12,7 +12,7 @@ import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel
 import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitTableModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
-import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 

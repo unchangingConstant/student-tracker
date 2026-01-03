@@ -1,5 +1,6 @@
 package com.github.unchangingconstant.studenttracker.gui.custom;
 
+import java.util.Comparator;
 import java.util.function.Consumer;
 
 import javafx.beans.property.BooleanProperty;
@@ -8,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;

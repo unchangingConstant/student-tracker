@@ -14,21 +14,21 @@
         <URL value="@record_manager_page.css"/>
     </stylesheets>
     <Header text="Record Manager"/>
-    <TabPane>
+    <TabPane VBox.vgrow="ALWAYS">
         <Tab closable="false" text="Student Records">
-            <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" id="body" spacing="10">
+            <VBox id="body" VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" spacing="10">
                 <HBox alignment="TOP_LEFT" prefWidth="900" fx:id="studentEditorContainer">
                     <StudentAdder fx:id="studentAdder"/>
                 </HBox>
-                <EditableStudentTable fx:id="studentTable" prefWidth="900" VBox.vgrow="ALWAYS"/>
+                <EditableStudentTable fx:id="studentTable" VBox.vgrow="ALWAYS"/>
             </VBox>
         </Tab>
         <Tab closable="false" text="Visit Records">
             <HBox>
-                <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" spacing="10">
-                    <ListView fx:id="selectableStudentList"/>
+                <VBox fillWidth="true" alignment="TOP_CENTER" spacing="10" HBox.hgrow="ALWAYS">
+                    <ListView fx:id="selectableStudentList" VBox.vgrow="ALWAYS"/>
                 </VBox>
-                <VBox VBox.vgrow="ALWAYS" fillWidth="true" alignment="TOP_CENTER" id="body" spacing="10">
+                <VBox fillWidth="true" alignment="TOP_CENTER" id="body" spacing="10" HBox.hgrow="ALWAYS">
                     <StackPane alignment="CENTER_RIGHT">
                         <Button text="Export" fx:id="exportButton"/>
                         <Label fx:id="title" StackPane.alignment="CENTER"/>

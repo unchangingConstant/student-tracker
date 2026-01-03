@@ -39,7 +39,7 @@ public class WindowManager {
             exportPage.toFront();
             return;
         }
-        Scene scene = provideScene(loadFXML("/view/pages/export_page.fxml"), 640, 360);
+        Scene scene = provideScene(loadFXML("/view/pages/export_page.fxml"), 640, 900);
         exportPage = provideStage();
         exportPage.setScene(scene);
         exportPage.show();

@@ -1,5 +1,6 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
@@ -14,20 +15,20 @@ import com.github.unchangingconstant.studenttracker.gui.components.QRCodeTableVi
 import com.github.unchangingconstant.studenttracker.gui.components.StudentAdder;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
+import com.github.unchangingconstant.studenttracker.gui.models.VisitModel;
 import com.github.unchangingconstant.studenttracker.gui.models.VisitTableModel;
-import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -72,8 +73,7 @@ public class DatabaseManagerPageController implements Controller {
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
         AttendanceService attendanceService, 
-        WindowManager windowController,
-        ExportExcelService csvService)  {
+        WindowManager windowController)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
@@ -82,67 +82,12 @@ public class DatabaseManagerPageController implements Controller {
 
     @Override
     public void initialize() {
-        studentTableModel.bindProperty(studentTable.itemsProperty());
-        studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
-        studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
-
-        // Binds the visitTable to the visitTableModel
-        visitTableModel.bindProperty(visitTable.itemsProperty());
-        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks
-
-        // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
-        selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
-            } else {
-                visitTableModel.currentStudentProperty().set(-1);
-            }
-        });
-        // Binds title to visitTableModel's currently selected student
-        visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
-            title.textProperty().unbind();
-            if (!newVal.equals(-1)) {
-                title.textProperty().bind(Bindings.createStringBinding(
-                () -> {
-                    String firstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
-                    return "Viewing " + firstName + "'s attendance...";
-                }, 
-                studentTableModel.getStudent(newVal.intValue()).getFullLegalName()));
-            } else {
-                title.setText("No student selected");
-            }
-        });
-
-        studentTableModel.bindProperty(selectableStudentList.itemsProperty());
-
-        studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
-
+        setupStudentManager();
+        setupVisitView();
+        setupQRCodeView();
         exportButton.setOnAction((actionEvent) -> {
             windowController.openExportPage();
         });
-
-        selectableStudentList.setCellFactory(listView -> {
-            ListCell<StudentModel> cell = new ListCell<StudentModel>();
-            Label cellContent = new Label();
-            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
-                cellContent.textProperty().unbind();
-                if (newVal != null) {
-                    cellContent.textProperty().bind(cell.getItem().getFullLegalName());
-                }
-            });
-            cell.setGraphic(cellContent);
-            return cell;
-        });
-
-        studentTableModel.bindProperty(qrCodeView.itemsProperty());
-
-        qrCodeView.setOnCopyButtonAction(qrCode -> {
-            ClipboardContent content = new ClipboardContent();
-            content.put(DataFormat.PLAIN_TEXT, qrCode);
-            Clipboard.getSystemClipboard().setContent(content);
-        });
-
-        
     }
 
     public void onDeleteAction(Integer studentId) {
@@ -198,6 +143,102 @@ public class DatabaseManagerPageController implements Controller {
                 Platform.runLater(() -> studentTable.editedRowIndexProperty().set(-1));
                 return null;
             }
+        });
+    }
+
+    private void setupStudentManager() {
+        SortedList<StudentModel> sortedStudents = new SortedList<>(
+            studentTableModel.getStudents(),
+            new Comparator<StudentModel>() {
+                @Override
+                public int compare(StudentModel arg0, StudentModel arg1) {
+                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                }
+            }
+        );
+        studentTable.setItems(sortedStudents);
+        studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
+        studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
+        studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
+    }
+
+    private void setupVisitView() {
+        // Creates list of visits bound to the visitTable model but sorted
+        SortedList<VisitModel> sortedVisits = new SortedList<>(visitTableModel.getVisits(),
+            new Comparator<VisitModel>() {
+                @Override
+                public int compare(VisitModel arg0, VisitModel arg1) {
+                    return arg1.getStartTime().get().compareTo(arg0.getStartTime().get());
+                }
+            });
+        // Visit table now based off sorted list
+        visitTable.setItems(sortedVisits);
+        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks
+
+        // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
+        selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                visitTableModel.currentStudentProperty().set(newVal.getStudentId().get());
+            } else {
+                visitTableModel.currentStudentProperty().set(-1);
+            }
+        });
+        // Binds title to visitTableModel's currently selected student
+        visitTableModel.currentStudentProperty().addListener((obs, oldVal, newVal) -> {
+            title.textProperty().unbind();
+            if (!newVal.equals(-1)) {
+                title.textProperty().bind(Bindings.createStringBinding(
+                () -> {
+                    String firstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
+                    return "Viewing " + firstName + "'s attendance...";
+                }, 
+                studentTableModel.getStudent(newVal.intValue()).getFullLegalName()));
+            } else {
+                title.setText("No student selected");
+            }
+        });
+
+        SortedList<StudentModel> sortedStudents = new SortedList<>(
+            studentTableModel.getStudents(),
+            new Comparator<StudentModel>() {
+                @Override
+                public int compare(StudentModel arg0, StudentModel arg1) {
+                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                }
+            }
+        );
+        selectableStudentList.setItems(sortedStudents);
+
+        selectableStudentList.setCellFactory(listView -> {
+            ListCell<StudentModel> cell = new ListCell<StudentModel>();
+            Label cellContent = new Label();
+            cell.itemProperty().addListener((obs, oldVal, newVal) -> {
+                cellContent.textProperty().unbind();
+                if (newVal != null) {
+                    cellContent.textProperty().bind(cell.getItem().getFullLegalName());
+                }
+            });
+            cell.setGraphic(cellContent);
+            return cell;
+        });
+    }
+
+    private void setupQRCodeView() {
+        SortedList<StudentModel> sortedStudents = new SortedList<>(
+            studentTableModel.getStudents(),
+            new Comparator<StudentModel>() {
+                @Override
+                public int compare(StudentModel arg0, StudentModel arg1) {
+                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                }
+            }
+        );
+        qrCodeView.setItems(sortedStudents);
+
+        qrCodeView.setOnCopyButtonAction(qrCode -> {
+            ClipboardContent content = new ClipboardContent();
+            content.put(DataFormat.PLAIN_TEXT, qrCode);
+            Clipboard.getSystemClipboard().setContent(content);
         });
     }
 }

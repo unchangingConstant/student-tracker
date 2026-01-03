@@ -1,24 +1,34 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import com.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
+import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
-import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.util.StringConverter;
 
@@ -56,8 +66,19 @@ public class ExportPageController implements Controller {
 
     // TODO ew, so large. Chop this up bruh
     private void setupStudentSelector() {
+        // Makes list sorted alphabetically
+        SortedList<StudentModel> studentsList = 
+            new SortedList<>(studentTableModel.getStudents(),
+            new Comparator<StudentModel>() {
+                @Override
+                public int compare(StudentModel arg0, StudentModel arg1) {
+                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                }
+            }
+        );
+
         // Populates selection
-        studentSelector.getItems().addAll(studentTableModel.getStudents());
+        studentSelector.setItems(studentsList);
 
         // Maps each student to a boolean property
         studentTableModel.getStudents().forEach(
@@ -98,18 +119,37 @@ public class ExportPageController implements Controller {
             .filter(student -> selectionMap.get(student).getValue())
             .map(student -> student.getStudentId().get())
             .toList();
-        // TODO Handle exceptions
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        
+        ServiceTask<Void> exportTask = new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                try {
-                    csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                csvService.exportStudentsVisitsToExcel(selectedStudentsIds, ExportExcelService.SORT_BY_NAME);
                 return null;
             }
+        };
+
+        // Creates dialog that displays upon task completion
+        Alert exportDialog = new Alert(AlertType.INFORMATION);
+        exportDialog.setTitle(StudentTrackerApp.TITLE);
+        exportDialog.showingProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                windowController.closeExportPage();
+            }
         });
+
+        exportTask.stateProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.equals(Worker.State.SUCCEEDED)) {
+                exportDialog.setHeaderText("Export successful!");
+                exportDialog.showAndWait();
+            } else if (newVal.equals(Worker.State.FAILED)) {
+                exportDialog.setHeaderText("ERROR: Task failed");
+                exportDialog.setAlertType(AlertType.ERROR);
+                exportDialog.showAndWait();
+            }
+        });
+
+        // TODO Handle exceptions
+        ThreadManager.mainBackgroundExecutor().submit(exportTask);
     }
 
     private void onCancelButtonPress() {

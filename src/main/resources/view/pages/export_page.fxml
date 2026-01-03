@@ -14,7 +14,7 @@
     <HBox>
         <CheckBox text="Select all students" fx:id="selectAllCheckBox"/>
     </HBox>
-    <VBox maxWidth="600" fillWidth="true"> 
+    <VBox maxWidth="600" fillWidth="true" VBox.vgrow="ALWAYS"> 
         <Label text="Select students' records to export"/>
         <ListView fx:id="studentSelector" VBox.vgrow="ALWAYS"/>
         <HBox alignment="TOP_CENTER">

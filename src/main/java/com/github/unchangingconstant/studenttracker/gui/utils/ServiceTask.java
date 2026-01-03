@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.gui.taskutils;
+package com.github.unchangingconstant.studenttracker.gui.utils;
 
 import javafx.concurrent.Task;
 

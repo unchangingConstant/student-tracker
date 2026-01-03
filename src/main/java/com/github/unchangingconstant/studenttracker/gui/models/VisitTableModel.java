@@ -6,7 +6,7 @@ import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.gui.taskutils.ServiceTask;
+import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

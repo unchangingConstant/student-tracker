@@ -66,8 +66,8 @@ public class StudentSelector extends TextField implements Controller {
         );
     }
 
-    private LinkedList<StudentModel> findMatches()   {
-        LinkedList<StudentModel> newMatches = new LinkedList<>();
+    private List<StudentModel> findMatches()   {
+        List<StudentModel> newMatches = new LinkedList<>();
         String text = getText().toLowerCase();
         options.getValue().forEach(student -> {
             String fullName = student.getFullLegalName().get().toLowerCase();
@@ -76,7 +76,7 @@ public class StudentSelector extends TextField implements Controller {
                 newMatches.add(student);
             }
         });
-        return newMatches;
+        return newMatches.subList(0, newMatches.size() < 15 ? newMatches.size() : 15); // oh my god
     }
 
     private void populatePopup(List<StudentModel> items)    {
