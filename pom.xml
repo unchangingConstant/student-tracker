@@ -4,8 +4,8 @@
   <groupId>org.openjfx</groupId>
   <artifactId>student-tracker</artifactId>
   <packaging>jar</packaging>
-  <version>0.1</version>
-  <name>demo</name>
+  <version>0.5.0</version>
+  <name>StudentTrackerApp</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -184,8 +184,10 @@
           <input>${project.build.directory}/compiled</input>
           <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
           <mainClass>${launcher-class}</mainClass>
-          <name>StudentTrackerApp</name>
+          <name>${project.name}</name>
           <destination>${project.build.directory}/distribution</destination>
+          <!-- No work :( -->
+          <icon>${basedir}/src/main/resources/icon/icon.png</icon>
           <type>APP_IMAGE</type> 
           <javaOptions>
             <option>-Djavafx.verbose=true</option>
