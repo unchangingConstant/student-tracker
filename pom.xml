@@ -187,7 +187,6 @@
           <name>${project.name}</name>
           <destination>${project.build.directory}/distribution</destination>
           <!-- No work :( -->
-          <icon>${basedir}/src/main/resources/icon/icon.png</icon>
           <type>APP_IMAGE</type> 
           <javaOptions>
             <option>-Djavafx.verbose=true</option>
