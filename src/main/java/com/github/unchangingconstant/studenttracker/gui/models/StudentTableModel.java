@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
@@ -33,11 +33,11 @@ public class StudentTableModel {
          * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
          * For this reason I have made all Service methods synchronized
          */
-        Collection<StudentDomain> initialData = attendanceService.getAllStudents().values();
+        Collection<Student> initialData = attendanceService.getAllStudents().values();
         this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
         initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
         // Ensures model state is synced to database at all times
-        AttendanceObserver<StudentDomain> observer = attendanceService.getStudentsObserver();
+        AttendanceObserver<Student> observer = attendanceService.getStudentsObserver();
 
         /**
          * These Runnables will be called from the background thread and potentially
@@ -67,19 +67,19 @@ public class StudentTableModel {
         throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + " not found");
     }
 
-    private void onInsertStudent(List<StudentDomain> insertedStudents) {
+    private void onInsertStudent(List<Student> insertedStudents) {
         insertedStudents.forEach(student -> {
             students.add(DomainToStudentModelMapper.map(student));
         });
     }
 
-    private void onDeleteStudent(List<StudentDomain> deletedStudents) {
+    private void onDeleteStudent(List<Student> deletedStudents) {
         deletedStudents.forEach(student -> {
             students.removeIf(studentModel -> studentModel.getStudentId().get() == student.getStudentId());
         });
     }
 
-    private void onUpdateStudent(List<StudentDomain> updatedStudents) {
+    private void onUpdateStudent(List<Student> updatedStudents) {
         updatedStudents.forEach(updatedStudent -> {
             for (StudentModel student: students) {
                 if (student.getStudentId().get() == updatedStudent.getStudentId()) {

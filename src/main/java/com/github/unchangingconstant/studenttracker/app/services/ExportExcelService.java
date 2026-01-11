@@ -1,7 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.services;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,27 +18,29 @@ import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.ExportedVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import lombok.Builder;
+import lombok.Data;
 
 @Singleton
 public class ExportExcelService {
     
     private DatabaseDAO dao;
 
-    public static final Comparator<ExportedVisitDomain> SORT_BY_TIME = 
-        new Comparator<ExportedVisitDomain>() {
+    public static final Comparator<VisitExport> SORT_BY_TIME = 
+        new Comparator<VisitExport>() {
             @Override
-            public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
+            public int compare(VisitExport arg0, VisitExport arg1) {
                 return arg1.getStartTime().compareTo(arg0.getStartTime());
             }
         };
-    public static final Comparator<ExportedVisitDomain> SORT_BY_NAME = 
-        new Comparator<ExportedVisitDomain>() {
+    public static final Comparator<VisitExport> SORT_BY_NAME = 
+        new Comparator<VisitExport>() {
             @Override
-            public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
+            public int compare(VisitExport arg0, VisitExport arg1) {
                 if (arg0.getStudentName().equals(arg1.getStudentName())) {
                     return SORT_BY_TIME.compare(arg0, arg1);
                 }
@@ -53,7 +54,7 @@ public class ExportExcelService {
     }
 
     // TODO create database method to retrieve visits from multiple students
-    public String exportStudentsVisitsToExcel(List<Integer> studentIds, Comparator<ExportedVisitDomain> comparator) throws Exception {
+    public String exportStudentsVisitsToExcel(List<Integer> studentIds, Comparator<VisitExport> comparator) throws Exception {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<VisitDomain> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
@@ -63,10 +64,10 @@ public class ExportExcelService {
                 student -> student.getFullLegalName() 
             ));
 
-        List<ExportedVisitDomain> exportedVisits = 
+        List<VisitExport> exportedVisits = 
             studentsVisits.stream()
             .map(visit -> {
-                return ExportedVisitDomain.builder()
+                return VisitExport.builder()
                 .studentName(studentNames.get(visit.getStudentId()))
                 .startTime(visit.getStartTime())
                 .endTime(visit.getEndTime())
@@ -96,7 +97,7 @@ public class ExportExcelService {
             ws.value(0, 3, "Duration (Minutes)");
             // Populate sheet with data
             for (int row = 1; row < exportedVisits.size() + 1; row++) {
-                ExportedVisitDomain currExport = exportedVisits.get(row - 1);
+                VisitExport currExport = exportedVisits.get(row - 1);
                 Instant startTime = currExport.getStartTime();
                 Instant endTime = currExport.getEndTime();
                 ws.value(row, 0, currExport.getStudentName());
@@ -109,7 +110,12 @@ public class ExportExcelService {
         return exportName;
     }
 
-    private List<ExportedVisitDomain> sortExports(List<ExportedVisitDomain> exportList, Comparator<ExportedVisitDomain> comparator) {
-        return null;
+    @Data
+    @Builder
+    private static class VisitExport {
+        private String studentName;
+        private Instant startTime;
+        private Instant endTime;
+        private Long duration;
     }
 }

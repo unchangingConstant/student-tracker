@@ -8,7 +8,7 @@ import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,7 +25,7 @@ public class AttendanceService {
     @Getter
     private AttendanceObserver<VisitDomain> visitsObserver;
     @Getter
-    private AttendanceObserver<StudentDomain> studentsObserver;
+    private AttendanceObserver<Student> studentsObserver;
 
     @Inject
     public AttendanceService(DatabaseDAO dao)  {
@@ -39,20 +39,20 @@ public class AttendanceService {
      * STUDENT METHODS
      */
 
-    public StudentDomain getStudent(Integer studentId) {
-        StudentDomain result = dao.getStudent(studentId);
+    public Student getStudent(Integer studentId) {
+        Student result = dao.getStudent(studentId);
         if (result == null) {
             throw new NoSuchElementException(String.format("Student with studentId %d does not exist in database", studentId));
         }
         return result;
     }
 
-    public synchronized Map<Integer, StudentDomain> getAllStudents() {
+    public synchronized Map<Integer, Student> getAllStudents() {
         return dao.getAllStudents();
     }
 
     public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
-        StudentDomain validStudent = validateStudent(fullLegalName, prefName, subjects);
+        Student validStudent = validateStudent(fullLegalName, prefName, subjects);
         Instant dateAdded = Instant.now();
         Integer studentId = dao.insertStudent(validStudent.getFullLegalName(), validStudent.getPrefName(), subjects, dateAdded);
         validStudent.setStudentId(studentId);
@@ -70,7 +70,7 @@ public class AttendanceService {
         // TODO refactor? Check if the try-catch block is necessary after the issue 17 change
         try {
             if (dao.deleteStudent(studentId))   {
-                studentsObserver.triggerDelete(StudentDomain.builder().studentId(studentId).build());
+                studentsObserver.triggerDelete(Student.builder().studentId(studentId).build());
                 return;
             }
             throw new NoSuchElementException();
@@ -84,7 +84,7 @@ public class AttendanceService {
     }
 
     public void updateStudent(Integer studentId, String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException    {
-        StudentDomain validUpdate = validateStudent(fullLegalName, prefName, subjects);
+        Student validUpdate = validateStudent(fullLegalName, prefName, subjects);
         Integer updated = dao.updateStudent(validUpdate.getFullLegalName(), validUpdate.getPrefName(), subjects, studentId);
         if (updated == 1)   {
             validUpdate.setStudentId(studentId);
@@ -178,7 +178,7 @@ public class AttendanceService {
     /**
      * HELPERS
      */
-    private StudentDomain validateStudent(String fullLegalName, String prefName, Integer subjects)  throws InvalidDatabaseEntryException {
+    private Student validateStudent(String fullLegalName, String prefName, Integer subjects)  throws InvalidDatabaseEntryException {
         String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
         String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
 
@@ -195,7 +195,7 @@ public class AttendanceService {
             throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
         }
 
-        return StudentDomain.builder().fullLegalName(trimmedFullName).prefName(trimmedPrefName).subjects(subjects).build();
+        return Student.builder().fullLegalName(trimmedFullName).prefName(trimmedPrefName).subjects(subjects).build();
     }
 
 }

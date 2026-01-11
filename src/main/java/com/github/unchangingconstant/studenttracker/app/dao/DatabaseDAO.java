@@ -12,7 +12,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToOngoingVisitMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
@@ -27,16 +27,16 @@ public interface DatabaseDAO {
      */
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
     @RegisterRowMapper(RowToStudentMapper.class)
-    public StudentDomain getStudent(Integer studentId);
+    public Student getStudent(Integer studentId);
 
     @SqlQuery("SELECT * FROM students WHERE student_id IN (<studentIds>)")
     @RegisterRowMapper(RowToStudentMapper.class)
-    public List<StudentDomain> getStudents(@BindList("studentIds") List<Integer> studentIds);
+    public List<Student> getStudents(@BindList("studentIds") List<Integer> studentIds);
 
     @SqlQuery("SELECT * FROM students")
     @RegisterRowMapper(RowToStudentMapper.class)
     @KeyColumn("student_id")
-    public Map<Integer, StudentDomain> getAllStudents();
+    public Map<Integer, Student> getAllStudents();
 
     @SqlUpdate("INSERT INTO students (full_legal_name, preferred_name, subjects, date_added) VALUES (?, ?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the student

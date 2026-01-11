@@ -7,13 +7,13 @@ import java.time.Instant;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 
-public class RowToStudentMapper implements RowMapper<StudentDomain> {
+public class RowToStudentMapper implements RowMapper<Student> {
 
     @Override
-    public StudentDomain map(ResultSet rs, StatementContext ctx) throws SQLException {
-        return StudentDomain.builder()
+    public Student map(ResultSet rs, StatementContext ctx) throws SQLException {
+        return Student.builder()
             .fullLegalName(rs.getString("full_legal_name"))
             .prefName(rs.getString("preferred_name"))
             .studentId(rs.getInt("student_id"))

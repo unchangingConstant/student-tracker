@@ -2,7 +2,7 @@ package com.github.unchangingconstant.studenttracker.gui.components;
 
 import java.util.function.Consumer;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
@@ -59,11 +59,7 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
             return Bindings.createStringBinding(
                 () -> {
                     Integer studentId = cellData.getValue().getStudentId().get();
-                    return StudentQRCodeDomain.HEADER 
-                        + String.valueOf(studentId) 
-                        + StudentQRCodeDomain.SEPERATOR 
-                        + Integer.toHexString(studentId) 
-                        + StudentQRCodeDomain.FOOTER;
+                    return StudentQRCode.createQrCode(studentId);
                 },
                 cellData.getValue().getStudentId()
             );

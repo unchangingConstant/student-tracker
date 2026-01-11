@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
@@ -43,7 +43,7 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Service returns student if DAO was able to find the student with the given ID")
     void testGetStudent_1() throws Exception {
-        StudentDomain s = StudentTestUtil.student().create();
+        Student s = StudentTestUtil.student().create();
         when(dao.getStudent(s.getStudentId())).thenReturn(s);
 
         assertEquals(s, service.getStudent(s.getStudentId()));
@@ -62,7 +62,7 @@ public class AttendanceServiceTest {
     @DisplayName("Returns studentId, student maps if DAO is successful in retrieving all students")
     void testGetAllStudents_1() {
         // TODO make integers match studentIds
-        Map<Integer, StudentDomain> students = Instancio.ofMap(Integer.class, StudentDomain.class).create();
+        Map<Integer, Student> students = Instancio.ofMap(Integer.class, Student.class).create();
         when(dao.getAllStudents()).thenReturn(students);
 
         assertEquals(students, service.getAllStudents());
@@ -71,7 +71,7 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Returns empty map if DAO returns empty map")
     void testGetAllStudents_2() {
-        Map<Integer, StudentDomain> emptyMap = Instancio.ofMap(Integer.class, StudentDomain.class).size(0).create();
+        Map<Integer, Student> emptyMap = Instancio.ofMap(Integer.class, Student.class).size(0).create();
         when(dao.getAllStudents()).thenReturn(emptyMap);
 
         assertEquals(0, service.getAllStudents().size());
@@ -80,7 +80,7 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Encounters no errors if inserted student is valid")
     void testInsertStudent_1() throws Exception {
-        StudentDomain s = StudentTestUtil.validStudent().create();
+        Student s = StudentTestUtil.validStudent().create();
         when(dao.insertStudent(s.getFullLegalName(), 
             s.getPrefName(), s.getSubjects(), s.getDateAdded()))
             .thenReturn(s.getStudentId());
@@ -93,11 +93,11 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Throws error when fullLegalName invalid")
     void testInsertStudent_2() {
-        StudentDomain s1 = StudentTestUtil.validStudent()
-            .generate(field(StudentDomain::getFullLegalName), gen -> gen.string().minLength(151))
+        Student s1 = StudentTestUtil.validStudent()
+            .generate(field(Student::getFullLegalName), gen -> gen.string().minLength(151))
             .create();
-        StudentDomain s2 = StudentTestUtil.validStudent()
-            .generate(field(StudentDomain::getFullLegalName), gen -> gen.string().maxLength(0))
+        Student s2 = StudentTestUtil.validStudent()
+            .generate(field(Student::getFullLegalName), gen -> gen.string().maxLength(0))
             .create();
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
@@ -115,8 +115,8 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Throws error when prefName invalid")
     void testInsertStudent_3() {
-        StudentDomain s = StudentTestUtil.validStudent()
-            .generate(field(StudentDomain::getPrefName), gen -> gen.string().minLength(151))
+        Student s = StudentTestUtil.validStudent()
+            .generate(field(Student::getPrefName), gen -> gen.string().minLength(151))
             .create();
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
@@ -128,14 +128,14 @@ public class AttendanceServiceTest {
     @Test
     @DisplayName("Throws error when subjects invalid")
     void testInsertStudent_4() {
-        StudentDomain s1 = StudentTestUtil.validStudent()
-            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().max(0))
+        Student s1 = StudentTestUtil.validStudent()
+            .generate(field(Student::getSubjects), gen -> gen.ints().max(0))
             .create();
-        StudentDomain s2 = StudentTestUtil.validStudent()
-            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().min(3))
+        Student s2 = StudentTestUtil.validStudent()
+            .generate(field(Student::getSubjects), gen -> gen.ints().min(3))
             .create();
-        StudentDomain s3 = StudentTestUtil.validStudent()
-            .set(field(StudentDomain::getSubjects), null)
+        Student s3 = StudentTestUtil.validStudent()
+            .set(field(Student::getSubjects), null)
             .create();
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         

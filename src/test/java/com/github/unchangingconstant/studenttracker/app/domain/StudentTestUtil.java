@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Student;
 
 /**
  * When inserting Instant objects into the data base, they get truncated down to
@@ -19,17 +19,17 @@ import com.github.unchangingconstant.studenttracker.app.domain.StudentDomain;
  */
 public class StudentTestUtil {
 
-    public static InstancioApi<StudentDomain> student() {
-        return Instancio.of(StudentDomain.class)
-                .generate(field(StudentDomain::getDateAdded), gen -> gen.temporal().instant()
+    public static InstancioApi<Student> student() {
+        return Instancio.of(Student.class)
+                .generate(field(Student::getDateAdded), gen -> gen.temporal().instant()
                         .truncatedTo(ChronoUnit.MILLIS));
     }
 
-    public static InstancioApi<StudentDomain> validStudent() {
+    public static InstancioApi<Student> validStudent() {
         return student()
-            .generate(field(StudentDomain::getFullLegalName), gen -> gen.string().length(1, 150))
-            .generate(field(StudentDomain::getPrefName), gen -> gen.string().length(1, 150))
-            .generate(field(StudentDomain::getSubjects), gen -> gen.ints().range(1, 2));
+            .generate(field(Student::getFullLegalName), gen -> gen.string().length(1, 150))
+            .generate(field(Student::getPrefName), gen -> gen.string().length(1, 150))
+            .generate(field(Student::getSubjects), gen -> gen.ints().range(1, 2));
     }
 
 }

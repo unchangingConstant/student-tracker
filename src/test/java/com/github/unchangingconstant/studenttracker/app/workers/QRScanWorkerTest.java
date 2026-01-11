@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
 
@@ -23,9 +23,9 @@ import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTes
 
 public class QRScanWorkerTest {
     
-    private final String HEADER = StudentQRCodeDomain.HEADER;
-    private final String FOOTER = StudentQRCodeDomain.FOOTER;
-    private final String SEPERATOR = StudentQRCodeDomain.SEPERATOR;
+    private final String HEADER = StudentQRCode.HEADER;
+    private final String FOOTER = StudentQRCode.FOOTER;
+    private final String SEPERATOR = StudentQRCode.SEPERATOR;
     private final RandomGen regexNumGen = new RandomBoundsGen();
 
     @Mock

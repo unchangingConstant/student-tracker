@@ -1,7 +1,5 @@
 package com.github.unchangingconstant.studenttracker;
 
-import java.net.URL;
-
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.guice.DAOModule;
 import com.github.unchangingconstant.studenttracker.guice.QRScanModule;
