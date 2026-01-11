@@ -11,7 +11,7 @@ public class DomainToStudentModelMapper {
             domain.getFullLegalName(), 
             domain.getPrefName(), 
             domain.getDateAdded(), 
-            domain.getSubjects());
+            domain.getVisitTime());
     }
 
 }

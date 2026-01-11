@@ -17,7 +17,7 @@ public class RowToStudentMapper implements RowMapper<Student> {
             .fullLegalName(rs.getString("full_legal_name"))
             .prefName(rs.getString("preferred_name"))
             .studentId(rs.getInt("student_id"))
-            .subjects(rs.getInt("subjects"))
+            .visitTime(rs.getInt("visit_time"))
             .dateAdded(Instant.ofEpochMilli(rs.getLong("date_added")))
             .build();
     }

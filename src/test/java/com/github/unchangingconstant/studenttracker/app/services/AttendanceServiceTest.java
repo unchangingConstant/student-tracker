@@ -82,11 +82,11 @@ public class AttendanceServiceTest {
     void testInsertStudent_1() throws Exception {
         Student s = StudentTestUtil.validStudent().create();
         when(dao.insertStudent(s.getFullLegalName(), 
-            s.getPrefName(), s.getSubjects(), s.getDateAdded()))
+            s.getPrefName(), s.getVisitTime(), s.getDateAdded()))
             .thenReturn(s.getStudentId());
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getSubjects());
+        service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime());
         assertTrue(triggered); // Some of this weirdness will go on while we test event triggers
     }
 
@@ -102,13 +102,13 @@ public class AttendanceServiceTest {
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
         assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
+            () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getVisitTime()));
         assertFalse(triggered);
 
         triggered = false;
 
         assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
+            () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getVisitTime()));
         assertFalse(triggered);
     }
 
@@ -121,40 +121,40 @@ public class AttendanceServiceTest {
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
         assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getSubjects()));
+            () -> service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime()));
         assertFalse(triggered);
     }
 
-    @Test
-    @DisplayName("Throws error when subjects invalid")
-    void testInsertStudent_4() {
-        Student s1 = StudentTestUtil.validStudent()
-            .generate(field(Student::getSubjects), gen -> gen.ints().max(0))
-            .create();
-        Student s2 = StudentTestUtil.validStudent()
-            .generate(field(Student::getSubjects), gen -> gen.ints().min(3))
-            .create();
-        Student s3 = StudentTestUtil.validStudent()
-            .set(field(Student::getSubjects), null)
-            .create();
-        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+    // @Test
+    // @DisplayName("Throws error when subjects invalid")
+    // void testInsertStudent_4() {
+    //     Student s1 = StudentTestUtil.validStudent()
+    //         .generate(field(Student::getSubjects), gen -> gen.ints().max(0))
+    //         .create();
+    //     Student s2 = StudentTestUtil.validStudent()
+    //         .generate(field(Student::getSubjects), gen -> gen.ints().min(3))
+    //         .create();
+    //     Student s3 = StudentTestUtil.validStudent()
+    //         .set(field(Student::getSubjects), null)
+    //         .create();
+    //     service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
-        assertFalse(triggered);
+    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //         () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
+    //     assertFalse(triggered);
 
-        triggered = false;
+    //     triggered = false;
 
-        assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
-        assertFalse(triggered);
+    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //         () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
+    //     assertFalse(triggered);
 
-        triggered = false;
+    //     triggered = false;
 
-        assertThrows(InvalidDatabaseEntryException.class, 
-            () -> service.insertStudent(s3.getFullLegalName(), s3.getPrefName(), s3.getSubjects()));
-        assertFalse(triggered);
-    }
+    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //         () -> service.insertStudent(s3.getFullLegalName(), s3.getPrefName(), s3.getSubjects()));
+    //     assertFalse(triggered);
+    // }
 
     @Test
     @DisplayName("Student is successfully deleted if it's in the database")

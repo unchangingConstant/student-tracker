@@ -51,13 +51,19 @@ public class AttendanceService {
         return dao.getAllStudents();
     }
 
-    public void insertStudent(String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException {
-        Student validStudent = validateStudent(fullLegalName, prefName, subjects);
+    public void insertStudent(String fullLegalName, String prefName, Integer visitTime) throws InvalidDatabaseEntryException {
         Instant dateAdded = Instant.now();
-        Integer studentId = dao.insertStudent(validStudent.getFullLegalName(), validStudent.getPrefName(), subjects, dateAdded);
-        validStudent.setStudentId(studentId);
-        validStudent.setDateAdded(dateAdded);
-        studentsObserver.triggerInsert(validStudent);
+        // Redo the following line? Doesn't read too pretty
+        validateStudent(fullLegalName, prefName, visitTime, dateAdded); // Will throw error if invalid
+        Integer studentId = dao.insertStudent(fullLegalName, prefName, visitTime, dateAdded);
+        Student insertedStudent = Student.builder()
+            .studentId(studentId)
+            .fullLegalName(fullLegalName)
+            .prefName(prefName)
+            .dateAdded(dateAdded)
+            .visitTime(visitTime)
+            .build();
+        studentsObserver.triggerInsert(insertedStudent);
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
@@ -164,6 +170,7 @@ public class AttendanceService {
         visitsObserver.triggerInsert(VisitDomain.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build());
     }
 
+    // TODO Make this a Domain object exception, not a database exception. See issue #16 or refer to the pragmatic programmer on DRY
     static public class InvalidDatabaseEntryException extends Exception {
         public InvalidDatabaseEntryException()  {super();}
         public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
@@ -178,7 +185,7 @@ public class AttendanceService {
     /**
      * HELPERS
      */
-    private Student validateStudent(String fullLegalName, String prefName, Integer subjects)  throws InvalidDatabaseEntryException {
+    private Boolean validateStudent(String fullLegalName, String prefName, Integer visitTime, Instant dateAdded)  throws InvalidDatabaseEntryException {
         String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
         String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
 
@@ -188,14 +195,15 @@ public class AttendanceService {
         if (trimmedFullName.length() < 1)   {
             throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
         }
-        if (subjects == null)   {
-            throw new InvalidDatabaseEntryException("Subjects is null. Contact developer for help");
+        if (visitTime == null)   {
+            throw new InvalidDatabaseEntryException("Visit time is null. Contact developer for help");
         }
-        if (subjects != 1 && subjects != 2)  {
-            throw new InvalidDatabaseEntryException("Students can only take either 1 or 2 subjects");
+        if (visitTime >= 30 && visitTime <= 60)  {
+            // TODO rewrite this error message to convey intent more clearly
+            throw new InvalidDatabaseEntryException("A Student can only be at the center between 30 and 60 minutes");
         }
 
-        return Student.builder().fullLegalName(trimmedFullName).prefName(trimmedPrefName).subjects(subjects).build();
+        return true;
     }
 
 }

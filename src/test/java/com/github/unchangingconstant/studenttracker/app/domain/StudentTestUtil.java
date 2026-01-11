@@ -29,7 +29,7 @@ public class StudentTestUtil {
         return student()
             .generate(field(Student::getFullLegalName), gen -> gen.string().length(1, 150))
             .generate(field(Student::getPrefName), gen -> gen.string().length(1, 150))
-            .generate(field(Student::getSubjects), gen -> gen.ints().range(1, 2));
+            .generate(field(Student::getVisitTime), gen -> gen.ints().range(30, 60));
     }
 
 }
