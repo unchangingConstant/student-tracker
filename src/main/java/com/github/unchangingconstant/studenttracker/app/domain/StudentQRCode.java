@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Specification for QRCodes scannable by the application
+ * Specification / descriptor for QRCodes scannable by the application
  */
 public class StudentQRCode {
 

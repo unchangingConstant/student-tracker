@@ -1,18 +1,22 @@
 package com.github.unchangingconstant.studenttracker.app.services;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Path.Node;
 import javax.validation.Validation;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.domain.Student;
-import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Visit;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -26,7 +30,7 @@ public class AttendanceService {
     @Getter
     private AttendanceObserver<OngoingVisitDomain> ongoingVisitsObserver;
     @Getter
-    private AttendanceObserver<VisitDomain> visitsObserver;
+    private AttendanceObserver<Visit> visitsObserver;
     @Getter
     private AttendanceObserver<Student> studentsObserver;
 
@@ -57,7 +61,7 @@ public class AttendanceService {
     public void insertStudent(Student student) throws InvalidDatabaseEntryException {
         Instant dateAdded = Instant.now();
         student.setDateAdded(dateAdded);
-        if (validateStudent(student).size() > 0) {
+        if (validateEntityExcept(student, Set.of("studentId")).size() > 0) {
             throw new InvalidDatabaseEntryException();
         } 
         Integer studentId = dao.insertStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), dateAdded);
@@ -67,7 +71,7 @@ public class AttendanceService {
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
         // First deletes visits
-        List<VisitDomain> deletedVisits = dao.getStudentVisits(studentId); 
+        List<Visit> deletedVisits = dao.getStudentVisits(studentId); 
         dao.deleteStudentVisits(studentId);
         visitsObserver.triggerDelete(deletedVisits);
 
@@ -80,7 +84,7 @@ public class AttendanceService {
     }
 
     public void updateStudent(Student student) throws InvalidDatabaseEntryException    {
-        if (validateStudent(student).size() > 0) {
+        if (validateEntity(student).size() > 0) {
             throw new InvalidDatabaseEntryException();
         };
 
@@ -99,23 +103,28 @@ public class AttendanceService {
      * VISIT METHODS
      */
 
-    public VisitDomain getVisit(Integer visitId) {
+    public Visit getVisit(Integer visitId) {
         return dao.getVisit(visitId);
     }
 
-    public void insertVisit(Integer studentId, Instant startTime, Instant endTime)  {
-        Integer visitId = dao.insertVisit(startTime, endTime, studentId);
-        VisitDomain visit = VisitDomain.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build();
+    public void insertVisit(Visit visit) throws InvalidDatabaseEntryException  {
+        if (validateEntityExcept(visit, Set.of("visitId")).size() > 0) {
+            throw new InvalidDatabaseEntryException();
+        }
+        Integer visitId = dao.insertVisit(visit.getStartTime(), visit.getEndTime(), visit.getStudentId());
+        visit.setVisitId(visitId);
         visitsObserver.triggerInsert(visit);
     }
 
     public void deleteVisit(Integer visitId)   {
-        dao.deleteVisit(visitId); // TODO wtf is this
-        VisitDomain visit = VisitDomain.builder().visitId(visitId).build();
-        visitsObserver.triggerDelete(visit);
+        if (dao.deleteVisit(visitId)) {
+            Visit visit = Visit.builder().visitId(visitId).build();
+            visitsObserver.triggerDelete(visit);
+        }
+        throw new NoSuchElementException();
     }
 
-    public List<VisitDomain> getStudentVisits(Integer studentId) {
+    public List<Visit> getStudentVisits(Integer studentId) {
         return dao.getStudentVisits(studentId);
     }
 
@@ -159,7 +168,7 @@ public class AttendanceService {
         // Logs endtime into Visit table
         Instant endTime = Instant.now();
         Integer visitId = dao.insertVisit(startTime, endTime, studentId);
-        visitsObserver.triggerInsert(VisitDomain.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build());
+        visitsObserver.triggerInsert(Visit.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build());
     }
 
     // TODO Make this a Domain object exception, not a database exception. See issue #16 or refer to the pragmatic programmer on DRY
@@ -177,8 +186,21 @@ public class AttendanceService {
     /**
      * HELPERS
      */
-    private Set<ConstraintViolation<Student>> validateStudent(Student student)  throws InvalidDatabaseEntryException {
-        return Validation.buildDefaultValidatorFactory().getValidator().validate(student);
+    private Set<ConstraintViolation<Object>> validateEntity(Object entity) throws InvalidDatabaseEntryException {
+        return Validation.buildDefaultValidatorFactory().getValidator().validate(entity);
+    }
+
+    // Ignores constraint violations for specified properties
+    private Set<ConstraintViolation<Object>> validateEntityExcept(Object entity, Set<String> propertyExceptions) throws InvalidDatabaseEntryException {
+        Set<ConstraintViolation<Object>> violations = validateEntity(entity);
+        return violations.stream().filter(violation -> {
+            Node lastNode = null;
+            // For the love of god just let me access the field's name directly
+            for (Node node : violation.getPropertyPath()) {
+                lastNode = node;
+            }
+            return lastNode != null ? !propertyExceptions.contains(lastNode.getName()) : true;
+        }).collect(Collectors.toSet());
     }
 
 }

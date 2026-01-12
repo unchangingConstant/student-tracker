@@ -1,11 +1,7 @@
 package com.github.unchangingconstant.studenttracker.app.domain;
 
 import java.time.Instant;
-import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -24,6 +20,7 @@ public class Student {
     // Names shouldn't have trailing or leading white space
     public static final String NAME_REGEX = "^[^\\s].*[^\\s]$|^[^\\s]?$";
 
+    @NotNull
     @Min(value = 1)
     private Integer studentId;
 
