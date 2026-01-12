@@ -4,7 +4,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
@@ -47,23 +50,19 @@ public class AttendanceService {
         return result;
     }
 
-    public synchronized Map<Integer, Student> getAllStudents() {
+    public Map<Integer, Student> getAllStudents() {
         return dao.getAllStudents();
     }
 
-    public void insertStudent(String fullLegalName, String prefName, Integer visitTime) throws InvalidDatabaseEntryException {
+    public void insertStudent(Student student) throws InvalidDatabaseEntryException {
         Instant dateAdded = Instant.now();
-        // Redo the following line? Doesn't read too pretty
-        validateStudent(fullLegalName, prefName, visitTime, dateAdded); // Will throw error if invalid
-        Integer studentId = dao.insertStudent(fullLegalName, prefName, visitTime, dateAdded);
-        Student insertedStudent = Student.builder()
-            .studentId(studentId)
-            .fullLegalName(fullLegalName)
-            .prefName(prefName)
-            .dateAdded(dateAdded)
-            .visitTime(visitTime)
-            .build();
-        studentsObserver.triggerInsert(insertedStudent);
+        student.setDateAdded(dateAdded);
+        if (validateStudent(student).size() > 0) {
+            throw new InvalidDatabaseEntryException();
+        } 
+        Integer studentId = dao.insertStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), dateAdded);
+        student.setStudentId(studentId);
+        studentsObserver.triggerInsert(student);
     }
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
@@ -72,33 +71,26 @@ public class AttendanceService {
         dao.deleteStudentVisits(studentId);
         visitsObserver.triggerDelete(deletedVisits);
 
-        // Then deletes students
-        // TODO refactor? Check if the try-catch block is necessary after the issue 17 change
-        try {
-            if (dao.deleteStudent(studentId))   {
-                studentsObserver.triggerDelete(Student.builder().studentId(studentId).build());
-                return;
-            }
-            throw new NoSuchElementException();
-        } catch (UnableToExecuteStatementException e) {
-            // If unable to delete due to foreign key constraints
-            if (e.getMessage().contains("FOREIGN KEY constraint")) {
-                throw new IllegalDatabaseOperationException("Cannot delete student with existing visits", e);
-            }
-            throw e;
+        // Then deletes student
+        if (dao.deleteStudent(studentId))   {
+            studentsObserver.triggerDelete(Student.builder().studentId(studentId).build());
+            return;
         }
+        throw new NoSuchElementException();
     }
 
-    public void updateStudent(Integer studentId, String fullLegalName, String prefName, Integer subjects) throws InvalidDatabaseEntryException    {
-        Student validUpdate = validateStudent(fullLegalName, prefName, subjects);
-        Integer updated = dao.updateStudent(validUpdate.getFullLegalName(), validUpdate.getPrefName(), subjects, studentId);
+    public void updateStudent(Student student) throws InvalidDatabaseEntryException    {
+        if (validateStudent(student).size() > 0) {
+            throw new InvalidDatabaseEntryException();
+        };
+
+        Integer updated = dao.updateStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), student.getStudentId());
         if (updated == 1)   {
-            validUpdate.setStudentId(studentId);
-            studentsObserver.triggerUpdate(validUpdate);
+            studentsObserver.triggerUpdate(student);
             return;
         }
         if (updated == 0)   {
-            throw new NoSuchElementException(String.format("Student with studentId %d doesn't exist", studentId));
+            throw new NoSuchElementException(String.format("Student with studentId %d doesn't exist", student.getStudentId()));
         }
         throw new IllegalStateException("More than one update occurred on AttendanceService.updateStudent(). Something is seriously wrong");
     }
@@ -185,25 +177,8 @@ public class AttendanceService {
     /**
      * HELPERS
      */
-    private Boolean validateStudent(String fullLegalName, String prefName, Integer visitTime, Instant dateAdded)  throws InvalidDatabaseEntryException {
-        String trimmedFullName = fullLegalName.trim().replaceAll("\\s+", " ");
-        String trimmedPrefName = prefName == null ? "" : prefName.trim().replaceAll("\\s+", " ");
-
-        if (trimmedPrefName.length() > 150 || trimmedFullName.length() > 150) {
-            throw new InvalidDatabaseEntryException("Names can not be more than 150 characters in length");
-        }
-        if (trimmedFullName.length() < 1)   {
-            throw new InvalidDatabaseEntryException("Names can not be less than 1 character in length");
-        }
-        if (visitTime == null)   {
-            throw new InvalidDatabaseEntryException("Visit time is null. Contact developer for help");
-        }
-        if (visitTime >= 30 && visitTime <= 60)  {
-            // TODO rewrite this error message to convey intent more clearly
-            throw new InvalidDatabaseEntryException("A Student can only be at the center between 30 and 60 minutes");
-        }
-
-        return true;
+    private Set<ConstraintViolation<Student>> validateStudent(Student student)  throws InvalidDatabaseEntryException {
+        return Validation.buildDefaultValidatorFactory().getValidator().validate(student);
     }
 
 }

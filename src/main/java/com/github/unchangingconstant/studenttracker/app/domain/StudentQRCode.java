@@ -44,6 +44,7 @@ public class StudentQRCode {
         return decStudentId == hexStudentId;
     }
 
+    // DELETE THIS
     public static String extractQrCode(String str) {
         // Checks that the QRCode format is right
         Matcher matcher = Pattern.compile(StudentQRCode.QR_CODE_REGEX).matcher(str);
