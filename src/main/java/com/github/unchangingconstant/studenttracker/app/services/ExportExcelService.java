@@ -21,31 +21,30 @@ import org.dhatim.fastexcel.Worksheet;
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.ExportedVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import static com.github.unchangingconstant.studenttracker.app.services.util.ExcelExportUtils.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ExportExcelService {
-    
+
     private DatabaseDAO dao;
 
-    public static final Comparator<ExportedVisitDomain> SORT_BY_TIME = 
-        new Comparator<ExportedVisitDomain>() {
-            @Override
-            public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
-                return arg1.getStartTime().compareTo(arg0.getStartTime());
+    public static final Comparator<ExportedVisitDomain> SORT_BY_TIME = new Comparator<ExportedVisitDomain>() {
+        @Override
+        public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
+            return arg1.getStartTime().compareTo(arg0.getStartTime());
+        }
+    };
+    public static final Comparator<ExportedVisitDomain> SORT_BY_NAME = new Comparator<ExportedVisitDomain>() {
+        @Override
+        public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
+            if (arg0.getStudentName().equals(arg1.getStudentName())) {
+                return SORT_BY_TIME.compare(arg0, arg1);
             }
-        };
-    public static final Comparator<ExportedVisitDomain> SORT_BY_NAME = 
-        new Comparator<ExportedVisitDomain>() {
-            @Override
-            public int compare(ExportedVisitDomain arg0, ExportedVisitDomain arg1) {
-                if (arg0.getStudentName().equals(arg1.getStudentName())) {
-                    return SORT_BY_TIME.compare(arg0, arg1);
-                }
-                return arg0.getStudentName().compareTo(arg1.getStudentName());
-            }
-        };
+            return arg0.getStudentName().compareTo(arg1.getStudentName());
+        }
+    };
 
     @Inject
     public ExportExcelService(DatabaseDAO dao) {
@@ -53,41 +52,37 @@ public class ExportExcelService {
     }
 
     // TODO create database method to retrieve visits from multiple students
-    public String exportStudentsVisitsToExcel(List<Integer> studentIds, Comparator<ExportedVisitDomain> comparator) throws Exception {
-        // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
+    public String exportStudentsVisitsToExcel(List<Integer> studentIds, Comparator<ExportedVisitDomain> comparator)
+            throws Exception {
+        // TODO add a database method to do this in one call (Rework database perhaps?
+        // Getting kind of monolithic)
         List<VisitDomain> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
         Map<Integer, String> studentNames = dao.getStudents(studentIds).stream()
-            .collect(Collectors.toMap(
-                student -> student.getStudentId(),
-                student -> student.getFullLegalName() 
-            ));
+                .collect(Collectors.toMap(
+                        student -> student.getStudentId(),
+                        student -> student.getFullLegalName()));
 
-        List<ExportedVisitDomain> exportedVisits = 
-            studentsVisits.stream()
-            .map(visit -> {
-                return ExportedVisitDomain.builder()
-                .studentName(studentNames.get(visit.getStudentId()))
-                .startTime(visit.getStartTime())
-                .endTime(visit.getEndTime())
-                .duration(ChronoUnit.MINUTES.between(visit.getStartTime(), visit.getEndTime()))
-                .build();
-            }).collect(Collectors.toList());
-        
-        if (comparator != null) Collections.sort(exportedVisits, comparator);
+        List<ExportedVisitDomain> exportedVisits = studentsVisits.stream()
+                .map(visit -> {
+                    return ExportedVisitDomain.builder()
+                            .studentName(studentNames.get(visit.getStudentId()))
+                            .startTime(visit.getStartTime())
+                            .endTime(visit.getEndTime())
+                            .duration(ChronoUnit.MINUTES.between(visit.getStartTime(), visit.getEndTime()))
+                            .build();
+                }).collect(Collectors.toList());
+
+        if (comparator != null)
+            Collections.sort(exportedVisits, comparator);
 
         // Creates file name
-        Instant now = Instant.now();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy").withZone(ZoneId.systemDefault());
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZoneId.systemDefault());
-        String exportName = 
-            "." + File.separator +
-            "exports" + File.separator + 
-            dateFormatter.format(now) + "_" + timeFormatter.format(now) + ".xlsx";
+        String exportName = EXCEL_EXPORT_PATH + generateExcelExportName();
 
         // Writes data to excel workbook
         // TODO first example of versioning perhaps being necessary?
-        try (OutputStream os = Files.newOutputStream(Paths.get(exportName)); Workbook wb = new Workbook(os, "StudentTracker", "0.1")) {
+        try (OutputStream os = Files.newOutputStream(Paths.get(exportName));
+                Workbook wb = new Workbook(os, "StudentTracker", "0.1")) {
             Worksheet ws = wb.newWorksheet("StudentVisits");
             // Create field headers
             ws.value(0, 0, "Student Name");
@@ -100,16 +95,12 @@ public class ExportExcelService {
                 Instant startTime = currExport.getStartTime();
                 Instant endTime = currExport.getEndTime();
                 ws.value(row, 0, currExport.getStudentName());
-                ws.value(row, 1, dateFormatter.format(startTime) + "_" + timeFormatter.format(startTime));
-                ws.value(row, 2, dateFormatter.format(endTime) + "_" + timeFormatter.format(endTime));
+                ws.value(row, 1, generateDateTimeCellStr(startTime));
+                ws.value(row, 2, generateDateTimeCellStr(endTime));
                 ws.value(row, 3, ChronoUnit.MINUTES.between(startTime, endTime));
             }
         }
 
         return exportName;
-    }
-
-    private List<ExportedVisitDomain> sortExports(List<ExportedVisitDomain> exportList, Comparator<ExportedVisitDomain> comparator) {
-        return null;
     }
 }
