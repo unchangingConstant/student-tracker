@@ -22,12 +22,12 @@ public class WindowManager {
     private Stage exportPage;
 
     @Inject
-    public WindowManager()   {
+    public WindowManager() {
     }
 
     public void openMainPage(Stage stage) {
         Parent root = loadFXML("/view/pages/attendance_dashboard_page.fxml");
-        Scene scene = provideScene(root, 100, 100);  
+        Scene scene = provideScene(root, 100, 100);
         stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);
         stage.setMaximized(true);
@@ -35,43 +35,15 @@ public class WindowManager {
     }
 
     public void openExportPage() {
-        if (exportPage != null) {
-            exportPage.toFront();
-            return;
-        }
-        Scene scene = provideScene(loadFXML("/view/pages/export_page.fxml"), 640, 900);
-        exportPage = provideStage();
-        exportPage.setScene(scene);
-        exportPage.show();
-        exportPage.setOnCloseRequest(windowEvent -> {
-            onCloseExportPage();
-        });
+        exportPage = openWindow(exportPage, "/view/pages/export_page.fxml", 640, 900);
+    }
+
+    public void openRecordManager() {
+        recordManager = openWindow(recordManager, "/view/pages/record_manager_page.fxml", 960, 540);
     }
 
     public void closeExportPage() {
         exportPage.close();
-    }
-
-    public void openRecordManager() {
-        if (recordManager != null) {
-            recordManager.toFront();
-            return;
-        };
-        Scene scene = provideScene(loadFXML("/view/pages/record_manager_page.fxml"), 960, 540);
-        recordManager = provideStage();
-        recordManager.setScene(scene);
-        recordManager.show();
-        recordManager.setOnCloseRequest(windowEvent -> {
-            onCloseRecordManager();
-        });
-    }
-
-    private void onCloseExportPage() {
-        exportPage = null;
-    }
-
-    private void onCloseRecordManager() {
-        recordManager = null;
     }
 
     private Parent loadFXML(String url) {
@@ -94,10 +66,23 @@ public class WindowManager {
         return scene;
     }
 
-    private Stage provideStage() {
+    private Stage buildStage(Scene scene) {
         Stage stage = new Stage();
+        stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);
         return stage;
+    }
+
+    private Stage openWindow(Stage window, String fxmlPath, Integer width, Integer height) {
+        // Assumes provided window is not null first
+        Stage workingWindow = window;
+        if (workingWindow == null) {
+            Scene scene = provideScene(loadFXML(fxmlPath), width, height);
+            workingWindow = buildStage(scene);
+        }
+        workingWindow.show();
+        workingWindow.toFront();
+        return workingWindow;
     }
 
 }
