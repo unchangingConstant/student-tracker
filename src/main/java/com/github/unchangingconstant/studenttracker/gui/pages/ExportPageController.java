@@ -51,7 +51,8 @@ public class ExportPageController implements Controller {
     private final WindowManager windowController;
 
     @Inject
-    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService, WindowManager windowController) {
+    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService,
+            WindowManager windowController) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
         this.windowController = windowController;
@@ -67,32 +68,30 @@ public class ExportPageController implements Controller {
     // TODO ew, so large. Chop this up bruh
     private void setupStudentSelector() {
         // Makes list sorted alphabetically
-        SortedList<StudentModel> studentsList = 
-            new SortedList<>(studentTableModel.getStudents(),
-            new Comparator<StudentModel>() {
-                @Override
-                public int compare(StudentModel arg0, StudentModel arg1) {
-                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
-                }
-            }
-        );
+        SortedList<StudentModel> studentsList = new SortedList<>(studentTableModel.getStudents(),
+                new Comparator<StudentModel>() {
+                    @Override
+                    public int compare(StudentModel arg0, StudentModel arg1) {
+                        return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                    }
+                });
 
         // Populates selection
         studentSelector.setItems(studentsList);
 
         // Maps each student to a boolean property
         studentTableModel.getStudents().forEach(
-            item -> {
-                BooleanProperty boolProp = new SimpleBooleanProperty(false);
-                // If a single box is false, the selectAllCheckBox will also be false
-                boolProp.addListener((obs, oldVal, newVal) -> {
-                    if (!newVal) {
-                        selectAllCheckBox.setSelected(false);
-                    }
+                item -> {
+                    BooleanProperty boolProp = new SimpleBooleanProperty(false);
+                    // If a single box is false, the selectAllCheckBox will also be false
+                    boolProp.addListener((obs, oldVal, newVal) -> {
+                        if (!newVal) {
+                            selectAllCheckBox.setSelected(false);
+                        }
+                    });
+                    selectionMap.put(item, boolProp);
                 });
-                selectionMap.put(item, boolProp);
-            });
-        
+
         // When selectAllCheckBox is clicked, all boxes in list must match its state
         selectAllCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
             selectionMap.forEach((key, val) -> {
@@ -102,24 +101,31 @@ public class ExportPageController implements Controller {
 
         // Sets up checkboxes
         studentSelector.setCellFactory(
-        CheckBoxListCell.forListView(item -> selectionMap.get(item),
-        new StringConverter<StudentModel>() {
-            @Override
-            public String toString(StudentModel obj) {return obj.getFullLegalName().get();}
-            // I'm not sure what leaving this null will do. I'm assuming this is for when the list
-            // is edited (inline) and it needs to convert the other way. But since this list isn't being
-            // edited, I'm going to assume this should be fine.
-            @Override
-            public StudentModel fromString(String string) {return null;}
-        }));
+                CheckBoxListCell.forListView(item -> selectionMap.get(item),
+                        new StringConverter<StudentModel>() {
+                            @Override
+                            public String toString(StudentModel obj) {
+                                return obj.getFullLegalName().get();
+                            }
+
+                            // I'm not sure what leaving this null will do. I'm assuming this is for when
+                            // the list
+                            // is edited (inline) and it needs to convert the other way. But since this list
+                            // isn't being
+                            // edited, I'm going to assume this should be fine.
+                            @Override
+                            public StudentModel fromString(String string) {
+                                return null;
+                            }
+                        }));
     }
 
     private void onExportButtonPress() {
         List<Integer> selectedStudentsIds = studentSelector.getItems().stream()
-            .filter(student -> selectionMap.get(student).getValue())
-            .map(student -> student.getStudentId().get())
-            .toList();
-        
+                .filter(student -> selectionMap.get(student).getValue())
+                .map(student -> student.getStudentId().get())
+                .toList();
+
         ServiceTask<Void> exportTask = new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -142,6 +148,7 @@ public class ExportPageController implements Controller {
                 exportDialog.setHeaderText("Export successful!");
                 exportDialog.showAndWait();
             } else if (newVal.equals(Worker.State.FAILED)) {
+                exportTask.getException().printStackTrace();
                 exportDialog.setHeaderText("ERROR: Task failed");
                 exportDialog.setAlertType(AlertType.ERROR);
                 exportDialog.showAndWait();

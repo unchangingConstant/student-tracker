@@ -22,12 +22,12 @@ public class WindowManager {
     private Stage exportPage;
 
     @Inject
-    public WindowManager()   {
+    public WindowManager() {
     }
 
     public void openMainPage(Stage stage) {
         Parent root = loadFXML("/view/pages/attendance_dashboard_page.fxml");
-        Scene scene = provideScene(root, 100, 100);  
+        Scene scene = provideScene(root, 100, 100);
         stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);
         stage.setMaximized(true);
@@ -56,7 +56,8 @@ public class WindowManager {
         if (recordManager != null) {
             recordManager.toFront();
             return;
-        };
+        }
+        ;
         Scene scene = provideScene(loadFXML("/view/pages/record_manager_page.fxml"), 960, 540);
         recordManager = provideStage();
         recordManager.setScene(scene);
