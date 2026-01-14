@@ -184,7 +184,7 @@
           <input>${project.build.directory}/compiled</input>
           <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
           <mainClass>${launcher-class}</mainClass>
-          <name>${project.name}</name>
+          <name>${project.name}_${project.version}</name>
           <destination>${project.build.directory}/distribution</destination>
           <!-- No work :( -->
           <type>APP_IMAGE</type> 
