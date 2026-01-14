@@ -5,13 +5,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCodeDomain;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
+import com.github.unchangingconstant.studenttracker.app.workers.util.QRScanUtils;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -54,7 +54,9 @@ public class QRScanWorker {
             .map(String::valueOf)
             .collect(Collectors.joining())
             .toLowerCase();
-        System.out.println(bufferStr);
+        // Trust me on this
+        // Otherwise, pressing Enter twice will scan QRCodes that have already been processed
+        buffer.clear();
         // Checks that the QRCode format is right
         Matcher matcher = Pattern.compile(StudentQRCodeDomain.QR_CODE_REGEX).matcher(bufferStr);
         if (matcher.find()) { // Dunno if this good or not, honestly
@@ -100,10 +102,7 @@ public class QRScanWorker {
         @Override
         public void nativeKeyTyped(NativeKeyEvent e) {
             Character keyChar = e.getKeyChar();
-            if (!keyCharBuffer.offer(keyChar)) {
-                keyCharBuffer.removeFirst();
-                keyCharBuffer.add(keyChar);
-            }
+            QRScanUtils.addToKeyBuffer(keyCharBuffer, keyChar);
         }
 
         @Override
