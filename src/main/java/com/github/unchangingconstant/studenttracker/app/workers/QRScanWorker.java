@@ -26,14 +26,17 @@ import com.google.inject.Singleton;
  * meant to be called by the client. They are meant to be called for testing, however.
  */
 /**
- * QRCodes will represent studentIds via a decimal number followed by a hex number.
+ * QRCodes will represent studentIds via a decimal number followed by a hex
+ * number.
  * 
  * An example of a QRCode string will look like this:
  * 
  * STA1x1STA OR STA266x10aSTA OR STA12xcSTA
  * 
- * This service will be subscribed to the global key event logger (GlobalScreen, from 
- * jnativehook), track the last 26 characters typed and search for QR patterns upon an
+ * This service will be subscribed to the global key event logger (GlobalScreen,
+ * from
+ * jnativehook), track the last 26 characters typed and search for QR patterns
+ * upon an
  * ENTER key press
  */
 @Singleton
@@ -46,16 +49,17 @@ public class QRScanWorker {
     @Inject
     public QRScanWorker(AttendanceService attendanceService, KeyLoggerService keyLoggerService) {
         this.attendanceService = attendanceService;
-		keyLoggerService.addNativeKeyListener(new KeyEventHook());
+        keyLoggerService.addNativeKeyListener(new KeyEventHook());
     }
 
     public String findQRCode(LinkedBlockingDeque<Character> buffer) {
         String bufferStr = buffer.stream() // converts buffer to a string
-            .map(String::valueOf)
-            .collect(Collectors.joining())
-            .toLowerCase();
+                .map(String::valueOf)
+                .collect(Collectors.joining())
+                .toLowerCase();
         // Trust me on this
-        // Otherwise, pressing Enter twice will scan QRCodes that have already been processed
+        // Otherwise, pressing Enter twice will scan QRCodes that have already been
+        // processed
         buffer.clear();
         // Checks that the QRCode format is right
         Matcher matcher = Pattern.compile(StudentQRCodeDomain.QR_CODE_REGEX).matcher(bufferStr);
@@ -66,31 +70,27 @@ public class QRScanWorker {
     }
 
     public void processQRCode(String qrCode) {
-        // Searches for leading decimal number
-        Matcher decMatcher = Pattern.compile(StudentQRCodeDomain.DECIMAL_REGEX + StudentQRCodeDomain.SEPERATOR).matcher(qrCode);
-        // Searches for trailing hex number
-        Matcher hexMatcher = Pattern.compile(StudentQRCodeDomain.SEPERATOR + StudentQRCodeDomain.HEX_REGEX).matcher(qrCode);
+        Integer id = QRScanUtils.extractIDFromQR(qrCode);
+        Integer checksum = QRScanUtils.extractChecksumValueFromQR(qrCode);
 
-        if (!decMatcher.find() || !hexMatcher.find()) {
+        System.out.println("QRCode detected: " + qrCode);
+        if (id == null || checksum == null) {
             System.out.println("QR code format incorrect");
             return;
         }
 
-        Integer decStudentId = Integer.valueOf(decMatcher.group().replace(StudentQRCodeDomain.SEPERATOR, ""));
-        Integer hexStudentId = Integer.valueOf(hexMatcher.group().replace(StudentQRCodeDomain.SEPERATOR, ""), 16);
-
-        if (decStudentId != hexStudentId) {
-            System.out.println("QR scan invalid");
+        if (!id.equals(checksum)) {
+            System.out.println(String.format("QR scan invalid: ID = %d, CHECKSUM = %d", id, checksum));
             return;
         }
 
         // Keeps the service from being called by the jnativehook thread
         ThreadManager.mainBackgroundExecutor().submit(() -> {
-            OngoingVisitDomain ongoingVisit = attendanceService.getOngoingVisit(decStudentId);
+            OngoingVisitDomain ongoingVisit = attendanceService.getOngoingVisit(id);
             if (ongoingVisit == null) {
-                attendanceService.startOngoingVisit(decStudentId);
+                attendanceService.startOngoingVisit(id);
             } else {
-                attendanceService.endOngoingVisit(decStudentId, ongoingVisit.getStartTime());
+                attendanceService.endOngoingVisit(id, ongoingVisit.getStartTime());
             }
         });
     }
