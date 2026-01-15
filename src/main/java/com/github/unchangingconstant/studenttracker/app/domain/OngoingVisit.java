@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class OngoingVisitDomain {
+public class OngoingVisit {
     
     private Integer studentId;
     private Instant startTime;

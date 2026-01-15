@@ -14,7 +14,7 @@ import javax.validation.Path.Node;
 import javax.validation.Validation;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.Visit;
 import com.google.inject.Inject;
@@ -28,7 +28,7 @@ public class AttendanceService {
     private DatabaseDAO dao;
 
     @Getter
-    private AttendanceObserver<OngoingVisitDomain> ongoingVisitsObserver;
+    private AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
     @Getter
     private AttendanceObserver<Visit> visitsObserver;
     @Getter
@@ -132,13 +132,13 @@ public class AttendanceService {
      * ONGOING VISIT METHODS
      */
 
-    public Map<Integer, OngoingVisitDomain> getOngoingVisits() {
+    public Map<Integer, OngoingVisit> getOngoingVisits() {
         return dao.getOngoingVisits();
     }
 
     // Returns null if nothing found TODO returning null better than throwing exception in some cases
     // Fix other service methods
-    public OngoingVisitDomain getOngoingVisit(Integer studentId)   {
+    public OngoingVisit getOngoingVisit(Integer studentId)   {
         return dao.getOngoingVisit(studentId);
     }
 
@@ -150,9 +150,9 @@ public class AttendanceService {
         };
         Instant startTime = Instant.now();
         dao.insertOngoingVisit(studentId, startTime);
-        OngoingVisitDomain newOngoingVisit = dao.getOngoingVisit(studentId);
+        OngoingVisit newOngoingVisit = dao.getOngoingVisit(studentId);
         ongoingVisitsObserver.triggerInsert(
-            OngoingVisitDomain.builder()
+            OngoingVisit.builder()
                 .studentId(studentId)
                 .startTime(startTime)
                 .subjects(newOngoingVisit.getSubjects())
@@ -164,7 +164,7 @@ public class AttendanceService {
     public void endOngoingVisit(Integer studentId, Instant startTime) {
         // Ends ongoing visit
         dao.deleteOngoingVisit(studentId);
-        ongoingVisitsObserver.triggerDelete(OngoingVisitDomain.builder().studentId(studentId).build());
+        ongoingVisitsObserver.triggerDelete(OngoingVisit.builder().studentId(studentId).build());
         // Logs endtime into Visit table
         Instant endTime = Instant.now();
         Integer visitId = dao.insertVisit(startTime, endTime, studentId);

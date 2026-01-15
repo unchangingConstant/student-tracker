@@ -11,9 +11,9 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.domain.Student;
-import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToOngoingVisitMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
@@ -57,16 +57,16 @@ public interface DatabaseDAO {
      */
     @SqlQuery("SELECT * FROM visits WHERE visit_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
-    public VisitDomain getVisit(Integer visitId);
+    public Visit getVisit(Integer visitId);
 
     @SqlQuery("SELECT * FROM visits")
     @RegisterRowMapper(RowToVisitMapper.class)
     @KeyColumn("visit_id")
-    public Map<Integer, VisitDomain> getAllVisits();
+    public Map<Integer, Visit> getAllVisits();
 
     @SqlQuery("SELECT * FROM visits WHERE student_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
-    public List<VisitDomain> getStudentVisits(Integer studentId);
+    public List<Visit> getStudentVisits(Integer studentId);
 
     @SqlUpdate("INSERT INTO visits (start_time, end_time, student_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys // gets the new id of the visit
@@ -80,19 +80,19 @@ public interface DatabaseDAO {
 
     @SqlQuery("SELECT * FROM visits WHERE student_id IN (<studentIds>)")
     @RegisterRowMapper(RowToVisitMapper.class)
-    public List<VisitDomain> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
+    public List<Visit> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
 
     /*
      * ONGOING VISIT METHODS
      */
     @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name, s.subjects FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id where s.student_id = ?;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
-    public OngoingVisitDomain getOngoingVisit(Integer studentId);
+    public OngoingVisit getOngoingVisit(Integer studentId);
 
     @SqlQuery("SELECT ov.*, s.full_legal_name, s.preferred_name, s.subjects FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     @KeyColumn("student_id")
-    public Map<Integer, OngoingVisitDomain> getOngoingVisits();
+    public Map<Integer, OngoingVisit> getOngoingVisits();
 
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (?, ?)")
     public void insertOngoingVisit(Integer studentId, Instant startTime);

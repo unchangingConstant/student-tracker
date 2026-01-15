@@ -6,7 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.unchangingconstant.studenttracker.utils.ResourceLoader;
+import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
 
 public class ApplicationSetup {
 
@@ -29,7 +29,8 @@ public class ApplicationSetup {
 
     private static void setupFolders() throws Exception {
         File exportsPath = new File(System.getProperty("user.dir") + File.separator + "exports");
-        if (exportsPath.exists()) return;
+        if (exportsPath.exists())
+            return;
         Boolean dirCreated = exportsPath.mkdir();
         if (!dirCreated) {
             throw new Exception("Record folder creation failed");
@@ -38,10 +39,10 @@ public class ApplicationSetup {
 
     private static void setupKeyLogger() {
         try {
-			GlobalScreen.registerNativeHook();
-		} catch (NativeHookException e) {
-			e.printStackTrace();
-		}
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException e) {
+            e.printStackTrace();
+        }
     }
 
 }

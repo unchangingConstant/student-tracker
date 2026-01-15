@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.utils;
+package com.github.unchangingconstant.studenttracker.util;
 
 import java.io.IOException;
 import java.io.InputStream;

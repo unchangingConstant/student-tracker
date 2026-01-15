@@ -20,11 +20,11 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.domain.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
-import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
+import com.github.unchangingconstant.studenttracker.app.domain.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 import com.github.unchangingconstant.studenttracker.guice.DAOModule;
-import com.github.unchangingconstant.studenttracker.utils.ResourceLoader;
+import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -119,7 +119,7 @@ public class DatabaseDAOTest {
     void testInsertStudent_1() {
         // This sucks. Just hoping the dao assigns it an ID of "1"
         Student s = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
-        Integer resultId = dao.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getSubjects(), s.getDateAdded());
+        Integer resultId = dao.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime(), s.getDateAdded());
         Student result = jdbi
                 .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
         assertEquals(s, result);
@@ -161,7 +161,7 @@ public class DatabaseDAOTest {
     @DisplayName("deleteStudent() doesn't delete student when student has visits in the visits table")
     void testDeleteStudent_4() {
         Student s = StudentTestUtil.student().create();
-        VisitDomain v = Instancio.of(VisitDomain.class).set(field(VisitDomain::getStudentId), s.getStudentId()).create();
+        Visit v = Instancio.of(Visit.class).set(field(Visit::getStudentId), s.getStudentId()).create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_VISIT).bindBean(v).execute());
@@ -175,14 +175,15 @@ public class DatabaseDAOTest {
 
     @Test
     @DisplayName("updateStudent() returns 0 if student with studentId doesn't exist in the database")
-    void testUpdateStudent_1()  {
+    void testUpdateStudent_1() {
         // TODO insert multiple students into database for this test
         Student s1 = StudentTestUtil.validStudent().create();
         Student s2 = StudentTestUtil.validStudent().set(field(Student::getStudentId), Math.abs(s1.getStudentId() + 1)).create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1));
 
-        assertEquals(0, dao.updateStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects(), s2.getStudentId()));
+        assertEquals(0,
+                dao.updateStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getVisitTime(), s2.getStudentId()));
     }
 
     /**
@@ -191,7 +192,7 @@ public class DatabaseDAOTest {
     @Test
     @DisplayName("getVisit() gets the visit with the corresponding id")
     void testGetVisit_1() {
-        VisitDomain v = Instancio.create(VisitDomain.class);
+        Visit v = Instancio.create(Visit.class);
         Student s = StudentTestUtil.student().create();
     }
 
