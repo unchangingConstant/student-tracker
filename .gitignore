@@ -8,3 +8,5 @@ database.db
 mock/database.db
 # folder to which records are exported
 exports
+# bruh
+.idea
