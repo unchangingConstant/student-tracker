@@ -25,14 +25,14 @@ import lombok.Getter;
 @Singleton
 public class AttendanceService {
 
-    private DatabaseDAO dao;
+    private final DatabaseDAO dao;
 
     @Getter
-    private AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
+    private final AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
     @Getter
-    private AttendanceObserver<Visit> visitsObserver;
+    private final AttendanceObserver<Visit> visitsObserver;
     @Getter
-    private AttendanceObserver<Student> studentsObserver;
+    private final AttendanceObserver<Student> studentsObserver;
 
     @Inject
     public AttendanceService(DatabaseDAO dao)  {
@@ -61,9 +61,9 @@ public class AttendanceService {
     public void insertStudent(Student student) throws InvalidDatabaseEntryException {
         Instant dateAdded = Instant.now();
         student.setDateAdded(dateAdded);
-        if (validateEntityExcept(student, Set.of("studentId")).size() > 0) {
+        if (!validateEntityExcept(student, Set.of("studentId")).isEmpty()) {
             throw new InvalidDatabaseEntryException();
-        } 
+        }
         Integer studentId = dao.insertStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), dateAdded);
         student.setStudentId(studentId);
         studentsObserver.triggerInsert(student);
@@ -71,7 +71,7 @@ public class AttendanceService {
 
     public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
         // First deletes visits
-        List<Visit> deletedVisits = dao.getStudentVisits(studentId); 
+        List<Visit> deletedVisits = dao.getStudentVisits(studentId);
         dao.deleteStudentVisits(studentId);
         visitsObserver.triggerDelete(deletedVisits);
 
@@ -84,7 +84,7 @@ public class AttendanceService {
     }
 
     public void updateStudent(Student student) throws InvalidDatabaseEntryException    {
-        if (validateEntity(student).size() > 0) {
+        if (!validateEntity(student).isEmpty()) {
             throw new InvalidDatabaseEntryException();
         };
 
@@ -108,7 +108,7 @@ public class AttendanceService {
     }
 
     public void insertVisit(Visit visit) throws InvalidDatabaseEntryException  {
-        if (validateEntityExcept(visit, Set.of("visitId")).size() > 0) {
+        if (!validateEntityExcept(visit, Set.of("visitId")).isEmpty()) {
             throw new InvalidDatabaseEntryException();
         }
         Integer visitId = dao.insertVisit(visit.getStartTime(), visit.getEndTime(), visit.getStudentId());

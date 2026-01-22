@@ -29,7 +29,7 @@ import lombok.Data;
 @Singleton
 public class ExportExcelService {
 
-    private DatabaseDAO dao;
+    private final DatabaseDAO dao;
 
     public static final Comparator<VisitExport> SORT_BY_TIME = 
         new Comparator<VisitExport>() {
