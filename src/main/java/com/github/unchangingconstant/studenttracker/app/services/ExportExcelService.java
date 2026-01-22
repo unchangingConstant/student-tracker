@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ExportExcelService {
 
-    private DatabaseDAO dao;
+    private final DatabaseDAO dao;
 
     public static final Comparator<ExportedVisitDomain> SORT_BY_TIME = new Comparator<ExportedVisitDomain>() {
         @Override

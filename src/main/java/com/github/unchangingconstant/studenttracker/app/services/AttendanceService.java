@@ -18,14 +18,14 @@ import lombok.Getter;
 @Singleton
 public class AttendanceService {
 
-    private DatabaseDAO dao;
+    private final DatabaseDAO dao;
 
     @Getter
-    private AttendanceObserver<OngoingVisitDomain> ongoingVisitsObserver;
+    private final AttendanceObserver<OngoingVisitDomain> ongoingVisitsObserver;
     @Getter
-    private AttendanceObserver<VisitDomain> visitsObserver;
+    private final AttendanceObserver<VisitDomain> visitsObserver;
     @Getter
-    private AttendanceObserver<StudentDomain> studentsObserver;
+    private final AttendanceObserver<StudentDomain> studentsObserver;
 
     @Inject
     public AttendanceService(DatabaseDAO dao)  {

@@ -9,9 +9,9 @@ import java.util.function.Consumer;
  */
 public class AttendanceObserver<T> {
 
-    private List<Consumer<List<T>>> updateSubs;
-    private List<Consumer<List<T>>> deleteSubs;
-    private List<Consumer<List<T>>> insertSubs;
+    private final List<Consumer<List<T>>> updateSubs;
+    private final List<Consumer<List<T>>> deleteSubs;
+    private final List<Consumer<List<T>>> insertSubs;
 
     protected AttendanceObserver()   {
         updateSubs = new LinkedList<Consumer<List<T>>>();
