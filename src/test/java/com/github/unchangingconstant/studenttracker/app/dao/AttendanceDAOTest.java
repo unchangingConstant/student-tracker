@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
 import org.instancio.Instancio;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -30,12 +31,12 @@ import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
  * happening here, you're gonna need to read up on that. i.e. RegisterExtension
  * annotation??? Huh????
  */
-public class DatabaseDAOTest {
+public class AttendanceDAOTest {
 
     @RegisterExtension // this annotation has something to do with the magic behind junit5 and stuff
     // Creates tool which creates in-mem sqlite database at test time
     private final JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
-    private DatabaseDAO dao;
+    private AttendanceDAO dao;
     private Jdbi jdbi;
 
     private final String STUDENT_TABLE = ResourceLoader.loadResource("/sql/schema/studentTable.sql");

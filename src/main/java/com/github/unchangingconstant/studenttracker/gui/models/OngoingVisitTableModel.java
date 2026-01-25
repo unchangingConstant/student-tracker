@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 
 import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModelMapper;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -27,7 +27,7 @@ public class OngoingVisitTableModel {
     private SimpleListProperty<OngoingVisitModel> ongoingVisits;
 
     @Inject
-    public OngoingVisitTableModel(AttendanceService attendanceService) {
+    public OngoingVisitTableModel(AttendanceRecordManager attendanceService) {
         Collection<OngoingVisitDomain> initialData = attendanceService.getOngoingVisits().values();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
         initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));

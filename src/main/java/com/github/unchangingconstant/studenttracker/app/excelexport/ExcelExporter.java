@@ -1,32 +1,35 @@
-package com.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.excelexport;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import java.time.Duration;
+
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
-import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
-import static com.github.unchangingconstant.studenttracker.app.services.util.ExcelExportUtils.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Builder;
 import lombok.Data;
 
-@Singleton
-public class ExportExcelService {
+import static com.github.unchangingconstant.studenttracker.app.excelexport.util.ExcelExportUtils.*;
 
-    private final DatabaseDAO dao;
+@Singleton
+public class ExcelExporter {
+
+    private final AttendanceDAO dao;
 
     public static final Comparator<VisitExport> SORT_BY_TIME = 
         new Comparator<VisitExport>() {
@@ -47,7 +50,7 @@ public class ExportExcelService {
         };
 
     @Inject
-    public ExportExcelService(DatabaseDAO dao) {
+    public ExcelExporter(AttendanceDAO dao) {
         this.dao = dao;
     }
 
@@ -57,9 +60,7 @@ public class ExportExcelService {
         List<Visit> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
         Map<Integer, String> studentNames = dao.findStudentsWithId(studentIds).stream()
-                .collect(Collectors.toMap(
-                        student -> student.getStudentId(),
-                        student -> student.getFullLegalName()));
+                .collect(Collectors.toMap(Student::getStudentId, Student::getFullName));
 
         List<VisitExport> exportedVisits = 
             studentsVisits.stream()
@@ -67,12 +68,12 @@ public class ExportExcelService {
                 return VisitExport.builder()
                 .studentName(studentNames.get(visit.getStudentId()))
                 .startTime(visit.getStartTime())
-                .endTime(visit.getEndTime())
-                .duration(ChronoUnit.MINUTES.between(visit.getStartTime(), visit.getEndTime()))
+                .endTime(visit.getStartTime().plus(Duration.ofMinutes(visit.getDuration())))
+                .duration(visit.getDuration())
                 .build();
             }).collect(Collectors.toList());
         
-        if (comparator != null) Collections.sort(exportedVisits, comparator);
+        if (comparator != null) exportedVisits.sort(comparator);
 
         // Creates file name
         String exportName = EXCEL_EXPORT_PATH + generateExcelExportName();
@@ -108,6 +109,6 @@ public class ExportExcelService {
         private String studentName;
         private Instant startTime;
         private Instant endTime;
-        private Long duration;
+        private Integer duration;
     }
 }

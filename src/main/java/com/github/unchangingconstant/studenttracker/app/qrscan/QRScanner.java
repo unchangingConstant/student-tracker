@@ -1,5 +1,8 @@
-package com.github.unchangingconstant.studenttracker.app.workers;
+package com.github.unchangingconstant.studenttracker.app.qrscan;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,23 +12,13 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
-import com.github.unchangingconstant.studenttracker.app.workers.util.QRScanUtils;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.qrscan.util.QRScanUtils;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * What is a worker?
- * 
- * I figure services are components called by some client. Workers are not called, they
- * do all of their work autonomously in the background.
- * 
- * This way, when I leave methods public in workers, it's still apparent that they're not
- * meant to be called by the client. They are meant to be called for testing, however.
- */
-/**
+/*
  * QRCodes will represent studentIds via a decimal number followed by a hex
  * number. (the checksum)
  * 
@@ -40,16 +33,16 @@ import com.google.inject.Singleton;
  * ENTER key press
  */
 @Singleton
-public class QRScanWorker {
+public class QRScanner {
 
     private final LinkedBlockingDeque<Character> keyCharBuffer = new LinkedBlockingDeque<>(26);
 
-    private AttendanceService attendanceService;
+    private final AttendanceRecordManager attendanceService;
 
     @Inject
-    public QRScanWorker(AttendanceService attendanceService, KeyLoggerService keyLoggerService) {
+    public QRScanner(AttendanceRecordManager attendanceService, KeyLogger keyLogger) {
         this.attendanceService = attendanceService;
-        keyLoggerService.addNativeKeyListener(new KeyEventHook());
+        keyLogger.addNativeKeyListener(new KeyEventHook());
     }
 
     public String findQRCode(LinkedBlockingDeque<Character> buffer) {
@@ -86,17 +79,19 @@ public class QRScanWorker {
 
         // Keeps the service from being called by the jnativehook thread
         ThreadManager.mainBackgroundExecutor().submit(() -> {
-            OngoingVisit ongoingVisit = attendanceService.findOngoingVisit(id);
-            if (ongoingVisit == null) {
-                attendanceService.startOngoingVisit(id);
+            Optional<OngoingVisit> potentialOngoingVisit = attendanceService.findOngoingVisit(id);
+            Instant now = Instant.now();
+            if (potentialOngoingVisit.isEmpty()) {
+                attendanceService.startOngoingVisit(OngoingVisit.builder().studentId(id).startTime(now).build());
             } else {
-                attendanceService.endOngoingVisit(id, ongoingVisit.getStartTime());
+                OngoingVisit ongoingVisit = potentialOngoingVisit.get();
+                Instant startTime = ongoingVisit.getStartTime();
+                attendanceService.endOngoingVisit(ongoingVisit, (int) ChronoUnit.MINUTES.between(startTime, now));
             }
         });
     }
 
     // Public for testing purposes no mas
-    // TODO put this into the KeyLoggerService
     public class KeyEventHook implements NativeKeyListener {
 
         @Override

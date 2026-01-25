@@ -1,15 +1,15 @@
-package com.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.qrscan;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.unchangingconstant.studenttracker.app.workers.QRScanWorker.KeyEventHook;
+import com.github.unchangingconstant.studenttracker.app.qrscan.QRScanner.KeyEventHook;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class KeyLoggerService {
+public class KeyLogger {
     
     @Inject
-    public KeyLoggerService() {
+    public KeyLogger() {
     }
 
     public void addNativeKeyListener(KeyEventHook keyEventHook) {

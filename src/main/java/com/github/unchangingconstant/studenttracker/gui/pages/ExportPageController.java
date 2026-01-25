@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
-import com.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
+import com.github.unchangingconstant.studenttracker.app.excelexport.ExcelExporter;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
-import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
@@ -18,15 +17,12 @@ import com.google.inject.Inject;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.CheckBoxListCell;
@@ -47,11 +43,11 @@ public class ExportPageController implements Controller {
     private final Map<StudentModel, BooleanProperty> selectionMap = new HashMap<>();
 
     private final StudentTableModel studentTableModel;
-    private final ExportExcelService csvService;
+    private final ExcelExporter csvService;
     private final WindowManager windowController;
 
     @Inject
-    public ExportPageController(StudentTableModel studentTableModel, ExportExcelService csvService,
+    public ExportPageController(StudentTableModel studentTableModel, ExcelExporter csvService,
             WindowManager windowController) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
@@ -129,7 +125,7 @@ public class ExportPageController implements Controller {
         ServiceTask<Void> exportTask = new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                csvService.exportStudentsVisitsToExcel(selectedStudentsIds, ExportExcelService.SORT_BY_NAME);
+                csvService.exportStudentsVisitsToExcel(selectedStudentsIds, ExcelExporter.SORT_BY_NAME);
                 return null;
             }
         };

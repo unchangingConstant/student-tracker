@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -23,12 +23,12 @@ import javafx.collections.ObservableList;
 @Singleton
 public class StudentTableModel {
 
-    private AttendanceService attendanceService;
+    private AttendanceRecordManager attendanceService;
 
     private SimpleListProperty<StudentModel> students;
 
     @Inject
-    public StudentTableModel(AttendanceService attendanceService) {
+    public StudentTableModel(AttendanceRecordManager attendanceService) {
         /**
          * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
          * For this reason I have made all Service methods synchronized

@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.workers.util;
+package com.github.unchangingconstant.studenttracker.app.qrscan.util;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;

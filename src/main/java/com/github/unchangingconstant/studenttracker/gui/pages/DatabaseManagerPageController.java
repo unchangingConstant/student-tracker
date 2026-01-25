@@ -2,9 +2,9 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.util.Comparator;
 
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidEntityException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.IllegalDatabaseOperationException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
@@ -63,14 +63,14 @@ public class DatabaseManagerPageController implements Controller {
     private VisitTableModel visitTableModel;
 
     // Services / utils
-    private AttendanceService attendanceService;
+    private AttendanceRecordManager attendanceService;
     private WindowManager windowController;
 
     @Inject
     public DatabaseManagerPageController(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
-        AttendanceService attendanceService, 
+        AttendanceRecordManager attendanceService,
         WindowManager windowController)  {
         this.attendanceService = attendanceService;
         this.studentTableModel = studentTableModel;

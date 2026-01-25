@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import java.util.LinkedList;
 import java.util.List;

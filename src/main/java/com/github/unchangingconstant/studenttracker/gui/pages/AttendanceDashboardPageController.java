@@ -3,7 +3,7 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 import java.time.Instant;
 import java.util.Comparator;
 
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.LiveAttendanceView;
@@ -38,14 +38,14 @@ public class AttendanceDashboardPageController implements Controller {
 
     private OngoingVisitTableModel ongoingVisitsModel;
     private StudentTableModel studentTableModel;
-    private AttendanceService attendanceService;
+    private AttendanceRecordManager attendanceService;
     private WindowManager windowController;
 
     @Inject
     public AttendanceDashboardPageController(
         OngoingVisitTableModel ongoingVisitsModel, 
         StudentTableModel studentTableModel, 
-        AttendanceService attendanceService, 
+        AttendanceRecordManager attendanceService,
         WindowManager windowController)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;

@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
@@ -21,7 +21,7 @@ import javafx.collections.ObservableList;
 @Singleton
 public class VisitTableModel {
     
-    private final AttendanceService attendanceService;
+    private final AttendanceRecordManager attendanceService;
 
     private final SimpleListProperty<VisitModel> visits;  
     
@@ -29,7 +29,7 @@ public class VisitTableModel {
     public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
 
     @Inject
-    public VisitTableModel(AttendanceService attendanceService) {
+    public VisitTableModel(AttendanceRecordManager attendanceService) {
         this.currentStudent = new SimpleIntegerProperty(-1);
         this.visits = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.attendanceService = attendanceService;

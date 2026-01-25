@@ -1,6 +1,5 @@
-package com.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Path.Node;
 import javax.validation.Validation;
 
-import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
@@ -16,12 +14,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 @Singleton
-public class AttendanceService {
+public class AttendanceRecordManager {
 
-    private final DatabaseDAO dao;
+    private final AttendanceDAO dao;
 
     @Getter
     private final AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
@@ -31,7 +28,7 @@ public class AttendanceService {
     private final AttendanceObserver<Student> studentsObserver;
 
     @Inject
-    public AttendanceService(DatabaseDAO dao)  {
+    public AttendanceRecordManager(AttendanceDAO dao)  {
         this.dao = dao;
         this.ongoingVisitsObserver = new AttendanceObserver<>();
         this.visitsObserver = new AttendanceObserver<>();
@@ -141,17 +138,16 @@ public class AttendanceService {
 
     public void endOngoingVisit(OngoingVisit ongoingVisit, Integer duration) {
         // TODO write database method that ends the ongoing visit in one batch
-        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
-        ongoingVisitsObserver.triggerDelete(ongoingVisit);
         Visit endedVisit = Visit.builder()
             .studentId(ongoingVisit.getStudentId())
             .startTime(ongoingVisit.getStartTime())
             .duration(duration).build();
-        dao.insertVisit(endedVisit);
+        dao.endOngoingVisit(endedVisit);
+        ongoingVisitsObserver.triggerDelete(ongoingVisit);
         visitsObserver.triggerInsert(endedVisit);
     }
 
-    // TODO Make this a Domain object exception, not a database exception. See issue #16 or refer to the pragmatic programmer on DRY
+    // TODO Make this a Domain object exception, not a service exception. See issue #16 or refer to the pragmatic programmer on DRY
     static public class InvalidEntityException extends Exception {
         public InvalidEntityException()  {super();}
     }

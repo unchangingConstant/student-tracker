@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.dao;
+package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,6 @@ import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
-import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -19,7 +18,7 @@ import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStud
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 
 // Read up on mappers, section 7 of JDBI docs
-public interface DatabaseDAO {
+public interface AttendanceDAO {
 
     /*
      * STUDENT METHODS
@@ -85,9 +84,6 @@ public interface DatabaseDAO {
 
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
     public void insertOngoingVisit(@BindBean OngoingVisit ongoingVisit);
-
-    @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = ?")
-    public void deleteOngoingVisit(Integer studentId);
 
     @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = :studentId; INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
     public void endOngoingVisit(@BindBean Visit visit);

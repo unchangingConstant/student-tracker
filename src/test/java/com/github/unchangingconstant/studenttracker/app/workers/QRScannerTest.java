@@ -1,5 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.workers;
 
+import com.github.unchangingconstant.studenttracker.app.qrscan.QRScanner;
 import org.cornutum.regexpgen.random.RandomBoundsGen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,14 +15,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.qrscan.KeyLogger;
 
 import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.genBufferWith;
 import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.regexGen;
 
 
-public class QRScanWorkerTest {
+public class QRScannerTest {
     
     private final String HEADER = StudentQRCode.HEADER;
     private final String FOOTER = StudentQRCode.FOOTER;
@@ -29,12 +30,12 @@ public class QRScanWorkerTest {
     private final RandomGen regexNumGen = new RandomBoundsGen();
 
     @Mock
-    private AttendanceService attendanceServie;
+    private AttendanceRecordManager attendanceServie;
     @Mock
-    private KeyLoggerService keyLoggerService;
+    private KeyLogger keyLogger;
 
     @InjectMocks
-    private QRScanWorker worker;
+    private QRScanner worker;
 
     @BeforeEach
     void setUp() {
