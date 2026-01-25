@@ -17,10 +17,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
-import com.github.unchangingconstant.studenttracker.app.domain.Visit;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 import com.github.unchangingconstant.studenttracker.guice.DAOModule;
@@ -60,32 +59,32 @@ public class DatabaseDAOTest {
      * STUDENT TESTS START HERE
      */
     @Test
-    @DisplayName("getStudent() maps query result to Student object")
-    void testGetStudent_1() {
+    @DisplayName("findStudent() maps query result to Student object")
+    void testFindStudent_1() {
         Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
-        dao.getStudent(expected.getStudentId());
-        assertEquals(expected, dao.getStudent(expected.getStudentId()));
+        dao.findStudent(expected.getStudentId());
+        assertEquals(expected, dao.findStudent(expected.getStudentId()));
     }
 
     @Test
-    @DisplayName("getStudent() returns null on non-existant ID")
-    void testGetStudent_3() {
+    @DisplayName("findStudent() returns null on non-existant ID")
+    void testFindStudent_3() {
         Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
-        assertEquals(null, dao.getStudent(expected.getStudentId() + 1));
+        assertEquals(null, dao.findStudent(expected.getStudentId() + 1));
     }
 
     @Test
-    @DisplayName("getStudent() gets the right student")
-    void testGetStudent_4() {
+    @DisplayName("findStudent() gets the right student")
+    void testFindStudent_4() {
         Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 2).create();
         List<Student> sample = Instancio.createList(Student.class);
         sample.add(1, expected);
         sample.forEach(
                 student -> jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute()));
 
-        assertEquals(expected, dao.getStudent(2));
+        assertEquals(expected, dao.findStudent(2));
     }
 
     @Test
@@ -190,8 +189,8 @@ public class DatabaseDAOTest {
      * VISIT TESTS START HERE
      */
     @Test
-    @DisplayName("getVisit() gets the visit with the corresponding id")
-    void testGetVisit_1() {
+    @DisplayName("findVisit() gets the visit with the corresponding id")
+    void testFindVisit_1() {
         Visit v = Instancio.create(Visit.class);
         Student s = StudentTestUtil.student().create();
     }

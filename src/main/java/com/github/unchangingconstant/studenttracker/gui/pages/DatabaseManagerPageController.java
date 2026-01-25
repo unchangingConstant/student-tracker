@@ -1,12 +1,10 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.util.Comparator;
-import java.util.List;
 
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
-import com.github.unchangingconstant.studenttracker.app.services.ExportExcelService;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidEntityException;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
@@ -115,7 +113,7 @@ public class DatabaseManagerPageController implements Controller {
             protected Void call() throws Exception {
                 try {
                     attendanceService.insertStudent(fullName, prefName, subjects);
-                } catch (InvalidDatabaseEntryException e) {
+                } catch (InvalidEntityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -137,7 +135,7 @@ public class DatabaseManagerPageController implements Controller {
             protected Void call() throws Exception {
                 try {
                     attendanceService.updateStudent(studentId, fullName, prefName, subjects);
-                } catch (InvalidDatabaseEntryException e) {
+                } catch (InvalidEntityException e) {
                     e.printStackTrace();
                 }
                 Platform.runLater(() -> studentTable.editedRowIndexProperty().set(-1));

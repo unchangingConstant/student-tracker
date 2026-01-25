@@ -2,7 +2,7 @@ package com.github.unchangingconstant.studenttracker.gui.components;
 
 import java.util.function.Consumer;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;

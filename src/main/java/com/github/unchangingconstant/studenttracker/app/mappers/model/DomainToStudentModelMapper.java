@@ -1,6 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.mappers.model;
 
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 
 public class DomainToStudentModelMapper {

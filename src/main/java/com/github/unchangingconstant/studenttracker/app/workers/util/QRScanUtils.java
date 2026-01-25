@@ -4,8 +4,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
-
 public class QRScanUtils {
 
     public static void addToKeyBuffer(LinkedBlockingDeque<Character> buffer, Character keyChar) {

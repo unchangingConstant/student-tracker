@@ -1,12 +1,9 @@
 package com.github.unchangingconstant.studenttracker.app.services;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +15,7 @@ import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.Visit;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import static com.github.unchangingconstant.studenttracker.app.services.util.ExcelExportUtils.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -59,7 +56,7 @@ public class ExportExcelService {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<Visit> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
-        Map<Integer, String> studentNames = dao.getStudents(studentIds).stream()
+        Map<Integer, String> studentNames = dao.findStudentsWithId(studentIds).stream()
                 .collect(Collectors.toMap(
                         student -> student.getStudentId(),
                         student -> student.getFullLegalName()));

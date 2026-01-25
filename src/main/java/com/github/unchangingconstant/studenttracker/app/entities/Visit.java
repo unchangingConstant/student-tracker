@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.domain;
+package com.github.unchangingconstant.studenttracker.app.entities;
 
 import java.time.Instant;
 
@@ -8,26 +8,25 @@ import javax.validation.constraints.PastOrPresent;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 @Builder
 public class Visit {
 
     @NotNull
     @Min(value = 1)
-    private Integer visitId;
+    Integer visitId;
 
     @NotNull
     @Min(value = 1)
-    private Integer studentId;
-
-    // TODO, start time should come before endtime. Express this with custom annotations
+    Integer studentId;
 
     @NotNull
-    private Instant startTime;
+    Instant startTime;
 
     @NotNull
-    @PastOrPresent
-    private Instant endTime;
+    @Min(value = 0)
+    Integer duration;
 
 }

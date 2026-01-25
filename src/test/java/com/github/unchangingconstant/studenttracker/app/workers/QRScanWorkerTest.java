@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
 

@@ -19,10 +19,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.IllegalDatabaseOperationException;
-import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidDatabaseEntryException;
+import com.github.unchangingconstant.studenttracker.app.services.AttendanceService.InvalidEntityException;
 
 public class AttendanceServiceTest {
 
@@ -44,18 +44,18 @@ public class AttendanceServiceTest {
     @DisplayName("Service returns student if DAO was able to find the student with the given ID")
     void testGetStudent_1() throws Exception {
         Student s = StudentTestUtil.student().create();
-        when(dao.getStudent(s.getStudentId())).thenReturn(s);
+        when(dao.findStudent(s.getStudentId())).thenReturn(s);
 
-        assertEquals(s, service.getStudent(s.getStudentId()));
+        assertEquals(s, service.findStudent(s.getStudentId()));
     }
     
     @Test
     @DisplayName("Service throws exception if DAO was not able to find the student with the given ID")
     void testGetStudent_2() {
         Integer studentId = Instancio.gen().ints().min(1).get();
-        when(dao.getStudent(studentId)).thenReturn(null);
+        when(dao.findStudent(studentId)).thenReturn(null);
 
-        assertThrows(NoSuchElementException.class, () -> service.getStudent(studentId));
+        assertThrows(NoSuchElementException.class, () -> service.findStudent(studentId));
     }
 
     @Test
@@ -101,13 +101,13 @@ public class AttendanceServiceTest {
             .create();
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        assertThrows(InvalidDatabaseEntryException.class, 
+        assertThrows(InvalidEntityException.class,
             () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getVisitTime()));
         assertFalse(triggered);
 
         triggered = false;
 
-        assertThrows(InvalidDatabaseEntryException.class, 
+        assertThrows(InvalidEntityException.class,
             () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getVisitTime()));
         assertFalse(triggered);
     }
@@ -120,7 +120,7 @@ public class AttendanceServiceTest {
             .create();
         service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        assertThrows(InvalidDatabaseEntryException.class, 
+        assertThrows(InvalidEntityException.class,
             () -> service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime()));
         assertFalse(triggered);
     }
@@ -139,19 +139,19 @@ public class AttendanceServiceTest {
     //         .create();
     //     service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //     assertThrows(InvalidEntityException.class,
     //         () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
     //     assertFalse(triggered);
 
     //     triggered = false;
 
-    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //     assertThrows(InvalidEntityException.class,
     //         () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
     //     assertFalse(triggered);
 
     //     triggered = false;
 
-    //     assertThrows(InvalidDatabaseEntryException.class, 
+    //     assertThrows(InvalidEntityException.class,
     //         () -> service.insertStudent(s3.getFullLegalName(), s3.getPrefName(), s3.getSubjects()));
     //     assertFalse(triggered);
     // }
@@ -174,7 +174,7 @@ public class AttendanceServiceTest {
     }
 
     @Test
-    @DisplayName("IllegalDatabaseOperationException is throw if Student has visits in the database")    
+    @DisplayName("NoSuchEntityException is throw if Student has visits in the database")
     void testDeleteStudent_3() {
 
     }

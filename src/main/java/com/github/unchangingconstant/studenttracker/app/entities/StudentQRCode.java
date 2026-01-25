@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.domain;
+package com.github.unchangingconstant.studenttracker.app.entities;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

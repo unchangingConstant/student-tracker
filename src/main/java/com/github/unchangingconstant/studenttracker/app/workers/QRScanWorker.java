@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisit;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentQRCode;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;
 import com.github.unchangingconstant.studenttracker.app.services.KeyLoggerService;
 import com.github.unchangingconstant.studenttracker.app.workers.util.QRScanUtils;

@@ -3,7 +3,7 @@ package com.github.unchangingconstant.studenttracker.app.mappers.model;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
 
 public class DomainToOngoingVisitModelMapper {

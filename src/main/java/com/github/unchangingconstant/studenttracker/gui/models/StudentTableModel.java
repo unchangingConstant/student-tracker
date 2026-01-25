@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.services.AttendanceService;

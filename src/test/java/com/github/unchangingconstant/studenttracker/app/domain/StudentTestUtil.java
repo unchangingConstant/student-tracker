@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 
 /**
  * When inserting Instant objects into the data base, they get truncated down to

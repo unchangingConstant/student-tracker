@@ -1,12 +1,7 @@
 package com.github.unchangingconstant.studenttracker.app.services;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
@@ -14,9 +9,9 @@ import javax.validation.Path.Node;
 import javax.validation.Validation;
 
 import com.github.unchangingconstant.studenttracker.app.dao.DatabaseDAO;
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisit;
-import com.github.unchangingconstant.studenttracker.app.domain.Student;
-import com.github.unchangingconstant.studenttracker.app.domain.Visit;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -46,57 +41,47 @@ public class AttendanceService {
      * STUDENT METHODS
      */
 
-    public Student getStudent(Integer studentId) {
-        Student result = dao.getStudent(studentId);
-        if (result == null) {
-            throw new NoSuchElementException(String.format("Student with studentId %d does not exist in database", studentId));
-        }
-        return result;
+    public Optional<Student> findStudent(Integer studentId) {
+        return dao.findStudent(studentId);
     }
 
-    public Map<Integer, Student> getAllStudents() {
+    public List<Student> getAllStudents() {
         return dao.getAllStudents();
     }
 
-    public void insertStudent(Student student) throws InvalidDatabaseEntryException {
-        Instant dateAdded = Instant.now();
-        student.setDateAdded(dateAdded);
+    public void insertStudent(Student student) throws InvalidEntityException {
         if (!validateEntityExcept(student, Set.of("studentId")).isEmpty()) {
-            throw new InvalidDatabaseEntryException();
+            throw new InvalidEntityException();
         }
-        Integer studentId = dao.insertStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), dateAdded);
-        student.setStudentId(studentId);
-        studentsObserver.triggerInsert(student);
+        Integer studentId = dao.insertStudent(student);
+        Student newStudent = Student.builder()
+            .studentId(studentId)
+            .fullName(student.getFullName())
+            .preferredName(student.getPreferredName())
+            .visitTime(student.getVisitTime())
+            .dateAdded(student.getDateAdded()).build();
+        studentsObserver.triggerInsert(newStudent);
     }
 
-    public void deleteStudent(Integer studentId) throws IllegalDatabaseOperationException {
-        // First deletes visits
-        List<Visit> deletedVisits = dao.getStudentVisits(studentId);
-        dao.deleteStudentVisits(studentId);
-        visitsObserver.triggerDelete(deletedVisits);
-
-        // Then deletes student
+    public void deleteStudent(Integer studentId) {
         if (dao.deleteStudent(studentId))   {
             studentsObserver.triggerDelete(Student.builder().studentId(studentId).build());
             return;
         }
-        throw new NoSuchElementException();
+        throw new NoSuchEntityException(studentId);
     }
 
-    public void updateStudent(Student student) throws InvalidDatabaseEntryException    {
+    public void updateStudent(Student student) throws InvalidEntityException {
         if (!validateEntity(student).isEmpty()) {
-            throw new InvalidDatabaseEntryException();
+            throw new InvalidEntityException();
         };
-
-        Integer updated = dao.updateStudent(student.getFullLegalName(), student.getPrefName(), student.getVisitTime(), student.getStudentId());
-        if (updated == 1)   {
+        boolean updated = dao.updateStudent(student);
+        if (updated)   {
             studentsObserver.triggerUpdate(student);
-            return;
         }
-        if (updated == 0)   {
-            throw new NoSuchElementException(String.format("Student with studentId %d doesn't exist", student.getStudentId()));
+        else {
+            throw new NoSuchEntityException(student.getStudentId());
         }
-        throw new IllegalStateException("More than one update occurred on AttendanceService.updateStudent(). Something is seriously wrong");
     }
 
     /*
@@ -104,12 +89,12 @@ public class AttendanceService {
      */
 
     public Visit getVisit(Integer visitId) {
-        return dao.getVisit(visitId);
+        return dao.findVisit(visitId);
     }
 
-    public void insertVisit(Visit visit) throws InvalidDatabaseEntryException  {
+    public void insertVisit(Visit visit) throws InvalidEntityException {
         if (!validateEntityExcept(visit, Set.of("visitId")).isEmpty()) {
-            throw new InvalidDatabaseEntryException();
+            throw new InvalidEntityException();
         }
         Integer visitId = dao.insertVisit(visit.getStartTime(), visit.getEndTime(), visit.getStudentId());
         visit.setVisitId(visitId);
@@ -125,7 +110,7 @@ public class AttendanceService {
     }
 
     public List<Visit> getStudentVisits(Integer studentId) {
-        return dao.getStudentVisits(studentId);
+        return dao.findVisitsWithStudentId(studentId);
     }
 
     /*
@@ -172,26 +157,25 @@ public class AttendanceService {
     }
 
     // TODO Make this a Domain object exception, not a database exception. See issue #16 or refer to the pragmatic programmer on DRY
-    static public class InvalidDatabaseEntryException extends Exception {
-        public InvalidDatabaseEntryException()  {super();}
-        public InvalidDatabaseEntryException(String errorMsg)  {super(errorMsg);}
+    static public class InvalidEntityException extends Exception {
+        public InvalidEntityException()  {super();}
     }
 
-    static public class IllegalDatabaseOperationException extends Exception {
-        public IllegalDatabaseOperationException() {super();}
-        public IllegalDatabaseOperationException(String errorMsg) {super(errorMsg);}
-        public IllegalDatabaseOperationException(String errorMsg, Exception e) {super(errorMsg, e);}
+    static public class NoSuchEntityException extends NoSuchElementException {
+        public NoSuchEntityException(Integer id) {
+            super("Entity with unique identifier " + String.valueOf(id) + " could not be found.");
+        }
     }
 
     /**
      * HELPERS
      */
-    private Set<ConstraintViolation<Object>> validateEntity(Object entity) throws InvalidDatabaseEntryException {
+    private Set<ConstraintViolation<Object>> validateEntity(Object entity) {
         return Validation.buildDefaultValidatorFactory().getValidator().validate(entity);
     }
 
     // Ignores constraint violations for specified properties
-    private Set<ConstraintViolation<Object>> validateEntityExcept(Object entity, Set<String> propertyExceptions) throws InvalidDatabaseEntryException {
+    private Set<ConstraintViolation<Object>> validateEntityExcept(Object entity, Set<String> propertyExceptions) throws InvalidEntityException {
         Set<ConstraintViolation<Object>> violations = validateEntity(entity);
         return violations.stream().filter(violation -> {
             Node lastNode = null;
