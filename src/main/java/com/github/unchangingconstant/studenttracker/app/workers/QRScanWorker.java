@@ -86,7 +86,7 @@ public class QRScanWorker {
 
         // Keeps the service from being called by the jnativehook thread
         ThreadManager.mainBackgroundExecutor().submit(() -> {
-            OngoingVisit ongoingVisit = attendanceService.getOngoingVisit(id);
+            OngoingVisit ongoingVisit = attendanceService.findOngoingVisit(id);
             if (ongoingVisit == null) {
                 attendanceService.startOngoingVisit(id);
             } else {

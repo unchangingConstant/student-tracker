@@ -1,15 +1,13 @@
 package com.github.unchangingconstant.studenttracker.app.dao;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlBatch;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -79,7 +77,7 @@ public interface DatabaseDAO {
      */
     @SqlQuery("SELECT * FROM ongoing_visits WHERE student_id = ?;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
-    public Optional<OngoingVisit> getOngoingVisit(Integer studentId);
+    public Optional<OngoingVisit> findOngoingVisit(Integer studentId);
 
     @SqlQuery("SELECT * FROM ongoing_visits;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
@@ -90,5 +88,8 @@ public interface DatabaseDAO {
 
     @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = ?")
     public void deleteOngoingVisit(Integer studentId);
+
+    @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = :studentId; INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
+    public void endOngoingVisit(@BindBean Visit visit);
 
 }

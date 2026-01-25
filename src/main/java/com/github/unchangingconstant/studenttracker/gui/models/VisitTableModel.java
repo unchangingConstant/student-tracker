@@ -88,7 +88,7 @@ public class VisitTableModel {
                 ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        List<VisitDomain> studentVisits = attendanceService.getStudentVisits(newVal.intValue());
+                        List<VisitDomain> studentVisits = attendanceService.findVisitsWithStudentId(newVal.intValue());
                         Platform.runLater(() -> {
                             studentVisits.forEach(visitDomain -> visits.add(DomainToVisitModelMapper.map(visitDomain)));
                         });

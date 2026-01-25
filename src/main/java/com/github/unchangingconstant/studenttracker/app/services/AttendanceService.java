@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
+import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 
 @Singleton
 public class AttendanceService {
@@ -63,8 +64,13 @@ public class AttendanceService {
         studentsObserver.triggerInsert(newStudent);
     }
 
+    /*
+     * TODO Consider creating a more robust observer system, to avoid double disk accesses like these
+     */
     public void deleteStudent(Integer studentId) {
+        List<Visit> studentVisits = dao.findVisitsWithStudentId(studentId);
         if (dao.deleteStudent(studentId))   {
+            visitsObserver.triggerDelete(studentVisits);
             studentsObserver.triggerDelete(Student.builder().studentId(studentId).build());
             return;
         }
@@ -75,8 +81,7 @@ public class AttendanceService {
         if (!validateEntity(student).isEmpty()) {
             throw new InvalidEntityException();
         };
-        boolean updated = dao.updateStudent(student);
-        if (updated)   {
+        if (dao.updateStudent(student))   {
             studentsObserver.triggerUpdate(student);
         }
         else {
@@ -88,7 +93,7 @@ public class AttendanceService {
      * VISIT METHODS
      */
 
-    public Visit getVisit(Integer visitId) {
+    public Optional<Visit> findVisit(Integer visitId) {
         return dao.findVisit(visitId);
     }
 
@@ -96,9 +101,13 @@ public class AttendanceService {
         if (!validateEntityExcept(visit, Set.of("visitId")).isEmpty()) {
             throw new InvalidEntityException();
         }
-        Integer visitId = dao.insertVisit(visit.getStartTime(), visit.getEndTime(), visit.getStudentId());
-        visit.setVisitId(visitId);
-        visitsObserver.triggerInsert(visit);
+        Integer visitId = dao.insertVisit(visit);
+        Visit newVisit = Visit.builder()
+            .visitId(visitId)
+            .startTime(visit.getStartTime())
+            .duration(visit.getDuration())
+            .studentId(visit.getStudentId()).build();
+        visitsObserver.triggerInsert(newVisit);
     }
 
     public void deleteVisit(Integer visitId)   {
@@ -109,7 +118,7 @@ public class AttendanceService {
         throw new NoSuchElementException();
     }
 
-    public List<Visit> getStudentVisits(Integer studentId) {
+    public List<Visit> findVisitsWithStudentId(Integer studentId) {
         return dao.findVisitsWithStudentId(studentId);
     }
 
@@ -117,43 +126,29 @@ public class AttendanceService {
      * ONGOING VISIT METHODS
      */
 
-    public Map<Integer, OngoingVisit> getOngoingVisits() {
+    public List<OngoingVisit> getOngoingVisits() {
         return dao.getOngoingVisits();
     }
 
-    // Returns null if nothing found TODO returning null better than throwing exception in some cases
-    // Fix other service methods
-    public OngoingVisit getOngoingVisit(Integer studentId)   {
-        return dao.getOngoingVisit(studentId);
+    public Optional<OngoingVisit> findOngoingVisit(Integer studentId)   {
+        return dao.findOngoingVisit(studentId);
     }
 
-    public void startOngoingVisit(Integer studentId) {
-        // Must not have ongoing visits when starting one
-        // TODO accessing the database thrice for one operation are we? FIX IT!!!
-        if (dao.getOngoingVisit(studentId) != null ) {
-            throw new IllegalStateException("Student is already in the center.");
-        };
-        Instant startTime = Instant.now();
-        dao.insertOngoingVisit(studentId, startTime);
-        OngoingVisit newOngoingVisit = dao.getOngoingVisit(studentId);
-        ongoingVisitsObserver.triggerInsert(
-            OngoingVisit.builder()
-                .studentId(studentId)
-                .startTime(startTime)
-                .subjects(newOngoingVisit.getSubjects())
-                .studentName(newOngoingVisit.getStudentName())
-                .build());
+    public void startOngoingVisit(OngoingVisit ongoingVisit) {
+        dao.insertOngoingVisit(ongoingVisit);
+        ongoingVisitsObserver.triggerInsert(ongoingVisit);
     }
 
-    // update!!! Should return request status
-    public void endOngoingVisit(Integer studentId, Instant startTime) {
-        // Ends ongoing visit
-        dao.deleteOngoingVisit(studentId);
-        ongoingVisitsObserver.triggerDelete(OngoingVisit.builder().studentId(studentId).build());
-        // Logs endtime into Visit table
-        Instant endTime = Instant.now();
-        Integer visitId = dao.insertVisit(startTime, endTime, studentId);
-        visitsObserver.triggerInsert(Visit.builder().visitId(visitId).studentId(studentId).startTime(startTime).endTime(endTime).build());
+    public void endOngoingVisit(OngoingVisit ongoingVisit, Integer duration) {
+        // TODO write database method that ends the ongoing visit in one batch
+        dao.deleteOngoingVisit(ongoingVisit.getStudentId());
+        ongoingVisitsObserver.triggerDelete(ongoingVisit);
+        Visit endedVisit = Visit.builder()
+            .studentId(ongoingVisit.getStudentId())
+            .startTime(ongoingVisit.getStartTime())
+            .duration(duration).build();
+        dao.insertVisit(endedVisit);
+        visitsObserver.triggerInsert(endedVisit);
     }
 
     // TODO Make this a Domain object exception, not a database exception. See issue #16 or refer to the pragmatic programmer on DRY
