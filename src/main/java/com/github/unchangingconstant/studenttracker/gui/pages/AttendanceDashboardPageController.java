@@ -1,9 +1,11 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.LiveAttendanceView;
@@ -36,20 +38,20 @@ public class AttendanceDashboardPageController implements Controller {
     @FXML
     private MenuItem recordManagerMenuItem;
 
-    private OngoingVisitTableModel ongoingVisitsModel;
-    private StudentTableModel studentTableModel;
-    private AttendanceRecordManager attendanceService;
-    private WindowManager windowController;
+    private final OngoingVisitTableModel ongoingVisitsModel;
+    private final StudentTableModel studentTableModel;
+    private final AttendanceRecordManager recordManager;
+    private final WindowManager windowController;
 
     @Inject
     public AttendanceDashboardPageController(
         OngoingVisitTableModel ongoingVisitsModel, 
         StudentTableModel studentTableModel, 
-        AttendanceRecordManager attendanceService,
+        AttendanceRecordManager recordManager,
         WindowManager windowController)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;
-        this.attendanceService = attendanceService;
+        this.recordManager = recordManager;
         this.windowController = windowController;
     }
 
@@ -74,7 +76,7 @@ public class AttendanceDashboardPageController implements Controller {
         );
         liveAttendanceView.setItems(liveAttendanceList);
 
-        liveAttendanceView.setOnButtonAction(studentId -> onEndOngoingVisit(studentId));
+        liveAttendanceView.setOnButtonAction(this::onEndOngoingVisit);
         recordManagerMenuItem.setOnAction(actionEvent -> windowController.openRecordManager());
     }
 
@@ -83,7 +85,9 @@ public class AttendanceDashboardPageController implements Controller {
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                attendanceService.startOngoingVisit(selectedStudentId);
+                recordManager.startOngoingVisit(OngoingVisit.builder()
+                    .studentId(selectedStudentId)
+                    .startTime(Instant.now()).build());
                 Platform.runLater(() -> {
                     studentSelector.textProperty().set("");
                 });
@@ -98,7 +102,10 @@ public class AttendanceDashboardPageController implements Controller {
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                attendanceService.endOngoingVisit(studentId, startTime);
+                recordManager.endOngoingVisit(OngoingVisit.builder()
+                    .studentId(studentId)
+                    .startTime(startTime).build(),
+                    (int) ChronoUnit.MINUTES.between(startTime, Instant.now()));
                 return null;
             }
         });

@@ -3,7 +3,7 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 import java.util.Comparator;
 
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.IllegalDatabaseOperationException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.NoSuchEntityException;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
@@ -59,20 +59,20 @@ public class DatabaseManagerPageController implements Controller {
      * MODELS
      */
     // State of the database 
-    private StudentTableModel studentTableModel;
-    private VisitTableModel visitTableModel;
+    private final StudentTableModel studentTableModel;
+    private final VisitTableModel visitTableModel;
 
     // Services / utils
-    private AttendanceRecordManager attendanceService;
-    private WindowManager windowController;
+    private final AttendanceRecordManager recordManager;
+    private final WindowManager windowController;
 
     @Inject
     public DatabaseManagerPageController(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
-        AttendanceRecordManager attendanceService,
+        AttendanceRecordManager recordManager,
         WindowManager windowController)  {
-        this.attendanceService = attendanceService;
+        this.recordManager = recordManager;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
         this.windowController = windowController;
@@ -93,8 +93,8 @@ public class DatabaseManagerPageController implements Controller {
             @Override
             protected Void call() throws Exception {
                 try {
-                    attendanceService.deleteStudent(studentId);
-                } catch (IllegalDatabaseOperationException e) {
+                    recordManager.deleteStudent(studentId);
+                } catch (NoSuchEntityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -112,7 +112,7 @@ public class DatabaseManagerPageController implements Controller {
             @Override
             protected Void call() throws Exception {
                 try {
-                    attendanceService.insertStudent(fullName, prefName, subjects);
+                    recordManager.insertStudent(fullName, prefName, subjects);
                 } catch (InvalidEntityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -134,7 +134,7 @@ public class DatabaseManagerPageController implements Controller {
             @Override
             protected Void call() throws Exception {
                 try {
-                    attendanceService.updateStudent(studentId, fullName, prefName, subjects);
+                    recordManager.updateStudent(studentId, fullName, prefName, subjects);
                 } catch (InvalidEntityException e) {
                     e.printStackTrace();
                 }
