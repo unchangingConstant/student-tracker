@@ -1,11 +1,13 @@
 package com.github.unchangingconstant.studenttracker.app.excelexport;
 
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,14 +33,14 @@ public class ExcelExporter {
 
     private final AttendanceDAO dao;
 
-    public static final Comparator<VisitExport> SORT_BY_TIME = 
+    private static final Comparator<VisitExport> SORT_BY_TIME =
         new Comparator<VisitExport>() {
             @Override
             public int compare(VisitExport arg0, VisitExport arg1) {
                 return arg1.getStartTime().compareTo(arg0.getStartTime());
             }
         };
-    public static final Comparator<VisitExport> SORT_BY_NAME = 
+    private static final Comparator<VisitExport> SORT_BY_NAME =
         new Comparator<VisitExport>() {
             @Override
             public int compare(VisitExport arg0, VisitExport arg1) {
@@ -54,26 +56,22 @@ public class ExcelExporter {
         this.dao = dao;
     }
 
-    // TODO create database method to retrieve visits from multiple students
-    public String exportStudentsVisitsToExcel(List<Integer> studentIds, Comparator<VisitExport> comparator) throws Exception {
+    public String exportStudentsVisitsToExcel(List<Integer> studentIds) throws Exception {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<Visit> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
         Map<Integer, String> studentNames = dao.findStudentsWithId(studentIds).stream()
-                .collect(Collectors.toMap(Student::getStudentId, Student::getFullName));
+            .collect(Collectors.toMap(Student::getStudentId, Student::getFullName));
 
-        List<VisitExport> exportedVisits = 
-            studentsVisits.stream()
+        List<VisitExport> exportedVisits = studentsVisits.stream()
             .map(visit -> {
                 return VisitExport.builder()
-                .studentName(studentNames.get(visit.getStudentId()))
-                .startTime(visit.getStartTime())
-                .endTime(visit.getStartTime().plus(Duration.ofMinutes(visit.getDuration())))
-                .duration(visit.getDuration())
-                .build();
-            }).collect(Collectors.toList());
-        
-        if (comparator != null) exportedVisits.sort(comparator);
+                    .studentName(studentNames.get(visit.getStudentId()))
+                    .startTime(visit.getStartTime())
+                    .endTime(visit.getStartTime().plus(Duration.ofMinutes(visit.getDuration())))
+                    .duration(visit.getDuration())
+                    .build();
+            }).sorted(SORT_BY_NAME).toList();
 
         // Creates file name
         String exportName = EXCEL_EXPORT_PATH + generateExcelExportName();
