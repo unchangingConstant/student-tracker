@@ -61,21 +61,21 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
             }
             StudentModel student = getItems().get(newVal.intValue());
             editedStudentModel.getStudentId().set(student.getStudentId().get());
-            editedStudentModel.getFullLegalName().set(student.getFullLegalName().get());
+            editedStudentModel.getFullName().set(student.getFullName().get());
             editedStudentModel.getPrefName().set(student.getPrefName().get());
-            editedStudentModel.getSubjects().set(student.getSubjects().get());
+            editedStudentModel.getVisitTime().set(student.getVisitTime().get());
         });
 
-        fullLegalNameInput.textProperty().bindBidirectional(editedStudentModel.getFullLegalName());
+        fullLegalNameInput.textProperty().bindBidirectional(editedStudentModel.getFullName());
         prefNameInput.textProperty().bindBidirectional(editedStudentModel.getPrefName());
-        subjectsInput.valueProperty().bindBidirectional(editedStudentModel.getSubjects());
+        subjectsInput.valueProperty().bindBidirectional(editedStudentModel.getVisitTime());
     }
 
     private void setupCellValueFactories() {
         studentIdColumn.setCellValueFactory(cellData -> cellData.getValue().getStudentId());
-        fullLegalNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullLegalName());
+        fullLegalNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullName());
         prefNameColumn.setCellValueFactory(cellData -> cellData.getValue().getPrefName());
-        subjectsColumn.setCellValueFactory(cellData -> cellData.getValue().getSubjects());
+        subjectsColumn.setCellValueFactory(cellData -> cellData.getValue().getVisitTime());
 
         dateAddedColumn.setCellValueFactory(cellData -> {
             Instant startTime = cellData.getValue().getDateAdded().get();

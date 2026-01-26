@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class AttendanceRecordManager {

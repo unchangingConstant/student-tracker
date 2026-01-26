@@ -41,7 +41,7 @@ public class StudentSelector extends TextField implements Controller {
     @Override
     public void initialize() {
         textProperty().addListener((obs,  s,  s2) -> {
-                if (selected.getValue() != null && !getText().equals(selected.getValue().getFullLegalName().get()))   {
+                if (selected.getValue() != null && !getText().equals(selected.getValue().getFullName().get()))   {
                     // when a selection is made, the text changes. When the text changes,
                     // this method is called again. Issues arise from this lol
                     // Hopefully this block fixes it. But there's got to be a better way
@@ -70,7 +70,7 @@ public class StudentSelector extends TextField implements Controller {
         List<StudentModel> newMatches = new LinkedList<>();
         String text = getText().toLowerCase();
         options.getValue().forEach(student -> {
-            String fullName = student.getFullLegalName().get().toLowerCase();
+            String fullName = student.getFullName().get().toLowerCase();
             String prefName = student.getPrefName().get().toLowerCase();
             if (fullName.contains(text) || prefName.contains(text))  {
                 newMatches.add(student);
@@ -84,12 +84,12 @@ public class StudentSelector extends TextField implements Controller {
         matchesPopup.getItems().clear();
         // Repopulate list with new matches
         items.forEach(student ->  {
-            MenuItem newItem = new MenuItem(student.getFullLegalName().get());
+            MenuItem newItem = new MenuItem(student.getFullName().get());
             newItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     selected.setValue(student);
-                    setText(student.getFullLegalName().get());
+                    setText(student.getFullName().get());
                 }
             });
             matchesPopup.getItems().add(newItem);

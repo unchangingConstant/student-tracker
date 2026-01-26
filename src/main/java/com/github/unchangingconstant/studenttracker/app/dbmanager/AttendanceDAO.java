@@ -78,7 +78,7 @@ public interface AttendanceDAO {
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     Optional<OngoingVisit> findOngoingVisit(Integer studentId);
 
-    @SqlQuery("SELECT * FROM ongoing_visits;")
+    @SqlQuery("SELECT ov.*, s.* FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
     List<OngoingVisit> getOngoingVisits();
 

@@ -17,7 +17,7 @@ public class RowToVisitMapper implements RowMapper<Visit> {
                         .visitId(rs.getInt("visit_id"))
                         .studentId(rs.getInt("student_id"))
                         .startTime(Instant.ofEpochMilli(rs.getLong("start_time")))
-                        .endTime(Instant.ofEpochMilli(rs.getLong("end_time")))
+                        .duration(rs.getInt("duration"))
                         .build();
         }
 

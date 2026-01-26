@@ -3,9 +3,9 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToStudentModelMapper;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.google.inject.Inject;
@@ -23,21 +23,21 @@ import javafx.collections.ObservableList;
 @Singleton
 public class StudentTableModel {
 
-    private AttendanceRecordManager attendanceService;
+    private final AttendanceRecordManager recordManager;
 
-    private SimpleListProperty<StudentModel> students;
+    private final SimpleListProperty<StudentModel> students;
 
     @Inject
-    public StudentTableModel(AttendanceRecordManager attendanceService) {
+    public StudentTableModel(AttendanceRecordManager recordManager) {
         /**
          * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
          * For this reason I have made all Service methods synchronized
          */
-        Collection<Student> initialData = attendanceService.getAllStudents().values();
+        Collection<Student> initialData = recordManager.getAllStudents();
         this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
-        initialData.forEach(domain -> this.students.add(DomainToStudentModelMapper.map(domain)));
+        initialData.forEach(student -> this.students.add(StudentModel.map(student)));
         // Ensures model state is synced to database at all times
-        AttendanceObserver<Student> observer = attendanceService.getStudentsObserver();
+        AttendanceObserver<Student> observer = recordManager.getStudentsObserver();
 
         /**
          * These Runnables will be called from the background thread and potentially
@@ -47,7 +47,7 @@ public class StudentTableModel {
         observer.subscribeToInserts(students -> Platform.runLater(() -> this.onInsertStudent(students)));
         observer.subscribeToUpdates(students -> Platform.runLater(() -> this.onUpdateStudent(students)));
 
-        this.attendanceService = attendanceService;
+        this.recordManager = recordManager;
     }
 
     public void bindProperty(Property<ObservableList<StudentModel>> property) {
@@ -69,23 +69,23 @@ public class StudentTableModel {
 
     private void onInsertStudent(List<Student> insertedStudents) {
         insertedStudents.forEach(student -> {
-            students.add(DomainToStudentModelMapper.map(student));
+            students.add(StudentModel.map(student));
         });
     }
 
     private void onDeleteStudent(List<Student> deletedStudents) {
         deletedStudents.forEach(student -> {
-            students.removeIf(studentModel -> studentModel.getStudentId().get() == student.getStudentId());
+            students.removeIf(studentModel -> Objects.equals(studentModel.getStudentId().get(), student.getStudentId()));
         });
     }
 
     private void onUpdateStudent(List<Student> updatedStudents) {
         updatedStudents.forEach(updatedStudent -> {
             for (StudentModel student: students) {
-                if (student.getStudentId().get() == updatedStudent.getStudentId()) {
-                    student.getFullLegalName().set(updatedStudent.getFullLegalName());
-                    student.getPrefName().set(updatedStudent.getPrefName());
-                    student.getSubjects().set(updatedStudent.getSubjects());
+                if (Objects.equals(student.getStudentId().get(), updatedStudent.getStudentId())) {
+                    student.getFullName().set(updatedStudent.getFullName());
+                    student.getPrefName().set(updatedStudent.getPreferredName());
+                    student.getVisitTime().set(updatedStudent.getVisitTime());
                     break;
                 }
             }

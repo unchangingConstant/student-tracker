@@ -2,8 +2,7 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 
 import java.util.List;
 
-import com.github.unchangingconstant.studenttracker.app.domain.VisitDomain;
-import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToVisitModelMapper;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
@@ -35,7 +34,7 @@ public class VisitTableModel {
         this.attendanceService = attendanceService;
         setupCurrentStudentProperty();
 
-        AttendanceObserver<VisitDomain> obs = attendanceService.getVisitsObserver();
+        AttendanceObserver<Visit> obs = attendanceService.getVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
@@ -53,28 +52,28 @@ public class VisitTableModel {
         prop.bind(visits);
     }
 
-    private void onVisitInsert(List<VisitDomain> insertedVisits) {
+    private void onVisitInsert(List<Visit> insertedVisits) {
         insertedVisits.forEach(visit -> {
             if (!visit.getStudentId().equals(currentStudent.get())) return;
-            visits.add(DomainToVisitModelMapper.map(visit));
+            visits.add(VisitModel.map(visit));
         });
     }
 
-    private void onVisitDelete(List<VisitDomain> deletedVisits) {
+    private void onVisitDelete(List<Visit> deletedVisits) {
         deletedVisits.forEach(visit -> {
             if (!visit.getStudentId().equals(currentStudent.get())) return;
             visits.removeIf(otherVisit -> visit.getStudentId().equals(otherVisit.getStudentId().get()));
         });
     }
 
-    private void onVisitUpdate(List<VisitDomain> updatedVisits) {
+    private void onVisitUpdate(List<Visit> updatedVisits) {
         updatedVisits.forEach(updatedVisit -> {
             if (!updatedVisit.getStudentId().equals(currentStudent.get())) return;
             for (VisitModel visit: visits) {
                 if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
                     visit.getStudentId().set(updatedVisit.getStudentId());
                     visit.getStartTime().set(updatedVisit.getStartTime());
-                    visit.getEndTime().set(updatedVisit.getEndTime());
+                    visit.getDuration().set(updatedVisit.getDuration());
                     break;
                 }
             }
@@ -88,11 +87,11 @@ public class VisitTableModel {
                 ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        List<VisitDomain> studentVisits = attendanceService.findVisitsWithStudentId(newVal.intValue());
-                        Platform.runLater(() -> {
-                            studentVisits.forEach(visitDomain -> visits.add(DomainToVisitModelMapper.map(visitDomain)));
-                        });
-                        return null;
+                    List<Visit> studentVisits = attendanceService.findVisitsWithStudentId(newVal.intValue());
+                    Platform.runLater(() -> {
+                        studentVisits.forEach(visitDomain -> visits.add(VisitModel.map(visitDomain)));
+                    });
+                    return null;
                     }
                 });
             }

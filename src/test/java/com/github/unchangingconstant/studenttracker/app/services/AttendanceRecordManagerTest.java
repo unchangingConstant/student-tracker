@@ -130,30 +130,30 @@ public class AttendanceRecordManagerTest {
     // @DisplayName("Throws error when subjects invalid")
     // void testInsertStudent_4() {
     //     Student s1 = StudentTestUtil.validStudent()
-    //         .generate(field(Student::getSubjects), gen -> gen.ints().max(0))
+    //         .generate(field(Student::getVisitTime), gen -> gen.ints().max(0))
     //         .create();
     //     Student s2 = StudentTestUtil.validStudent()
-    //         .generate(field(Student::getSubjects), gen -> gen.ints().min(3))
+    //         .generate(field(Student::getVisitTime), gen -> gen.ints().min(3))
     //         .create();
     //     Student s3 = StudentTestUtil.validStudent()
-    //         .set(field(Student::getSubjects), null)
+    //         .set(field(Student::getVisitTime), null)
     //         .create();
     //     service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
     //     assertThrows(InvalidEntityException.class,
-    //         () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getSubjects()));
+    //         () -> service.insertStudent(s1.getFullName(), s1.getPrefName(), s1.getVisitTime()));
     //     assertFalse(triggered);
 
     //     triggered = false;
 
     //     assertThrows(InvalidEntityException.class,
-    //         () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getSubjects()));
+    //         () -> service.insertStudent(s2.getFullName(), s2.getPrefName(), s2.getVisitTime()));
     //     assertFalse(triggered);
 
     //     triggered = false;
 
     //     assertThrows(InvalidEntityException.class,
-    //         () -> service.insertStudent(s3.getFullLegalName(), s3.getPrefName(), s3.getSubjects()));
+    //         () -> service.insertStudent(s3.getFullName(), s3.getPrefName(), s3.getVisitTime()));
     //     assertFalse(triggered);
     // }
 

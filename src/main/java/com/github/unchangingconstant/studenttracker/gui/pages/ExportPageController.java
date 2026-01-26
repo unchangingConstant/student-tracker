@@ -68,7 +68,7 @@ public class ExportPageController implements Controller {
                 new Comparator<StudentModel>() {
                     @Override
                     public int compare(StudentModel arg0, StudentModel arg1) {
-                        return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                        return arg0.getFullName().get().compareTo(arg1.getFullName().get());
                     }
                 });
 
@@ -97,23 +97,23 @@ public class ExportPageController implements Controller {
 
         // Sets up checkboxes
         studentSelector.setCellFactory(
-                CheckBoxListCell.forListView(item -> selectionMap.get(item),
-                        new StringConverter<StudentModel>() {
-                            @Override
-                            public String toString(StudentModel obj) {
-                                return obj.getFullLegalName().get();
-                            }
+            CheckBoxListCell.forListView(item -> selectionMap.get(item),
+                new StringConverter<StudentModel>() {
+                    @Override
+                    public String toString(StudentModel obj) {
+                        return obj.getFullName().get();
+                    }
 
-                            // I'm not sure what leaving this null will do. I'm assuming this is for when
-                            // the list
-                            // is edited (inline) and it needs to convert the other way. But since this list
-                            // isn't being
-                            // edited, I'm going to assume this should be fine.
-                            @Override
-                            public StudentModel fromString(String string) {
-                                return null;
-                            }
-                        }));
+                    // I'm not sure what leaving this null will do. I'm assuming this is for when
+                    // the list
+                    // is edited (inline) and it needs to convert the other way. But since this list
+                    // isn't being
+                    // edited, I'm going to assume this should be fine.
+                    @Override
+                    public StudentModel fromString(String string) {
+                        return null;
+                    }
+                }));
     }
 
     private void onExportButtonPress() {
@@ -125,7 +125,7 @@ public class ExportPageController implements Controller {
         ServiceTask<Void> exportTask = new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                csvService.exportStudentsVisitsToExcel(selectedStudentsIds, ExcelExporter.SORT_BY_NAME);
+                csvService.exportStudentsVisitsToExcel(selectedStudentsIds);
                 return null;
             }
         };

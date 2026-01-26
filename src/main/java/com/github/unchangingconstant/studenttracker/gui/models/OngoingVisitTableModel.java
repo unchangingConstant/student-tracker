@@ -4,8 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.unchangingconstant.studenttracker.app.domain.OngoingVisitDomain;
-import com.github.unchangingconstant.studenttracker.app.mappers.model.DomainToOngoingVisitModelMapper;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.google.inject.Inject;
@@ -24,14 +23,14 @@ import javafx.collections.ObservableList;
 @Singleton
 public class OngoingVisitTableModel {
 
-    private SimpleListProperty<OngoingVisitModel> ongoingVisits;
+    private final SimpleListProperty<OngoingVisitModel> ongoingVisits;
 
     @Inject
     public OngoingVisitTableModel(AttendanceRecordManager attendanceService) {
-        Collection<OngoingVisitDomain> initialData = attendanceService.getOngoingVisits().values();
+        Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits();
         ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
-        initialData.forEach(domain -> ongoingVisits.add(DomainToOngoingVisitModelMapper.map(domain)));
-        AttendanceObserver<OngoingVisitDomain> observer = attendanceService.getOngoingVisitsObserver();
+        initialData.forEach(ongoingVisit -> ongoingVisits.add(OngoingVisitModel.map(ongoingVisit)));
+        AttendanceObserver<OngoingVisit> observer = attendanceService.getOngoingVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
@@ -59,32 +58,30 @@ public class OngoingVisitTableModel {
         prop.bind(ongoingVisits);
     }
 
-    private void onOngoingVisitDelete(List<OngoingVisitDomain> deletedVisits) {
+    private void onOngoingVisitDelete(List<OngoingVisit> deletedVisits) {
         deletedVisits.forEach(deleted -> {
-        Boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted.getStudentId());
+            boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted.getStudentId());
             if (!removed) {
-                // TODO this will prevent all other visits in the list from being processed
-                throw new NoSuchElementException(String.format("Tried to delete OngoingVisit with studentId %d but it could not be found", deleted.getStudentId()));
+                System.out.println(String.format("Tried to delete OngoingVisit with studentId %d but it could not be found", deleted.getStudentId()));
             }
         });
     }
 
-    private void onOngoingVisitInsert(List<OngoingVisitDomain> insertedVisits) {
+    private void onOngoingVisitInsert(List<OngoingVisit> insertedVisits) {
         insertedVisits.forEach(inserted -> {
-            ongoingVisits.add(DomainToOngoingVisitModelMapper.map(inserted));
+            ongoingVisits.add(OngoingVisitModel.map(inserted));
         });
     }
 
-    private void onOngoingVisitUpdate(List<OngoingVisitDomain> updatedVisits) {
+    private void onOngoingVisitUpdate(List<OngoingVisit> updatedVisits) {
         updatedVisits.forEach(updated -> {
             for (int i = 0; i < ongoingVisits.size(); i++){
                 if (ongoingVisits.get(i).getStudentId().getValue().equals(updated.getStudentId())) {
-                    ongoingVisits.set(i, DomainToOngoingVisitModelMapper.map(updated));
+                    ongoingVisits.set(i, OngoingVisitModel.map(updated));
                     return;
                 }
             }
-            // TODO this will keep all other updates from being processed
-            throw new NoSuchElementException(String.format("Tired to update OngoingVisit with studentId %d but it could not be found", updated.getStudentId()));
+            System.out.println(String.format("Tired to update OngoingVisit with studentId %d but it could not be found", updated.getStudentId()));
         });
     }
 

@@ -5,6 +5,7 @@ import java.util.Comparator;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.NoSuchEntityException;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.EditableStudentTable;
@@ -33,7 +34,7 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 
 /*
- * TODO Think about memory management. When this controller is garbage collected, do the listeners/bindings it adds 
+ * TODO Think about memory management. If this controller is garbage collected, do the listeners/bindings it adds
  * to the Singleton StudentTableModel persist? 
  */
 public class DatabaseManagerPageController implements Controller {
@@ -64,18 +65,18 @@ public class DatabaseManagerPageController implements Controller {
 
     // Services / utils
     private final AttendanceRecordManager recordManager;
-    private final WindowManager windowController;
+    private final WindowManager windowManager;
 
     @Inject
     public DatabaseManagerPageController(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
         AttendanceRecordManager recordManager,
-        WindowManager windowController)  {
+        WindowManager windowManager)  {
         this.recordManager = recordManager;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
-        this.windowController = windowController;
+        this.windowManager = windowManager;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class DatabaseManagerPageController implements Controller {
         setupVisitView();
         setupQRCodeView();
         exportButton.setOnAction((actionEvent) -> {
-            windowController.openExportPage();
+            windowManager.openExportPage();
         });
     }
 
@@ -112,7 +113,10 @@ public class DatabaseManagerPageController implements Controller {
             @Override
             protected Void call() throws Exception {
                 try {
-                    recordManager.insertStudent(fullName, prefName, subjects);
+                    recordManager.insertStudent(Student.builder()
+                        .fullName(fullName)
+                        .preferredName(prefName)
+                        .visitTime(subjects * 30).build());
                 } catch (InvalidEntityException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -126,15 +130,19 @@ public class DatabaseManagerPageController implements Controller {
     public void onUpdateStudentAction() {
         StudentModel update = studentTable.getEditedStudentModel();
         Integer studentId = update.getStudentId().get();
-        String fullName = update.getFullLegalName().get();
+        String fullName = update.getFullName().get();
         String prefName = update.getPrefName().get();
-        Integer subjects = update.getSubjects().get();
+        Integer subjects = update.getVisitTime().get();
 
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
                 try {
-                    recordManager.updateStudent(studentId, fullName, prefName, subjects);
+                    recordManager.updateStudent(Student.builder()
+                        .studentId(studentId)
+                        .fullName(fullName)
+                        .preferredName(prefName)
+                        .visitTime(subjects * 30).build());
                 } catch (InvalidEntityException e) {
                     e.printStackTrace();
                 }
@@ -150,7 +158,7 @@ public class DatabaseManagerPageController implements Controller {
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
-                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                    return arg0.getFullName().get().compareTo(arg1.getFullName().get());
                 }
             }
         );
@@ -187,10 +195,10 @@ public class DatabaseManagerPageController implements Controller {
             if (!newVal.equals(-1)) {
                 title.textProperty().bind(Bindings.createStringBinding(
                 () -> {
-                    String firstName = studentTableModel.getStudent(newVal.intValue()).getFullLegalName().get().split(" ")[0];
+                    String firstName = studentTableModel.getStudent(newVal.intValue()).getFullName().get().split(" ")[0];
                     return "Viewing " + firstName + "'s attendance...";
                 }, 
-                studentTableModel.getStudent(newVal.intValue()).getFullLegalName()));
+                studentTableModel.getStudent(newVal.intValue()).getFullName()));
             } else {
                 title.setText("No student selected");
             }
@@ -201,7 +209,7 @@ public class DatabaseManagerPageController implements Controller {
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
-                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                    return arg0.getFullName().get().compareTo(arg1.getFullName().get());
                 }
             }
         );
@@ -213,7 +221,7 @@ public class DatabaseManagerPageController implements Controller {
             cell.itemProperty().addListener((obs, oldVal, newVal) -> {
                 cellContent.textProperty().unbind();
                 if (newVal != null) {
-                    cellContent.textProperty().bind(cell.getItem().getFullLegalName());
+                    cellContent.textProperty().bind(cell.getItem().getFullName());
                 }
             });
             cell.setGraphic(cellContent);
@@ -227,7 +235,7 @@ public class DatabaseManagerPageController implements Controller {
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
-                    return arg0.getFullLegalName().get().compareTo(arg1.getFullLegalName().get());
+                    return arg0.getFullName().get().compareTo(arg1.getFullName().get());
                 }
             }
         );

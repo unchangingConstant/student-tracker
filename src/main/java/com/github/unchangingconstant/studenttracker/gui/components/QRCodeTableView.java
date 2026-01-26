@@ -42,7 +42,7 @@ public class QRCodeTableView extends TableView<StudentModel> implements Controll
     @Override
     public void initialize() {
         studentIdColumn.setCellValueFactory(cellData -> cellData.getValue().getStudentId());
-        fullNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullLegalName());
+        fullNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullName());
         setupQRCodeColumn();
     }
 
