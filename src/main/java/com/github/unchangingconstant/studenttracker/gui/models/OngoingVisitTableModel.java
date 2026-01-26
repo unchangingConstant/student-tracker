@@ -1,19 +1,20 @@
 package com.github.unchangingconstant.studenttracker.gui.models;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,12 +27,25 @@ import javafx.collections.ObservableList;
 public class OngoingVisitTableModel {
 
     private final SimpleMapProperty<Integer, OngoingVisitModel> ongoingVisits;
+    private final MapToListBinding<Integer, OngoingVisitModel> ongoingVisitList;
+
+    private final StudentTableModel studentTableModel;
 
     @Inject
-    public OngoingVisitTableModel(AttendanceRecordManager attendanceService) {
+    public OngoingVisitTableModel(AttendanceRecordManager attendanceService, StudentTableModel studentTableModel) {
+        // Populates table with data from RecordManager
         Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits();
         ongoingVisits = new SimpleMapProperty<>(FXCollections.observableHashMap());
-        initialData.forEach(ongoingVisit -> ongoingVisits.put(ongoingVisit.getStudentId(), OngoingVisitModel.map(ongoingVisit)));
+        initialData.forEach(ongoingVisit -> {
+            StudentModel student = studentTableModel.getStudent(ongoingVisit.getStudentId());
+            ongoingVisits.put(ongoingVisit.getStudentId(),
+                OngoingVisitModel.map(
+                    ongoingVisit,
+                    (long) student.getVisitTime().get(),
+                    (int) (student.getVisitTime().get() - ChronoUnit.MINUTES.between(ongoingVisit.getStartTime(), Instant.now())),
+                    student.getFullName().get()));
+        });
+        ongoingVisitList = new MapToListBinding<>(ongoingVisits);
         AttendanceObserver<OngoingVisit> observer = attendanceService.getOngoingVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
@@ -40,6 +54,8 @@ public class OngoingVisitTableModel {
         observer.subscribeToDeletes(visits -> Platform.runLater(() -> onOngoingVisitDelete(visits)));
         observer.subscribeToInserts(visits -> Platform.runLater(() -> onOngoingVisitInsert(visits)));
         observer.subscribeToUpdates(visits -> Platform.runLater(() -> onOngoingVisitUpdate(visits)));
+
+        this.studentTableModel = studentTableModel;
     }
 
     // This is okay since visits are immutable
@@ -47,34 +63,25 @@ public class OngoingVisitTableModel {
         return Optional.ofNullable(ongoingVisits.get(studentId));
     }
 
-    public void bindProperty(Property<ObservableList<OngoingVisitModel>> prop) {
-        prop.bind(ongoingVisits);
+    public void bindList(Property<ObservableList<OngoingVisitModel>> list) {
+        list.bind(ongoingVisitList);
     }
 
     private void onOngoingVisitDelete(List<OngoingVisit> deletedVisits) {
         deletedVisits.forEach(deleted -> {
-            boolean removed = ongoingVisits.removeIf(ongoingVisit -> ongoingVisit.getStudentId().get() == deleted.getStudentId());
-            if (!removed) {
-                System.out.println(String.format("Tried to delete OngoingVisit with studentId %d but it could not be found", deleted.getStudentId()));
-            }
+            ongoingVisits.remove(deleted.getStudentId());
         });
     }
 
     private void onOngoingVisitInsert(List<OngoingVisit> insertedVisits) {
         insertedVisits.forEach(inserted -> {
-            ongoingVisits.add(OngoingVisitModel.map(inserted));
+            ongoingVisits.put(inserted.getStudentId(), OngoingVisitModel.map(inserted));
         });
     }
 
     private void onOngoingVisitUpdate(List<OngoingVisit> updatedVisits) {
         updatedVisits.forEach(updated -> {
-            for (int i = 0; i < ongoingVisits.size(); i++){
-                if (ongoingVisits.get(i).getStudentId().getValue().equals(updated.getStudentId())) {
-                    ongoingVisits.set(i, OngoingVisitModel.map(updated));
-                    return;
-                }
-            }
-            System.out.println(String.format("Tired to update OngoingVisit with studentId %d but it could not be found", updated.getStudentId()));
+            ongoingVisits.get(updated.getStudentId()).getStartTime().set(updated.getStartTime());
         });
     }
 

@@ -36,4 +36,15 @@ public class StudentModel {
         );
     }
 
+    /*
+     * Collection bindings will need this to know which entities are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof StudentModel) {
+            return (((StudentModel) obj).getStudentId().get().equals(studentId.get()));
+        }
+        return false;
+    }
+
 }

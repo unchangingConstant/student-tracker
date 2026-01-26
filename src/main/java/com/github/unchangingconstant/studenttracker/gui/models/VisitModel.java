@@ -30,4 +30,15 @@ public class VisitModel {
             entity.getStudentId()
         );
     }
+
+    /*
+     * Collection bindings will need this to know which entities are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VisitModel) {
+            return (((VisitModel) obj).getVisitId().get().equals(visitId.get()));
+        }
+        return false;
+    }
 }
