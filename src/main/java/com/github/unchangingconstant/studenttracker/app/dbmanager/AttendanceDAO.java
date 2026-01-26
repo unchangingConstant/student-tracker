@@ -1,8 +1,10 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
@@ -29,11 +31,13 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM students WHERE student_id IN (<studentIds>)")
     @RegisterRowMapper(RowToStudentMapper.class)
-    List<Student> findStudentsWithId(@BindList("studentIds") List<Integer> studentIds);
+    @KeyColumn("student_id")
+    Map<Integer, Student> findStudentsWithId(@BindList("studentIds") List<Integer> studentIds);
 
     @SqlQuery("SELECT * FROM students")
     @RegisterRowMapper(RowToStudentMapper.class)
-    List<Student> getAllStudents();
+    @KeyColumn("student_id")
+    Map<Integer, Student> getAllStudents();
 
     @SqlUpdate("INSERT INTO students (full_name, preferred_name, subjects, date_added) VALUES (:fullName, :preferredName, :visitTime, :dateAdded)")
     @GetGeneratedKeys // gets the new id of the student
@@ -54,11 +58,13 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM visits")
     @RegisterRowMapper(RowToVisitMapper.class)
-    List<Visit> getAllVisits();
+    @KeyColumn("visit_id")
+    Map<Integer, Visit> getAllVisits();
 
     @SqlQuery("SELECT * FROM visits WHERE student_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
-    List<Visit> findVisitsWithStudentId(Integer studentId);
+    @KeyColumn("visit_id")
+    Map<Integer, Visit> findVisitsWithStudentId(Integer studentId);
 
     @SqlUpdate("INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
     @GetGeneratedKeys // gets the new id of the visit
@@ -69,7 +75,8 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM visits WHERE student_id IN (<studentIds>)")
     @RegisterRowMapper(RowToVisitMapper.class)
-    List<Visit> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
+    @KeyColumn("visit_id")
+    Map<Integer, Visit> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
 
     /*
      * ONGOING VISIT METHODS
@@ -80,7 +87,8 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT ov.*, s.* FROM ongoing_visits ov INNER JOIN students s ON ov.student_id = s.student_id;")
     @RegisterRowMapper(RowToOngoingVisitMapper.class)
-    List<OngoingVisit> getOngoingVisits();
+    @KeyColumn("student_id")
+    Map<Integer, OngoingVisit> getOngoingVisits();
 
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
     void insertOngoingVisit(@BindBean OngoingVisit ongoingVisit);

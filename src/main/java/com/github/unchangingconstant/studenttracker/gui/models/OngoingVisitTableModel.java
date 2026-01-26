@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
@@ -13,6 +14,7 @@ import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -23,13 +25,13 @@ import javafx.collections.ObservableList;
 @Singleton
 public class OngoingVisitTableModel {
 
-    private final SimpleListProperty<OngoingVisitModel> ongoingVisits;
+    private final SimpleMapProperty<Integer, OngoingVisitModel> ongoingVisits;
 
     @Inject
     public OngoingVisitTableModel(AttendanceRecordManager attendanceService) {
         Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits();
-        ongoingVisits = new SimpleListProperty<>(FXCollections.observableArrayList());
-        initialData.forEach(ongoingVisit -> ongoingVisits.add(OngoingVisitModel.map(ongoingVisit)));
+        ongoingVisits = new SimpleMapProperty<>(FXCollections.observableHashMap());
+        initialData.forEach(ongoingVisit -> ongoingVisits.put(ongoingVisit.getStudentId(), OngoingVisitModel.map(ongoingVisit)));
         AttendanceObserver<OngoingVisit> observer = attendanceService.getOngoingVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
@@ -40,18 +42,9 @@ public class OngoingVisitTableModel {
         observer.subscribeToUpdates(visits -> Platform.runLater(() -> onOngoingVisitUpdate(visits)));
     }
 
-    public ObservableList<OngoingVisitModel> ongoingVisits() {
-        return FXCollections.unmodifiableObservableList(ongoingVisits);
-    }
-
     // This is okay since visits are immutable
-    public OngoingVisitModel get(Integer studentId) {
-        for (OngoingVisitModel visit : ongoingVisits) {
-            if (visit.getStudentId().getValue().equals(studentId)) {
-                return visit;
-            }
-        }
-        throw new NoSuchElementException(String.format("Visit with studentId %d could not be found", studentId));
+    public Optional<OngoingVisitModel> find(Integer studentId) {
+        return Optional.ofNullable(ongoingVisits.get(studentId));
     }
 
     public void bindProperty(Property<ObservableList<OngoingVisitModel>> prop) {
