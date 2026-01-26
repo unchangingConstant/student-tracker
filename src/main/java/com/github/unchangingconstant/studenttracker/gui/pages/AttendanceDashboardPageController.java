@@ -10,8 +10,8 @@ import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.LiveAttendanceView;
 import com.github.unchangingconstant.studenttracker.gui.components.StudentSelector;
-import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
-import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitTableModel;
+import com.github.unchangingconstant.studenttracker.gui.models.LiveVisitModel;
+import com.github.unchangingconstant.studenttracker.gui.models.LiveAttendanceDashboardModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
@@ -38,14 +38,14 @@ public class AttendanceDashboardPageController implements Controller {
     @FXML
     private MenuItem recordManagerMenuItem;
 
-    private final OngoingVisitTableModel ongoingVisitsModel;
+    private final LiveAttendanceDashboardModel ongoingVisitsModel;
     private final StudentTableModel studentTableModel;
     private final AttendanceRecordManager recordManager;
     private final WindowManager windowController;
 
     @Inject
     public AttendanceDashboardPageController(
-        OngoingVisitTableModel ongoingVisitsModel, 
+        LiveAttendanceDashboardModel ongoingVisitsModel,
         StudentTableModel studentTableModel, 
         AttendanceRecordManager recordManager,
         WindowManager windowController)  {
@@ -57,7 +57,7 @@ public class AttendanceDashboardPageController implements Controller {
 
     @Override
     public void initialize() {
-        studentTableModel.bindProperty(studentSelector.optionsProperty());
+        studentTableModel.bindList(studentSelector.optionsProperty());
         startVisitButton.setOnAction(actionEvent -> {
             StudentModel selected = studentSelector.selectedProperty().getValue();
             if (selected != null)  {
@@ -65,11 +65,11 @@ public class AttendanceDashboardPageController implements Controller {
             }
         });
         // Makes table sorted by times remaining
-        SortedList<OngoingVisitModel> liveAttendanceList = 
-            new SortedList<>(ongoingVisitsModel.ongoingVisits(),
-            new Comparator<OngoingVisitModel>() {
+        SortedList<LiveVisitModel> liveAttendanceList =
+            new SortedList<>(ongoingVisitsModel.unmodifiableOngoingVisitList(),
+            new Comparator<LiveVisitModel>() {
                 @Override
-                public int compare(OngoingVisitModel arg0, OngoingVisitModel arg1) {
+                public int compare(LiveVisitModel arg0, LiveVisitModel arg1) {
                     return arg1.getTimeRemaining().get() < arg0.getTimeRemaining().get() ? 1 : -1;
                 }
             }
@@ -97,7 +97,7 @@ public class AttendanceDashboardPageController implements Controller {
     }
 
     public void onEndOngoingVisit(Integer studentId) {
-        OngoingVisitModel endedVisit = ongoingVisitsModel.get(studentId);
+        LiveVisitModel endedVisit = ongoingVisitsModel.get(studentId);
         Instant startTime = endedVisit.getStartTime().get();
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override

@@ -22,13 +22,20 @@ public class VisitModel {
         this.studentId = new SimpleIntegerProperty(studentId);
     }
 
-    public static VisitModel map(Visit entity) {
-        return new VisitModel(
+    public VisitModel(Visit entity) {
+        this(
             entity.getVisitId(),
             entity.getStartTime(),
             entity.getDuration(),
             entity.getStudentId()
         );
+    }
+
+    public void update(Visit entity) {
+        visitId.set(entity.getVisitId());
+        startTime.set(entity.getStartTime());
+        duration.set(entity.getDuration());
+        studentId.set(entity.getStudentId());
     }
 
     /*

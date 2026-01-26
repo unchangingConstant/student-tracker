@@ -8,12 +8,13 @@ import java.util.Objects;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -25,7 +26,8 @@ public class StudentTableModel {
 
     private final AttendanceRecordManager recordManager;
 
-    private final SimpleListProperty<StudentModel> students;
+    private final SimpleMapProperty<Integer, StudentModel> students;
+    private final MapToListBinding<Integer, StudentModel> studentList;
 
     @Inject
     public StudentTableModel(AttendanceRecordManager recordManager) {
@@ -34,11 +36,12 @@ public class StudentTableModel {
          * For this reason I have made all Service methods synchronized
          */
         Collection<Student> initialData = recordManager.getAllStudents();
-        this.students = new SimpleListProperty<StudentModel>(FXCollections.observableArrayList());
-        initialData.forEach(student -> this.students.add(StudentModel.map(student)));
+        this.students = new SimpleMapProperty<Integer, StudentModel>(FXCollections.observableHashMap());
+        initialData.forEach(StudentModel::new);
+        this.studentList = new MapToListBinding<>(students);
+
         // Ensures model state is synced to database at all times
         AttendanceObserver<Student> observer = recordManager.getStudentsObserver();
-
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
@@ -50,47 +53,35 @@ public class StudentTableModel {
         this.recordManager = recordManager;
     }
 
-    public void bindProperty(Property<ObservableList<StudentModel>> property) {
-        property.bind(this.students);
+    public void bindList(Property<ObservableList<StudentModel>> list) {
+        list.bind(studentList);
     }
 
-    public ObservableList<StudentModel> getStudents()   {
-        return FXCollections.unmodifiableObservableList(students.get());
+    public ObservableList<StudentModel> unmodifiableStudentList()   {
+        return FXCollections.unmodifiableObservableList(studentList);
     }
 
     public StudentModel getStudent(Integer studentId) {
-        for (StudentModel student: students) {
-            if (student.getStudentId().get().equals(studentId)) {
-                return student;
-            }
-        }
-        throw new NoSuchElementException("Student with studentId " + String.valueOf(studentId) + " not found");
+        return students.get(studentId);
     }
 
     private void onInsertStudent(List<Student> insertedStudents) {
         insertedStudents.forEach(student -> {
-            students.add(StudentModel.map(student));
+            students.put(student.getStudentId(), new StudentModel(student));
         });
     }
 
     private void onDeleteStudent(List<Student> deletedStudents) {
         deletedStudents.forEach(student -> {
-            students.removeIf(studentModel -> Objects.equals(studentModel.getStudentId().get(), student.getStudentId()));
+            students.remove(student.getStudentId());
         });
     }
 
     private void onUpdateStudent(List<Student> updatedStudents) {
         updatedStudents.forEach(updatedStudent -> {
-            for (StudentModel student: students) {
-                if (Objects.equals(student.getStudentId().get(), updatedStudent.getStudentId())) {
-                    student.getFullName().set(updatedStudent.getFullName());
-                    student.getPrefName().set(updatedStudent.getPreferredName());
-                    student.getVisitTime().set(updatedStudent.getVisitTime());
-                    break;
-                }
-            }
+            StudentModel student = students.get(updatedStudent.getStudentId());
+            student.update(updatedStudent);
         });
-        // TODO throw exception if loop exits with nothing??
     }
 
 }

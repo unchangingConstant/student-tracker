@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
-import com.github.unchangingconstant.studenttracker.gui.models.OngoingVisitModel;
+import com.github.unchangingconstant.studenttracker.gui.models.LiveVisitModel;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,16 +31,16 @@ import javafx.util.Duration;
 /*
  * Used to view students current at the center
  */
-public class LiveAttendanceView extends TableView<OngoingVisitModel> implements Controller {
+public class LiveAttendanceView extends TableView<LiveVisitModel> implements Controller {
 
     @FXML
-    private TableColumn<OngoingVisitModel, String> nameColumn;
+    private TableColumn<LiveVisitModel, String> nameColumn;
     @FXML
-    private TableColumn<OngoingVisitModel, Number> timeRemainingColumn;
+    private TableColumn<LiveVisitModel, Number> timeRemainingColumn;
     @FXML
-    private TableColumn<OngoingVisitModel, String> startTimeColumn;
+    private TableColumn<LiveVisitModel, String> startTimeColumn;
     @FXML
-    private TableColumn<OngoingVisitModel, Number> actionsColumn;
+    private TableColumn<LiveVisitModel, Number> actionsColumn;
 
     // Upon action button press, passes the OngoingVisit's studentId to this consumer
     private Consumer<Integer> onButtonAction;
@@ -81,14 +81,14 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
 
     private void updateTimesRemaining() {
         Instant now = Instant.now();
-        for (OngoingVisitModel visit: getItems()) {
-            visit.getTimeRemaining().set((visit.getSubjects().get() * 30) - ChronoUnit.MINUTES.between(visit.getStartTime().get(), now));
+        for (LiveVisitModel visit: getItems()) {
+            visit.getTimeRemaining().set((visit.getVisitTime().get()) - ChronoUnit.MINUTES.between(visit.getStartTime().get(), now));
         }
     }
 
     private void createActionsColumn()  {
         actionsColumn.setCellFactory(tableColumn -> {
-            TableCell<OngoingVisitModel, Number> buttonCell = new TableCell<>();
+            TableCell<LiveVisitModel, Number> buttonCell = new TableCell<>();
             Button cellButton = new Button("End Visit");
             buttonCell.setGraphic(cellButton);
             cellButton.setOnAction(actionEvent ->  {
@@ -109,7 +109,7 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
      * Adds pseudo class to the cells in the time remaining column so that they may be
      * styled with CSS (See ISSUE#28)
      */
-    class LiveAttendanceViewTableRow extends TableRow<OngoingVisitModel> {
+    static class LiveAttendanceViewTableRow extends TableRow<LiveVisitModel> {
 
         enum VisitCompletionStatus {DEFAULT, ALMOST_DONE, OVER}
 
@@ -144,25 +144,26 @@ public class LiveAttendanceView extends TableView<OngoingVisitModel> implements 
                     completionStatus.unbind();
                     completionStatus.set(VisitCompletionStatus.DEFAULT);
                 } else {
-                    IntegerProperty subjects = itemProperty().get().getSubjects();
+                    IntegerProperty visitTime = itemProperty().get().getVisitTime();
                     LongProperty timeRemaining = itemProperty().get().getTimeRemaining();
                     completionStatus.bind(Bindings.createObjectBinding(
-                    () -> {
-                        // Null checks
-                        if (subjects == null || timeRemaining == null) {
-                            return VisitCompletionStatus.DEFAULT;
-                        }
-                        // now the real stuff
-                        Integer oneSixthVisitTime = (subjects.get() * 30) / 6;
-                        if (timeRemaining.get() <= (-1) * oneSixthVisitTime) {
-                            return VisitCompletionStatus.OVER;
-                        } else if (timeRemaining.get() <= oneSixthVisitTime) {
-                            return VisitCompletionStatus.ALMOST_DONE;
-                        } else {
-                            return VisitCompletionStatus.DEFAULT;
-                        }
-                    }, 
-                    subjects, timeRemaining));
+                        () -> {
+                            // Null checks
+                            if (visitTime == null || timeRemaining == null) {
+                                return VisitCompletionStatus.DEFAULT;
+                            }
+                            // now the real stuff
+                            int oneSixthVisitTime = (visitTime.get()) / 6;
+                            if (timeRemaining.get() <= (-1) * oneSixthVisitTime) {
+                                return VisitCompletionStatus.OVER;
+                            } else if (timeRemaining.get() <= oneSixthVisitTime) {
+                                return VisitCompletionStatus.ALMOST_DONE;
+                            } else {
+                                return VisitCompletionStatus.DEFAULT;
+                            }
+                        },
+                        visitTime, timeRemaining)
+                    );
                 }
             });
         }

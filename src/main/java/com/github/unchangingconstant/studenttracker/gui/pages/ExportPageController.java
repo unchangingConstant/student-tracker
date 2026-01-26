@@ -64,7 +64,7 @@ public class ExportPageController implements Controller {
     // TODO ew, so large. Chop this up bruh
     private void setupStudentSelector() {
         // Makes list sorted alphabetically
-        SortedList<StudentModel> studentsList = new SortedList<>(studentTableModel.getStudents(),
+        SortedList<StudentModel> studentsList = new SortedList<>(studentTableModel.unmodifiableStudentList(),
                 new Comparator<StudentModel>() {
                     @Override
                     public int compare(StudentModel arg0, StudentModel arg1) {
@@ -76,7 +76,7 @@ public class ExportPageController implements Controller {
         studentSelector.setItems(studentsList);
 
         // Maps each student to a boolean property
-        studentTableModel.getStudents().forEach(
+        studentTableModel.unmodifiableStudentList().forEach(
                 item -> {
                     BooleanProperty boolProp = new SimpleBooleanProperty(false);
                     // If a single box is false, the selectAllCheckBox will also be false

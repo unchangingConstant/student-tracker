@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,52 +19,51 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.collections4.Unmodifiable;
 
-/*
- *  TODO make it so it updates if any field in the ongoingVisit model is updated behind the scenes
- *  (Student name, subjects, etc.) 
- */
 @Singleton
-public class OngoingVisitTableModel {
+public class LiveAttendanceDashboardModel {
 
-    private final SimpleMapProperty<Integer, OngoingVisitModel> ongoingVisits;
-    private final MapToListBinding<Integer, OngoingVisitModel> ongoingVisitList;
+    private final SimpleMapProperty<Integer, LiveVisitModel> ongoingVisits;
+    private final MapToListBinding<Integer, LiveVisitModel> ongoingVisitList;
 
     private final StudentTableModel studentTableModel;
 
     @Inject
-    public OngoingVisitTableModel(AttendanceRecordManager attendanceService, StudentTableModel studentTableModel) {
+    public LiveAttendanceDashboardModel(AttendanceRecordManager attendanceService, StudentTableModel studentTableModel) {
         // Populates table with data from RecordManager
         Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits();
         ongoingVisits = new SimpleMapProperty<>(FXCollections.observableHashMap());
         initialData.forEach(ongoingVisit -> {
             StudentModel student = studentTableModel.getStudent(ongoingVisit.getStudentId());
             ongoingVisits.put(ongoingVisit.getStudentId(),
-                OngoingVisitModel.map(
+                new LiveVisitModel(
                     ongoingVisit,
-                    (long) student.getVisitTime().get(),
-                    (int) (student.getVisitTime().get() - ChronoUnit.MINUTES.between(ongoingVisit.getStartTime(), Instant.now())),
-                    student.getFullName().get()));
+                    student.getVisitTime().get() - ChronoUnit.MINUTES.between(ongoingVisit.getStartTime(), Instant.now()),
+                    student));
         });
         ongoingVisitList = new MapToListBinding<>(ongoingVisits);
-        AttendanceObserver<OngoingVisit> observer = attendanceService.getOngoingVisitsObserver();
+        AttendanceObserver<OngoingVisit> ongoingVisitObserver = attendanceService.getOngoingVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
          */
-        observer.subscribeToDeletes(visits -> Platform.runLater(() -> onOngoingVisitDelete(visits)));
-        observer.subscribeToInserts(visits -> Platform.runLater(() -> onOngoingVisitInsert(visits)));
-        observer.subscribeToUpdates(visits -> Platform.runLater(() -> onOngoingVisitUpdate(visits)));
+        ongoingVisitObserver.subscribeToDeletes(visits -> Platform.runLater(() -> onOngoingVisitDelete(visits)));
+        ongoingVisitObserver.subscribeToInserts(visits -> Platform.runLater(() -> onOngoingVisitInsert(visits)));
+        ongoingVisitObserver.subscribeToUpdates(visits -> Platform.runLater(() -> onOngoingVisitUpdate(visits)));
 
         this.studentTableModel = studentTableModel;
     }
 
-    // This is okay since visits are immutable
-    public Optional<OngoingVisitModel> find(Integer studentId) {
-        return Optional.ofNullable(ongoingVisits.get(studentId));
+    public ObservableList<LiveVisitModel> unmodifiableOngoingVisitList() {
+        return FXCollections.unmodifiableObservableList(ongoingVisitList);
     }
 
-    public void bindList(Property<ObservableList<OngoingVisitModel>> list) {
+    public LiveVisitModel get(Integer studentId) {
+        return ongoingVisits.get(studentId);
+    }
+
+    public void bindList(Property<ObservableList<LiveVisitModel>> list) {
         list.bind(ongoingVisitList);
     }
 
@@ -74,8 +74,13 @@ public class OngoingVisitTableModel {
     }
 
     private void onOngoingVisitInsert(List<OngoingVisit> insertedVisits) {
+        Instant now = Instant.now();
         insertedVisits.forEach(inserted -> {
-            ongoingVisits.put(inserted.getStudentId(), OngoingVisitModel.map(inserted));
+            StudentModel student = studentTableModel.getStudent(inserted.getStudentId());
+            ongoingVisits.put(inserted.getStudentId(), new LiveVisitModel(
+                inserted,
+                ChronoUnit.MINUTES.between(inserted.getStartTime(), now),
+                student));
         });
     }
 

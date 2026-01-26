@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 import java.time.Instant;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class StudentModel {
     private final SimpleStringProperty fullName;
     private final SimpleStringProperty prefName;
     private final SimpleObjectProperty<Instant> dateAdded;
-    private final SimpleObjectProperty<Integer> visitTime;
+    private final SimpleIntegerProperty visitTime;
 
     // Using SimpleObjectProperty<Integer> instead of SimpleIntegerProperty because the latter
     // doesn't allow null values
@@ -23,17 +24,25 @@ public class StudentModel {
         this.fullName = new SimpleStringProperty(fullName);
         this.prefName = new SimpleStringProperty(prefName);
         this.dateAdded = new SimpleObjectProperty<Instant>(dateAdded);
-        this.visitTime = new SimpleObjectProperty<Integer>(visitTime);
+        this.visitTime = new SimpleIntegerProperty(visitTime);
     }
 
-    public static StudentModel map(Student entity) {
-        return new StudentModel(
+    public StudentModel(Student entity) {
+        this(
             entity.getStudentId(),
             entity.getFullName(),
             entity.getPreferredName(),
             entity.getDateAdded(),
             entity.getVisitTime()
         );
+    }
+
+    public void update(Student entity) {
+        studentId.set(entity.getStudentId());
+        fullName.set(entity.getFullName());
+        prefName.set(entity.getPreferredName());
+        dateAdded.set(entity.getDateAdded());
+        visitTime.set(entity.getVisitTime());
     }
 
     /*

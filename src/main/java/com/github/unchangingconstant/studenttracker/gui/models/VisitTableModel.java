@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
@@ -13,7 +14,7 @@ import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -22,7 +23,8 @@ public class VisitTableModel {
     
     private final AttendanceRecordManager attendanceService;
 
-    private final SimpleListProperty<VisitModel> visits;  
+    private final SimpleMapProperty<Integer, VisitModel> visits;
+    private final MapToListBinding<Integer, VisitModel> visitList;
     
     private final SimpleIntegerProperty currentStudent;
     public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
@@ -30,7 +32,8 @@ public class VisitTableModel {
     @Inject
     public VisitTableModel(AttendanceRecordManager attendanceService) {
         this.currentStudent = new SimpleIntegerProperty(-1);
-        this.visits = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.visits = new SimpleMapProperty<>(FXCollections.observableHashMap());
+        this.visitList = new MapToListBinding<>(visits);
         this.attendanceService = attendanceService;
         setupCurrentStudentProperty();
 
@@ -44,39 +47,32 @@ public class VisitTableModel {
         obs.subscribeToUpdates(visits -> Platform.runLater(() -> onVisitUpdate(visits)));
     }
 
-    public ObservableList<VisitModel> getVisits() {
-        return FXCollections.unmodifiableObservableList(visits.get());
+    public ObservableList<VisitModel> unmodifiableVisitList() {
+        return FXCollections.unmodifiableObservableList(visitList);
     }
 
-    public void bindProperty(Property<ObservableList<VisitModel>> prop) {
-        prop.bind(visits);
+    public void bindList(Property<ObservableList<VisitModel>> list) {
+        list.bind(visitList);
     }
 
     private void onVisitInsert(List<Visit> insertedVisits) {
         insertedVisits.forEach(visit -> {
             if (!visit.getStudentId().equals(currentStudent.get())) return;
-            visits.add(VisitModel.map(visit));
+            visits.put(visit.getVisitId(), new VisitModel(visit));
         });
     }
 
     private void onVisitDelete(List<Visit> deletedVisits) {
         deletedVisits.forEach(visit -> {
             if (!visit.getStudentId().equals(currentStudent.get())) return;
-            visits.removeIf(otherVisit -> visit.getStudentId().equals(otherVisit.getStudentId().get()));
+            visits.remove(visit.getVisitId());
         });
     }
 
     private void onVisitUpdate(List<Visit> updatedVisits) {
         updatedVisits.forEach(updatedVisit -> {
             if (!updatedVisit.getStudentId().equals(currentStudent.get())) return;
-            for (VisitModel visit: visits) {
-                if (visit.getVisitId().get().equals(updatedVisit.getVisitId())) {
-                    visit.getStudentId().set(updatedVisit.getStudentId());
-                    visit.getStartTime().set(updatedVisit.getStartTime());
-                    visit.getDuration().set(updatedVisit.getDuration());
-                    break;
-                }
-            }
+            visits.get(updatedVisit.getVisitId()).update(updatedVisit);
         });
     }
 
@@ -89,7 +85,7 @@ public class VisitTableModel {
                     protected Void call() throws Exception {
                     List<Visit> studentVisits = attendanceService.findVisitsWithStudentId(newVal.intValue());
                     Platform.runLater(() -> {
-                        studentVisits.forEach(visitDomain -> visits.add(VisitModel.map(visitDomain)));
+                        studentVisits.forEach(visit -> visits.put(visit.getVisitId(), new VisitModel(visit)));
                     });
                     return null;
                     }

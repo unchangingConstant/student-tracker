@@ -154,7 +154,7 @@ public class DatabaseManagerPageController implements Controller {
 
     private void setupStudentManager() {
         SortedList<StudentModel> sortedStudents = new SortedList<>(
-            studentTableModel.getStudents(),
+            studentTableModel.unmodifiableStudentList(),
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
@@ -170,7 +170,7 @@ public class DatabaseManagerPageController implements Controller {
 
     private void setupVisitView() {
         // Creates list of visits bound to the visitTable model but sorted
-        SortedList<VisitModel> sortedVisits = new SortedList<>(visitTableModel.getVisits(),
+        SortedList<VisitModel> sortedVisits = new SortedList<>(visitTableModel.unmodifiableVisitList(),
             new Comparator<VisitModel>() {
                 @Override
                 public int compare(VisitModel arg0, VisitModel arg1) {
@@ -205,7 +205,7 @@ public class DatabaseManagerPageController implements Controller {
         });
 
         SortedList<StudentModel> sortedStudents = new SortedList<>(
-            studentTableModel.getStudents(),
+            studentTableModel.unmodifiableStudentList(),
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
@@ -231,7 +231,7 @@ public class DatabaseManagerPageController implements Controller {
 
     private void setupQRCodeView() {
         SortedList<StudentModel> sortedStudents = new SortedList<>(
-            studentTableModel.getStudents(),
+            studentTableModel.unmodifiableStudentList(),
             new Comparator<StudentModel>() {
                 @Override
                 public int compare(StudentModel arg0, StudentModel arg1) {
