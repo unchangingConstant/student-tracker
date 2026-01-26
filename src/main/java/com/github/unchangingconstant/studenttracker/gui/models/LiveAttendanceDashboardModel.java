@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
@@ -32,9 +33,9 @@ public class LiveAttendanceDashboardModel {
     @Inject
     public LiveAttendanceDashboardModel(AttendanceRecordManager attendanceService, StudentTableModel studentTableModel) {
         // Populates table with data from RecordManager
-        Collection<OngoingVisit> initialData = attendanceService.getOngoingVisits();
+        Map<Integer, OngoingVisit> initialData = attendanceService.getOngoingVisits();
         ongoingVisits = new SimpleMapProperty<>(FXCollections.observableHashMap());
-        initialData.forEach(ongoingVisit -> {
+        initialData.values().forEach(ongoingVisit -> {
             StudentModel student = studentTableModel.getStudent(ongoingVisit.getStudentId());
             ongoingVisits.put(ongoingVisit.getStudentId(),
                 new LiveVisitModel(

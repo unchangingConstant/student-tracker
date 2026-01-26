@@ -126,18 +126,19 @@ public class LiveAttendanceView extends TableView<LiveVisitModel> implements Con
                 @Override
                 protected void invalidated() {
                     super.invalidated();
-                    pseudoClassStateChanged(ALMOST_DONE, completionStatus.get() == VisitCompletionStatus.ALMOST_DONE);
-                    pseudoClassStateChanged(OVER, completionStatus.get() == VisitCompletionStatus.OVER);
+                    VisitCompletionStatus status = get();
+                    pseudoClassStateChanged(ALMOST_DONE, status == VisitCompletionStatus.ALMOST_DONE);
+                    pseudoClassStateChanged(OVER, status == VisitCompletionStatus.OVER);
                 }
             };
 
         public LiveAttendanceViewTableRow() {
             super();
             /**
-             * Binds completionStatus to the subjects and time remaining.
+             * Binds completionStatus to the visitTime and time remaining.
              * When the student has one sixth of their time remaining, the completion status is ALMOST_DONE
              * When the student is one sixth of their visit time over, the completion status is OVER
-             * Otherwise, it's just visiting.
+             * Otherwise, default state
              */
             itemProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal == null) {

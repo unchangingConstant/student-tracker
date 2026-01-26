@@ -63,8 +63,7 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM visits WHERE student_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
-    @KeyColumn("visit_id")
-    Map<Integer, Visit> findVisitsWithStudentId(Integer studentId);
+    List<Visit> findVisitsWithStudentId(Integer studentId);
 
     @SqlUpdate("INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
     @GetGeneratedKeys // gets the new id of the visit
@@ -75,8 +74,7 @@ public interface AttendanceDAO {
 
     @SqlQuery("SELECT * FROM visits WHERE student_id IN (<studentIds>)")
     @RegisterRowMapper(RowToVisitMapper.class)
-    @KeyColumn("visit_id")
-    Map<Integer, Visit> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
+    List<Visit> getMultipleStudentsVisits(@BindList("studentIds") List<Integer> studentIds);
 
     /*
      * ONGOING VISIT METHODS

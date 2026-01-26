@@ -44,7 +44,7 @@ public class AttendanceRecordManager {
         return dao.findStudent(studentId);
     }
 
-    public List<Student> getAllStudents() {
+    public Map<Integer, Student> getAllStudents() {
         return dao.getAllStudents();
     }
 
@@ -124,7 +124,7 @@ public class AttendanceRecordManager {
      * ONGOING VISIT METHODS
      */
 
-    public List<OngoingVisit> getOngoingVisits() {
+    public Map<Integer, OngoingVisit> getOngoingVisits() {
         return dao.getOngoingVisits();
     }
 

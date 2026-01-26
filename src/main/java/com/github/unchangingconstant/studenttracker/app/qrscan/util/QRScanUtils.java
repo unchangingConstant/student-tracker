@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.app.qrscan.util;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 
 public class QRScanUtils {
 
@@ -15,11 +16,11 @@ public class QRScanUtils {
 
     public static Integer extractIDFromQR(String qrCode) {
         Matcher idMatcher = Pattern
-                .compile(StudentQRCodeDomain.HEADER + StudentQRCodeDomain.ID_REGEX + StudentQRCodeDomain.SEPERATOR)
+                .compile(StudentQRCode.HEADER + StudentQRCode.ID_REGEX + StudentQRCode.SEPERATOR)
                 .matcher(qrCode);
         if (idMatcher.find()) {
-            String idStr = removeCharSeqs(idMatcher.group(), StudentQRCodeDomain.HEADER,
-                    StudentQRCodeDomain.SEPERATOR);
+            String idStr = removeCharSeqs(idMatcher.group(), StudentQRCode.HEADER,
+                    StudentQRCode.SEPERATOR);
             return Integer.valueOf(idStr);
         }
         return null;
@@ -28,11 +29,11 @@ public class QRScanUtils {
     public static Integer extractChecksumValueFromQR(String qrCode) {
         Matcher checksumMatcher = Pattern
                 .compile(
-                        StudentQRCodeDomain.SEPERATOR + StudentQRCodeDomain.CHECKSUM_REGEX + StudentQRCodeDomain.FOOTER)
+                        StudentQRCode.SEPERATOR + StudentQRCode.CHECKSUM_REGEX + StudentQRCode.FOOTER)
                 .matcher(qrCode);
         if (checksumMatcher.find()) {
-            String checksumStr = removeCharSeqs(checksumMatcher.group(), StudentQRCodeDomain.SEPERATOR,
-                    StudentQRCodeDomain.FOOTER);
+            String checksumStr = removeCharSeqs(checksumMatcher.group(), StudentQRCode.SEPERATOR,
+                    StudentQRCode.FOOTER);
             return Integer.valueOf(checksumStr, 16);
         }
         return null;

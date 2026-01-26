@@ -1,9 +1,6 @@
 package com.github.unchangingconstant.studenttracker.gui.models;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
@@ -35,9 +32,9 @@ public class StudentTableModel {
          * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
          * For this reason I have made all Service methods synchronized
          */
-        Collection<Student> initialData = recordManager.getAllStudents();
+        Map<Integer, Student> initialData = recordManager.getAllStudents();
         this.students = new SimpleMapProperty<Integer, StudentModel>(FXCollections.observableHashMap());
-        initialData.forEach(StudentModel::new);
+        initialData.values().forEach(StudentModel::new);
         this.studentList = new MapToListBinding<>(students);
 
         // Ensures model state is synced to database at all times

@@ -60,7 +60,7 @@ public class ExcelExporter {
         // TODO add a database method to do this in one call (Rework database perhaps? Getting kind of monolithic)
         List<Visit> studentsVisits = dao.getMultipleStudentsVisits(studentIds);
         // Creates a map with studentIds as keys and student names as values
-        Map<Integer, String> studentNames = dao.findStudentsWithId(studentIds).stream()
+        Map<Integer, String> studentNames = dao.findStudentsWithId(studentIds).values().stream()
             .collect(Collectors.toMap(Student::getStudentId, Student::getFullName));
 
         List<VisitExport> exportedVisits = studentsVisits.stream()
