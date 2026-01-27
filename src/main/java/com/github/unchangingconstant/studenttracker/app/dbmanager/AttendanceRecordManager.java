@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Path.Node;
 import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
@@ -20,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AttendanceRecordManager {
 
     private final AttendanceDAO dao;
+    private final Validator validator;
 
     @Getter
     private final AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
@@ -34,6 +37,11 @@ public class AttendanceRecordManager {
         this.ongoingVisitsObserver = new AttendanceObserver<>();
         this.visitsObserver = new AttendanceObserver<>();
         this.studentsObserver = new AttendanceObserver<>();
+
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            this.validator = factory.getValidator(); // TODO implement your own bean validator
+        }
+
     }
 
     /*
@@ -163,12 +171,14 @@ public class AttendanceRecordManager {
      * HELPERS
      */
     private Set<ConstraintViolation<Object>> validateEntity(Object entity) {
-        return Validation.buildDefaultValidatorFactory().getValidator().validate(entity);
+        System.out.println("Calculating violations...");
+        return validator.validate(entity);
     }
 
     // Ignores constraint violations for specified properties
     private Set<ConstraintViolation<Object>> validateEntityExcept(Object entity, Set<String> propertyExceptions) throws InvalidEntityException {
         Set<ConstraintViolation<Object>> violations = validateEntity(entity);
+        System.out.println("Filtering exclusions...");
         return violations.stream().filter(violation -> {
             Node lastNode = null;
             // For the love of god just let me access the field's name directly

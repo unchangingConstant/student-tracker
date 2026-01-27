@@ -19,11 +19,11 @@ import javafx.scene.layout.HBox;
 public class StudentAdder extends HBox implements Controller {
     
     @FXML
-    private FormField fullLegalNameField;
+    private FormField fullNameField;
     @FXML 
     private FormField prefNameField;
     @FXML 
-    private ComboBox<Integer> subjectsField;
+    private ComboBox<Integer> visitTimeField;
     @FXML
     private Button saveButton;
     @FXML
@@ -31,12 +31,12 @@ public class StudentAdder extends HBox implements Controller {
     @FXML
     private HBox addStudentForm;
 
-    private SimpleBooleanProperty addingEnabled = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty addingEnabled = new SimpleBooleanProperty(false);
     public SimpleBooleanProperty addingEnabledProperty() {return addingEnabled;}
 
-    public StringProperty fullLegalNameProperty() {return fullLegalNameField.textProperty();}
+    public StringProperty fullNameProperty() {return fullNameField.textProperty();}
     public StringProperty prefNameProperty() {return prefNameField.textProperty();}
-    public ReadOnlyObjectProperty<Integer> subjectsProperty() {return subjectsField.getSelectionModel().selectedItemProperty();}
+    public ReadOnlyObjectProperty<Integer> visitTimeProperty() {return visitTimeField.getSelectionModel().selectedItemProperty();}
 
     public void setOnSaveButtonAction(EventHandler<ActionEvent> handler) {saveButton.setOnAction(handler);};
 
@@ -48,8 +48,8 @@ public class StudentAdder extends HBox implements Controller {
     @Override
     public void initialize() {
         getChildren().remove(addStudentForm);
-        subjectsField.getItems().addAll(1, 2);
-        subjectsField.getSelectionModel().select(0);
+        visitTimeField.getItems().addAll(30, 60);
+        visitTimeField.getSelectionModel().select(0);
 
         displayFormButton.setOnAction(evt -> addingEnabled.set(true));
 
@@ -67,9 +67,9 @@ public class StudentAdder extends HBox implements Controller {
     }
 
     private void clear() {
-        fullLegalNameProperty().set("");
+        fullNameProperty().set("");
         prefNameProperty().set("");
-        subjectsField.getSelectionModel().select(0);
+        visitTimeField.getSelectionModel().select(0);
     }
 
 }

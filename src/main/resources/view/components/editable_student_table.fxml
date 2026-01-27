@@ -12,9 +12,9 @@
     </columnResizePolicy>
     <columns>
         <TableColumn text="Student ID" fx:id="studentIdColumn"/>
-        <TableColumn text="Full Legal Name" fx:id="fullLegalNameColumn"/>
+        <TableColumn text="Full Name" fx:id="fullNameColumn"/>
         <TableColumn text="Preferred Name" fx:id="prefNameColumn"/>
-        <TableColumn text="Subjects" fx:id="subjectsColumn"/>
+        <TableColumn text="Visit Time" fx:id="visitTimeColumn"/>
         <TableColumn text="Date Added" fx:id="dateAddedColumn"/>
     </columns>
     <controlColumn text="Actions"/>

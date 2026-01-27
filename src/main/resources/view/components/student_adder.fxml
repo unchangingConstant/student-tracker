@@ -11,11 +11,11 @@
 <fx:root type="HBox" xmlns:fx="http://javafx.com/fxml" styleClass="student-adder">
     <Button text="Add Student" fx:id="displayFormButton"/>
     <HBox fx:id="addStudentForm" alignment="CENTER_LEFT" fillHeight="true" spacing="5">
-        <FormField fieldName="Full Legal Name" fx:id="fullLegalNameField"/>
+        <FormField fieldName="Full Name" fx:id="fullNameField"/>
         <FormField fieldName="Preferred Name" fx:id="prefNameField"/>
         <VBox>
-            <Label text="Subjects"/>
-            <ComboBox fx:id="subjectsField"/>
+            <Label text="Visit Time"/>
+            <ComboBox fx:id="visitTimeField"/>
         </VBox>
         <Button text="Save Student" fx:id="saveButton"/>
     </HBox>

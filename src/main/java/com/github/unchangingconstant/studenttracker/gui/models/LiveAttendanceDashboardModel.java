@@ -45,7 +45,7 @@ public class LiveAttendanceDashboardModel {
         });
         ongoingVisitList = new MapToListBinding<>(ongoingVisits);
         AttendanceObserver<OngoingVisit> ongoingVisitObserver = attendanceService.getOngoingVisitsObserver();
-        /**
+        /*
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.
          */

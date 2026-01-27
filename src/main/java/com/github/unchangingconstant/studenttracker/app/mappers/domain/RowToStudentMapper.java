@@ -21,5 +21,4 @@ public class RowToStudentMapper implements RowMapper<Student> {
             .dateAdded(Instant.ofEpochMilli(rs.getLong("date_added")))
             .build();
     }
-
 }

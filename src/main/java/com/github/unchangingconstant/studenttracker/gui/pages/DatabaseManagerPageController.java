@@ -105,24 +105,26 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onAddStudentAction()  {
-        String fullName = studentAdder.fullLegalNameProperty().get();
+        String fullName = studentAdder.fullNameProperty().get();
         String prefName = studentAdder.prefNameProperty().get();
-        Integer subjects = studentAdder.subjectsProperty().get();
+        Integer visitTime = studentAdder.visitTimeProperty().get();
 
+        System.out.println("jorking it!");
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
-                try {
-                    recordManager.insertStudent(Student.builder()
-                        .fullName(fullName)
-                        .preferredName(prefName)
-                        .visitTime(subjects * 30).build());
-                } catch (InvalidEntityException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                Platform.runLater(() -> studentAdder.addingEnabledProperty().set(false));
-                return null;
+            try {
+                System.out.println("jorking it again!");
+                recordManager.insertStudent(Student.builder()
+                    .fullName(fullName)
+                    .preferredName(prefName)
+                    .visitTime(visitTime).build());
+            } catch (InvalidEntityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            Platform.runLater(() -> studentAdder.addingEnabledProperty().set(false));
+            return null;
             }
         });
     }

@@ -10,6 +10,8 @@ import com.github.unchangingconstant.studenttracker.gui.custom.EditableRowTable;
 import com.github.unchangingconstant.studenttracker.gui.custom.EditableRowTableCell;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -25,17 +27,17 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
     @FXML
     private TableColumn<StudentModel, Integer> studentIdColumn;
     @FXML
-    private TableColumn<StudentModel, String> fullLegalNameColumn;
+    private TableColumn<StudentModel, String> fullNameColumn;
     @FXML
     private TableColumn<StudentModel, String> prefNameColumn;
     @FXML
-    private TableColumn<StudentModel, Integer> subjectsColumn;
+    private TableColumn<StudentModel, Number> visitTimeColumn;
     @FXML
     private TableColumn<StudentModel, String> dateAddedColumn;
 
     private final TextField fullLegalNameInput = new TextField();
     private final TextField prefNameInput = new TextField();
-    private final ComboBox<Integer> subjectsInput = new ComboBox<>();
+    private final ComboBox<Number> visitTimeInput = new ComboBox<>();
 
     private final StudentModel editedStudentModel = new StudentModel(-1,  "", "", null, 1);
     public final StudentModel getEditedStudentModel() {return editedStudentModel;}
@@ -53,7 +55,7 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
         getColumns().remove(getControlColumn());
         getColumns().add(getControlColumn());
 
-        subjectsInput.getItems().addAll(1, 2);
+        visitTimeInput.getItems().addAll(30, 60);
 
         editedRowIndexProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() == -1) {
@@ -68,14 +70,14 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
 
         fullLegalNameInput.textProperty().bindBidirectional(editedStudentModel.getFullName());
         prefNameInput.textProperty().bindBidirectional(editedStudentModel.getPrefName());
-        subjectsInput.valueProperty().bindBidirectional(editedStudentModel.getVisitTime());
+        visitTimeInput.valueProperty().bindBidirectional(editedStudentModel.getVisitTime());
     }
 
     private void setupCellValueFactories() {
         studentIdColumn.setCellValueFactory(cellData -> cellData.getValue().getStudentId());
-        fullLegalNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullName());
+        fullNameColumn.setCellValueFactory(cellData -> cellData.getValue().getFullName());
         prefNameColumn.setCellValueFactory(cellData -> cellData.getValue().getPrefName());
-        subjectsColumn.setCellValueFactory(cellData -> cellData.getValue().getVisitTime());
+        visitTimeColumn.setCellValueFactory(cellData -> cellData.getValue().getVisitTime());
 
         dateAddedColumn.setCellValueFactory(cellData -> {
             Instant startTime = cellData.getValue().getDateAdded().get();
@@ -85,7 +87,7 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
     }
 
     private void setupEditableCellFactories() {
-        fullLegalNameColumn.setCellFactory(tableColumn -> {
+        fullNameColumn.setCellFactory(tableColumn -> {
             EditableRowTableCell<StudentModel, String> cell = new EditableRowTableCell<>();
             cell.rowEditEnabledProperty().bind(editedRowIndexProperty().isEqualTo(cell.indexProperty()));
             cell.setEditEnabledGraphic(fullLegalNameInput);
@@ -103,10 +105,10 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
             cell.setEditDisabledGraphic(label);
             return cell;
         });
-        subjectsColumn.setCellFactory(tableColumn -> {
-            EditableRowTableCell<StudentModel, Integer> cell = new EditableRowTableCell<>();
+        visitTimeColumn.setCellFactory(tableColumn -> {
+            EditableRowTableCell<StudentModel, Number> cell = new EditableRowTableCell<>();
             cell.rowEditEnabledProperty().bind(editedRowIndexProperty().isEqualTo(cell.indexProperty()));
-            cell.setEditEnabledGraphic(subjectsInput);
+            cell.setEditEnabledGraphic(visitTimeInput);
             Label label = new Label();
             label.textProperty().bind(cell.itemProperty().asString());
             cell.setEditDisabledGraphic(label);
