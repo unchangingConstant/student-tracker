@@ -2,31 +2,28 @@ package com.github.unchangingconstant.studenttracker.app.entities;
 
 import java.time.Instant;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
-
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
 @Value
 @Builder
 public class Visit {
 
-    @NotNull
-    @Min(value = 1)
     Integer visitId;
-
-    @NotNull
-    @Min(value = 1)
     Integer studentId;
-
-    @NotNull
     Instant startTime;
-
-    @NotNull
-    @Min(value = 0)
     Integer duration;
+
+    public static boolean validate(Visit visit) {
+        boolean studentIdValid =
+            visit.getStudentId() != null;
+        boolean startTimeValid =
+            visit.getStartTime() != null;
+        boolean durationValid =
+            visit.getDuration() != null &&
+            visit.getDuration() >= 0;
+
+        return studentIdValid && startTimeValid && durationValid;
+    }
 
 }

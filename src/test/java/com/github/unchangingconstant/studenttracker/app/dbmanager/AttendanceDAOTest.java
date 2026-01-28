@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.dao;
+package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.instancio.Select.field;
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
 import org.instancio.Instancio;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -19,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
@@ -35,16 +34,18 @@ public class AttendanceDAOTest {
 
     @RegisterExtension // this annotation has something to do with the magic behind junit5 and stuff
     // Creates tool which creates in-mem sqlite database at test time
-    private final JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
+    private static final JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
     private AttendanceDAO dao;
     private Jdbi jdbi;
 
-    private final String STUDENT_TABLE = ResourceLoader.loadResource("/sql/schema/studentTable.sql");
-    private final String VISIT_TABLE = ResourceLoader.loadResource("/sql/schema/visitTable.sql");
-    private final String ONGOING_VISIT_TABLE = ResourceLoader.loadResource("/sql/schema/ongoingVisitTable.sql");
-    private final String INSERT_STUDENT = "INSERT INTO students (student_id, full_legal_name, preferred_name, subjects, date_added) VALUES (:studentId, :fullLegalName, :prefName, :subjects, :dateAdded)";
+    private final String STUDENT_TABLE = ResourceLoader.loadSQL("/schema/student_table");
+    private final String VISIT_TABLE = ResourceLoader.loadSQL("/schema/visit_table");
+    private final String ONGOING_VISIT_TABLE = ResourceLoader.loadSQL("/schema/ongoing_visit_table");
+    private final String INSERT_STUDENT = "INSERT INTO students (full_name, preferred_name, visit_time, date_added) VALUES (:fullName, :preferredName, :visitTime, :dateAdded)";
     private final String INSERT_VISIT = "INSERT INTO visits (visit_id, student_id, start_time, end_time) VALUES (:visitId, :studentId, :startTime, :endTime)";
     private final String SELECT_STUDENT = "SELECT * FROM students WHERE student_id = ?";
+
+
 
     @BeforeEach
     void setUp() {
@@ -118,11 +119,11 @@ public class AttendanceDAOTest {
     @DisplayName("insertStudent() inserts students correctly")
     void testInsertStudent_1() {
         // This sucks. Just hoping the dao assigns it an ID of "1"
-        Student s = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
-        Integer resultId = dao.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime(), s.getDateAdded());
+        Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
+        Integer resultId = dao.insertStudent(expected);
         Student result = jdbi
                 .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
-        assertEquals(s, result);
+        assertEquals(expected, result);
     }
 
     @Test
@@ -174,7 +175,7 @@ public class AttendanceDAOTest {
     }
 
     @Test
-    @DisplayName("updateStudent() returns 0 if student with studentId doesn't exist in the database")
+    @DisplayName("updateStudent() returns false if student with studentId doesn't exist in the database")
     void testUpdateStudent_1() {
         // TODO insert multiple students into database for this test
         Student s1 = StudentTestUtil.validStudent().create();
@@ -182,8 +183,7 @@ public class AttendanceDAOTest {
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1));
 
-        assertEquals(0,
-                dao.updateStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getVisitTime(), s2.getStudentId()));
+        assertFalse(dao.updateStudent(s2));
     }
 
     /**

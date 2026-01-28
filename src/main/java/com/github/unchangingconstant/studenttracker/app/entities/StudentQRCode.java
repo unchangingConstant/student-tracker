@@ -38,8 +38,8 @@ public class StudentQRCode {
         // Searches for trailing hex number
         Matcher hexMatcher = Pattern.compile(StudentQRCode.SEPERATOR + StudentQRCode.CHECKSUM_REGEX).matcher(qrCode);
 
-        Integer decStudentId = Integer.valueOf(decMatcher.group().replace(StudentQRCode.SEPERATOR, ""));
-        Integer hexStudentId = Integer.valueOf(hexMatcher.group().replace(StudentQRCode.SEPERATOR, ""), 16);
+        int decStudentId = Integer.parseInt(decMatcher.group().replace(StudentQRCode.SEPERATOR, ""));
+        int hexStudentId = Integer.valueOf(hexMatcher.group().replace(StudentQRCode.SEPERATOR, ""), 16);
 
         return decStudentId == hexStudentId;
     }

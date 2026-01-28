@@ -18,10 +18,10 @@ public class ApplicationSetup {
 
     // TODO OMG READ section 1.14.3 OF JDBI DOCS!!!!
     private static void setupDatabase() {
-        Jdbi jdbi = Jdbi.create("jdbc:sqlite:database.db");
-        String studentTable = ResourceLoader.loadResource("/sql/schema/studentTable.sql");
-        String visitTable = ResourceLoader.loadResource("/sql/schema/visitTable.sql");
-        String ongoingVisitTable = ResourceLoader.loadResource("/sql/schema/ongoingVisitTable.sql");
+        Jdbi jdbi = Jdbi.create("JDBC:sqlite:database.db");
+        String studentTable = ResourceLoader.loadSQL("/schema/student_table");
+        String visitTable = ResourceLoader.loadSQL("/schema/visit_table");
+        String ongoingVisitTable = ResourceLoader.loadSQL("/schema/ongoing_visit_table");
         jdbi.withHandle(handle -> handle.execute(studentTable));
         jdbi.withHandle(handle -> handle.execute(visitTable));
         jdbi.withHandle(handle -> handle.execute(ongoingVisitTable));

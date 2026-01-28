@@ -20,7 +20,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.commons.collections4.Unmodifiable;
 
 @Singleton
 public class LiveAttendanceDashboardModel {
@@ -80,7 +79,7 @@ public class LiveAttendanceDashboardModel {
             StudentModel student = studentTableModel.getStudent(inserted.getStudentId());
             ongoingVisits.put(inserted.getStudentId(), new LiveVisitModel(
                 inserted,
-                ChronoUnit.MINUTES.between(inserted.getStartTime(), now),
+                student.getVisitTime().get() - ChronoUnit.MINUTES.between(inserted.getStartTime(), now),
                 student));
         });
     }

@@ -82,16 +82,9 @@
     </dependency>
     <!-- junit dependencies' versions are managed by junit-bom -->
     <dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-    <!-- Gen-from-regex libary to test QR code scanner -->
-    <!-- https://mvnrepository.com/artifact/org.cornutum.regexp/regexp-gen -->
-    <dependency>
-        <groupId>org.cornutum.regexp</groupId>
-        <artifactId>regexp-gen</artifactId>
-        <version>3.0.0</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- For dependency injection and management -->
     <dependency>
@@ -99,24 +92,6 @@
       <artifactId>guice</artifactId>
       <version>${guice.version}</version>
     </dependency>
-    <!-- For domain entity validation specification and validation -->
-    <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>2.0.1.Final</version>
-    </dependency>
-    <!-- <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>8.0.3.Final</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>8.0.3.Final</version>
-      <scope>compile</scope>
-    </dependency> -->
     <!-- Shout out steffen -->
     <dependency>
       <groupId>org.instancio</groupId>

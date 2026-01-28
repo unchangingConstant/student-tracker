@@ -1,16 +1,10 @@
 package com.github.unchangingconstant.studenttracker.app.entities;
 
 import java.time.Instant;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
 // See issue #16
@@ -21,26 +15,38 @@ public class Student {
     // Names shouldn't have trailing or leading white space
     public static final String NAME_REGEX = "^\\S.*\\S$|^\\S?$";
 
-    @NotNull
-    @Min(value = 1)
     Integer studentId;
 
-    @NotNull
-    @Pattern(regexp = NAME_REGEX)
-    @Size(min = 1, max = 150)
+    public static final int FULL_NAME_MAX_LEN = 150;
+    public static final int FULL_NAME_MIN_LEN = 1;
     String fullName;
 
-    @Pattern(regexp = NAME_REGEX)
-    @Size(min = 1, max = 150)
+    public static final int PREFERRED_NAME_MAX_LEN = 150;
+    public static final int PREFERRED_NAME_MIN_LEN = 0;
     String preferredName;
 
-    // TODO should be 30 or 60, not 30 to 60. Custom annotations?
-    @Min(value = 30)
-    @Max(value = 60)
+    public static final int[] VISIT_TIME_ALLOWED_VALUES = new int[] {30, 60};
     Integer visitTime;
 
-    @NotNull
-    @PastOrPresent
     Instant dateAdded;
+
+    public static boolean validate(Student student) {
+        boolean fullNameValid =
+            student.getFullName() != null &&
+            student.getFullName().matches(NAME_REGEX) &&
+            student.getFullName().length() <= 150;
+        boolean preferredNameValid =
+            student.getPreferredName() != null &&
+            student.getPreferredName().matches(NAME_REGEX) &&
+            student.getPreferredName().length() <= 150;
+        boolean visitTimeValid =
+            student.getVisitTime() != null &&
+            (student.getVisitTime().equals(30) ||
+            student.getVisitTime().equals(60));
+        boolean dateAddedValid =
+            student.getDateAdded() != null;
+
+        return fullNameValid && preferredNameValid && visitTimeValid && dateAddedValid;
+    }
 
 }

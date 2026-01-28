@@ -1,6 +1,5 @@
-package com.github.unchangingconstant.studenttracker.app.workers;
+package com.github.unchangingconstant.studenttracker.app.qrscan;
 
-import com.github.unchangingconstant.studenttracker.app.qrscan.QRScanner;
 import org.cornutum.regexpgen.random.RandomBoundsGen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,10 +15,9 @@ import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
-import com.github.unchangingconstant.studenttracker.app.qrscan.KeyLogger;
 
-import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.genBufferWith;
-import static com.github.unchangingconstant.studenttracker.app.workers.QRCodeTestUtils.regexGen;
+import static com.github.unchangingconstant.studenttracker.app.qrscan.QRCodeTestUtils.genBufferWith;
+import static com.github.unchangingconstant.studenttracker.app.qrscan.QRCodeTestUtils.regexGen;
 
 
 public class QRScannerTest {

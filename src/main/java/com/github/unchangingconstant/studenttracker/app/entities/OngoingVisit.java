@@ -12,4 +12,12 @@ public class OngoingVisit {
     Integer studentId;
     Instant startTime;
 
+    public static boolean validate(OngoingVisit ongoingVisit) {
+        boolean studentIdValid =
+            ongoingVisit.getStudentId() != null;
+        boolean startTimeValid =
+            ongoingVisit.getStartTime() != null;
+        return studentIdValid && startTimeValid;
+    }
+
 }

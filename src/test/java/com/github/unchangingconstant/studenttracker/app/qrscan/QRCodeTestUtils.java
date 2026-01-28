@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.workers;
+package com.github.unchangingconstant.studenttracker.app.qrscan;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;

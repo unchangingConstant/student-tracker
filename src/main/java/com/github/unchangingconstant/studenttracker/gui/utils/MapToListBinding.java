@@ -8,7 +8,7 @@ import javafx.collections.ObservableMap;
 
 public class MapToListBinding<K, V> extends ListBinding<V> {
 
-    private final ObservableList<V> internalList = FXCollections.emptyObservableList();
+    private final ObservableList<V> internalList = FXCollections.observableArrayList();
 
     public MapToListBinding(ObservableMap<K, V> map) {
         addAll(map.values());

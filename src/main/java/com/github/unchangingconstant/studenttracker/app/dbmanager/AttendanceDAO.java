@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.unchangingconstant.studenttracker.util.ResourceLoader.loadSQL;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlScript;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
@@ -25,6 +27,9 @@ public interface AttendanceDAO {
     /*
      * STUDENT METHODS
      */
+    @SqlUpdate("DELETE FROM students WHERE student_id = ?")
+    boolean deleteStudent(Integer studentId);
+
     @SqlQuery("SELECT * FROM students WHERE student_id = ?")
     @RegisterRowMapper(RowToStudentMapper.class)
     Optional<Student> findStudent(Integer studentId);
@@ -39,12 +44,9 @@ public interface AttendanceDAO {
     @KeyColumn("student_id")
     Map<Integer, Student> getAllStudents();
 
-    @SqlUpdate("INSERT INTO students (full_name, preferred_name, subjects, date_added) VALUES (:fullName, :preferredName, :visitTime, :dateAdded)")
+    @SqlUpdate("INSERT INTO students (full_name, preferred_name, visit_time, date_added) VALUES (:fullName, :preferredName, :visitTime, :dateAdded)")
     @GetGeneratedKeys // gets the new id of the student
     Integer insertStudent(@BindBean Student student);
-
-    @SqlUpdate("DELETE FROM students WHERE student_id = ?")
-    boolean deleteStudent(Integer studentId);
 
     @SqlUpdate("UPDATE students SET full_name = :fullName, preferred_name = :preferredName, visit_time = :visitTime WHERE student_id = :studentId")
     boolean updateStudent(@BindBean Student student);
@@ -91,7 +93,7 @@ public interface AttendanceDAO {
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
     void insertOngoingVisit(@BindBean OngoingVisit ongoingVisit);
 
-    @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = :studentId; INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
+    @SqlScript("DELETE FROM ongoing_visits WHERE student_id = :studentId; INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
     void endOngoingVisit(@BindBean Visit visit);
 
 }

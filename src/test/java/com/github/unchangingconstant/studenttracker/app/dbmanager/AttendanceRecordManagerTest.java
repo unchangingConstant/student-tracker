@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.services;
+package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.domain.StudentTestUtil;
+import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.IllegalDatabaseOperationException;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
 

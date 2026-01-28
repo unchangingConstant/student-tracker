@@ -21,8 +21,6 @@ import javafx.collections.ObservableList;
 @Singleton
 public class StudentTableModel {
 
-    private final AttendanceRecordManager recordManager;
-
     private final SimpleMapProperty<Integer, StudentModel> students;
     private final MapToListBinding<Integer, StudentModel> studentList;
 
@@ -34,7 +32,7 @@ public class StudentTableModel {
          */
         Map<Integer, Student> initialData = recordManager.getAllStudents();
         this.students = new SimpleMapProperty<Integer, StudentModel>(FXCollections.observableHashMap());
-        initialData.values().forEach(StudentModel::new);
+        initialData.values().forEach(student -> students.put(student.getStudentId(), new StudentModel(student)));
         this.studentList = new MapToListBinding<>(students);
 
         // Ensures model state is synced to database at all times
@@ -47,7 +45,6 @@ public class StudentTableModel {
         observer.subscribeToInserts(students -> Platform.runLater(() -> this.onInsertStudent(students)));
         observer.subscribeToUpdates(students -> Platform.runLater(() -> this.onUpdateStudent(students)));
 
-        this.recordManager = recordManager;
     }
 
     public void bindList(Property<ObservableList<StudentModel>> list) {

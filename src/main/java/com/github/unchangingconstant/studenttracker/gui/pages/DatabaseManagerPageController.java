@@ -1,5 +1,6 @@
 package com.github.unchangingconstant.studenttracker.gui.pages;
 
+import java.time.Instant;
 import java.util.Comparator;
 
 import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
@@ -109,16 +110,15 @@ public class DatabaseManagerPageController implements Controller {
         String prefName = studentAdder.prefNameProperty().get();
         Integer visitTime = studentAdder.visitTimeProperty().get();
 
-        System.out.println("jorking it!");
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
             try {
-                System.out.println("jorking it again!");
                 recordManager.insertStudent(Student.builder()
                     .fullName(fullName)
                     .preferredName(prefName)
-                    .visitTime(visitTime).build());
+                    .visitTime(visitTime)
+                    .dateAdded(Instant.now()).build());
             } catch (InvalidEntityException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

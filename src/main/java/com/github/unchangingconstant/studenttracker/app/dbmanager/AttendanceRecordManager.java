@@ -1,13 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Path.Node;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
@@ -16,13 +9,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class AttendanceRecordManager {
 
     private final AttendanceDAO dao;
-    private final Validator validator;
 
     @Getter
     private final AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
@@ -37,11 +28,6 @@ public class AttendanceRecordManager {
         this.ongoingVisitsObserver = new AttendanceObserver<>();
         this.visitsObserver = new AttendanceObserver<>();
         this.studentsObserver = new AttendanceObserver<>();
-
-        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-            this.validator = factory.getValidator(); // TODO implement your own bean validator
-        }
-
     }
 
     /*
@@ -57,9 +43,11 @@ public class AttendanceRecordManager {
     }
 
     public void insertStudent(Student student) throws InvalidEntityException {
-        if (!validateEntityExcept(student, Set.of("studentId")).isEmpty()) {
+        System.out.println(student);
+        if (!Student.validate(student)) {
             throw new InvalidEntityException();
         }
+        System.out.println("Validated!");
         Integer studentId = dao.insertStudent(student);
         Student newStudent = Student.builder()
             .studentId(studentId)
@@ -84,7 +72,7 @@ public class AttendanceRecordManager {
     }
 
     public void updateStudent(Student student) throws InvalidEntityException {
-        if (!validateEntity(student).isEmpty()) {
+        if (!Student.validate(student) || student.getStudentId() == null) {
             throw new InvalidEntityException();
         };
         if (dao.updateStudent(student))   {
@@ -104,7 +92,7 @@ public class AttendanceRecordManager {
     }
 
     public void insertVisit(Visit visit) throws InvalidEntityException {
-        if (!validateEntityExcept(visit, Set.of("visitId")).isEmpty()) {
+        if (!Visit.validate(visit)) {
             throw new InvalidEntityException();
         }
         Integer visitId = dao.insertVisit(visit);
@@ -146,7 +134,6 @@ public class AttendanceRecordManager {
     }
 
     public void endOngoingVisit(OngoingVisit ongoingVisit, Integer duration) {
-        // TODO write database method that ends the ongoing visit in one batch
         Visit endedVisit = Visit.builder()
             .studentId(ongoingVisit.getStudentId())
             .startTime(ongoingVisit.getStartTime())
@@ -165,28 +152,6 @@ public class AttendanceRecordManager {
         public NoSuchEntityException(Integer id) {
             super("Entity with unique identifier " + String.valueOf(id) + " could not be found.");
         }
-    }
-
-    /**
-     * HELPERS
-     */
-    private Set<ConstraintViolation<Object>> validateEntity(Object entity) {
-        System.out.println("Calculating violations...");
-        return validator.validate(entity);
-    }
-
-    // Ignores constraint violations for specified properties
-    private Set<ConstraintViolation<Object>> validateEntityExcept(Object entity, Set<String> propertyExceptions) throws InvalidEntityException {
-        Set<ConstraintViolation<Object>> violations = validateEntity(entity);
-        System.out.println("Filtering exclusions...");
-        return violations.stream().filter(violation -> {
-            Node lastNode = null;
-            // For the love of god just let me access the field's name directly
-            for (Node node : violation.getPropertyPath()) {
-                lastNode = node;
-            }
-            return lastNode != null ? !propertyExceptions.contains(lastNode.getName()) : true;
-        }).collect(Collectors.toSet());
     }
 
 }
