@@ -3,8 +3,8 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 import java.util.List;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
@@ -21,7 +21,7 @@ import javafx.collections.ObservableList;
 @Singleton
 public class VisitTableModel {
     
-    private final AttendanceRecordManager attendanceService;
+    private final DatabaseManager attendanceService;
 
     private final SimpleMapProperty<Integer, VisitModel> visits;
     private final MapToListBinding<Integer, VisitModel> visitList;
@@ -30,14 +30,14 @@ public class VisitTableModel {
     public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
 
     @Inject
-    public VisitTableModel(AttendanceRecordManager attendanceService) {
+    public VisitTableModel(DatabaseManager attendanceService) {
         this.currentStudent = new SimpleIntegerProperty(-1);
         this.visits = new SimpleMapProperty<>(FXCollections.observableHashMap());
         this.visitList = new MapToListBinding<>(visits);
         this.attendanceService = attendanceService;
         setupCurrentStudentProperty();
 
-        AttendanceObserver<Visit> obs = attendanceService.getVisitsObserver();
+        DatabaseObserver<Visit> obs = attendanceService.getVisitsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.

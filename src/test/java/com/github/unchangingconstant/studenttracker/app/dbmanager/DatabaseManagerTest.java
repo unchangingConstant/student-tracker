@@ -8,7 +8,7 @@ import static org.instancio.Select.field;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +20,19 @@ import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.IllegalDatabaseOperationException;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.InvalidEntityException;
 
-public class AttendanceRecordManagerTest {
+/* TODO
+ * Figure out how you'll test the Observer system. Should it be a different aspect of the program?
+ * Or should it be a more separate component?
+ */
+public class DatabaseManagerTest {
 
     @Mock
     private AttendanceDAO dao;
 
     @InjectMocks
-    private AttendanceRecordManager service;
+    private DatabaseManager manager;
 
     private Boolean triggered;
 
@@ -41,30 +44,31 @@ public class AttendanceRecordManagerTest {
 
     @Test
     @DisplayName("Service returns student if DAO was able to find the student with the given ID")
-    void testGetStudent_1() throws Exception {
-        Student s = StudentTestUtil.student().create();
-        when(dao.findStudent(s.getStudentId())).thenReturn(s);
+    void testFindStudent_1() throws Exception {
+        Optional<Student> expected = Optional.of(StudentTestUtil.student().create());
+        int studentId = expected.get().getStudentId();
+        when(dao.findStudent(studentId)).thenReturn(expected);
 
-        assertEquals(s, service.findStudent(s.getStudentId()));
+        assertEquals(expected, manager.findStudent(expected.get().getStudentId()));
     }
     
     @Test
-    @DisplayName("Service throws exception if DAO was not able to find the student with the given ID")
+    @DisplayName("Service returns empty optional if DAO was not able to find the student with the given ID")
     void testGetStudent_2() {
         Integer studentId = Instancio.gen().ints().min(1).get();
-        when(dao.findStudent(studentId)).thenReturn(null);
+        when(dao.findStudent(studentId)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> service.findStudent(studentId));
+        assertEquals(Optional.empty(), manager.findStudent(studentId));
     }
 
     @Test
-    @DisplayName("Returns studentId, student maps if DAO is successful in retrieving all students")
+    @DisplayName("Returns <studentId, student> map if DAO is successful in retrieving all students")
     void testGetAllStudents_1() {
         // TODO make integers match studentIds
         Map<Integer, Student> students = Instancio.ofMap(Integer.class, Student.class).create();
         when(dao.getAllStudents()).thenReturn(students);
 
-        assertEquals(students, service.getAllStudents());
+        assertEquals(students, manager.getAllStudents());
     }
 
     @Test
@@ -73,54 +77,42 @@ public class AttendanceRecordManagerTest {
         Map<Integer, Student> emptyMap = Instancio.ofMap(Integer.class, Student.class).size(0).create();
         when(dao.getAllStudents()).thenReturn(emptyMap);
 
-        assertEquals(0, service.getAllStudents().size());
+        assertTrue(manager.getAllStudents().isEmpty());
     }
 
     @Test
     @DisplayName("Encounters no errors if inserted student is valid")
     void testInsertStudent_1() throws Exception {
-        Student s = StudentTestUtil.validStudent().create();
-        when(dao.insertStudent(s.getFullLegalName(), 
-            s.getPrefName(), s.getVisitTime(), s.getDateAdded()))
-            .thenReturn(s.getStudentId());
-        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
-        
-        service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime());
+        Student expected = StudentTestUtil.validStudent().create();
+        when(dao.insertStudent(expected)).thenReturn(expected.getStudentId());
+
+        manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+
+        manager.insertStudent(expected);
         assertTrue(triggered); // Some of this weirdness will go on while we test event triggers
     }
 
     @Test
-    @DisplayName("Throws error when fullLegalName invalid")
+    @DisplayName("Throws error when fullName invalid")
     void testInsertStudent_2() {
-        Student s1 = StudentTestUtil.validStudent()
-            .generate(field(Student::getFullLegalName), gen -> gen.string().minLength(151))
+        Student longNameStudent = StudentTestUtil.validStudent()
+            .generate(field(Student::getFullName), gen -> gen.string().minLength(151))
             .create();
-        Student s2 = StudentTestUtil.validStudent()
-            .generate(field(Student::getFullLegalName), gen -> gen.string().maxLength(0))
-            .create();
-        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+        manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        assertThrows(InvalidEntityException.class,
-            () -> service.insertStudent(s1.getFullLegalName(), s1.getPrefName(), s1.getVisitTime()));
-        assertFalse(triggered);
-
-        triggered = false;
-
-        assertThrows(InvalidEntityException.class,
-            () -> service.insertStudent(s2.getFullLegalName(), s2.getPrefName(), s2.getVisitTime()));
+        assertThrows(InvalidEntityException.class, () -> manager.insertStudent(longNameStudent));
         assertFalse(triggered);
     }
 
     @Test
     @DisplayName("Throws error when prefName invalid")
     void testInsertStudent_3() {
-        Student s = StudentTestUtil.validStudent()
-            .generate(field(Student::getPrefName), gen -> gen.string().minLength(151))
+        Student longNameStudent = StudentTestUtil.validStudent()
+            .generate(field(Student::getPreferredName), gen -> gen.string().minLength(151))
             .create();
-        service.getStudentsObserver().subscribeToInserts(studentId -> trigger());
+        manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
         
-        assertThrows(InvalidEntityException.class,
-            () -> service.insertStudent(s.getFullLegalName(), s.getPrefName(), s.getVisitTime()));
+        assertThrows(InvalidEntityException.class, () -> manager.insertStudent(longNameStudent));
         assertFalse(triggered);
     }
 
@@ -155,14 +147,16 @@ public class AttendanceRecordManagerTest {
     //     assertFalse(triggered);
     // }
 
+    // TODO you need to write tests to ensure this sends the proper deleted
+    // TODO visits to the observers
     @Test
     @DisplayName("Student is successfully deleted if it's in the database")
-    void testDeleteStudent_1() throws IllegalDatabaseOperationException    {
+    void testDeleteStudent_1()    {
         Integer deleted = Instancio.gen().ints().min(1).get();
         when(dao.deleteStudent(deleted)).thenReturn(true);
-        service.getStudentsObserver().subscribeToDeletes((studentId) -> trigger());
+        manager.getStudentsObserver().subscribeToDeletes((studentId) -> trigger());
 
-        service.deleteStudent(deleted);
+        manager.deleteStudent(deleted);
         assertTrue(triggered);
     }
 
@@ -212,7 +206,7 @@ public class AttendanceRecordManagerTest {
     /**
      * HELPER METHODS
      */
-    private void trigger()    {
+    private void  trigger()    {
         triggered = true;
     }
 

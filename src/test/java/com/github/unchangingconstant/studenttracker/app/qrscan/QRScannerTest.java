@@ -1,11 +1,8 @@
 package com.github.unchangingconstant.studenttracker.app.qrscan;
 
-import org.cornutum.regexpgen.random.RandomBoundsGen;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.instancio.Instancio.gen;
 
-import org.cornutum.regexpgen.RandomGen;
-import org.cornutum.regexpgen.RegExpGen;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,27 +10,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import static com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode.*;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 
 import static com.github.unchangingconstant.studenttracker.app.qrscan.QRCodeTestUtils.genBufferWith;
-import static com.github.unchangingconstant.studenttracker.app.qrscan.QRCodeTestUtils.regexGen;
 
 
 public class QRScannerTest {
-    
-    private final String HEADER = StudentQRCode.HEADER;
-    private final String FOOTER = StudentQRCode.FOOTER;
-    private final String SEPERATOR = StudentQRCode.SEPERATOR;
-    private final RandomGen regexNumGen = new RandomBoundsGen();
 
     @Mock
-    private AttendanceRecordManager attendanceServie;
+    private DatabaseManager attendanceService;
     @Mock
     private KeyLogger keyLogger;
 
     @InjectMocks
-    private QRScanner worker;
+    private QRScanner qrScanner;
 
     @BeforeEach
     void setUp() {
@@ -41,70 +32,44 @@ public class QRScannerTest {
     }
 
     // TODO test the key event hook
-    /**
-     * TODO
-     * WHEN YOU WRITE MOCK QR CODES, MAKE SURE THEY ARE WITHIN 23 CHARACTERS!!!
-     * ALSO, MAKE A CENTRAL SOURCE OF TRUTH FOR QR CODE FORMATS
-     */
 
     @Test
-    @DisplayName("Successfully find QR when both numbers are one numeric digit")
+    @DisplayName("Successfully find QR when both id and checksum are one numeric digit")
     void testFindQRCode_1() {
-        // These next few lines generate a random QR code according to the regex I provide
-        String regex = HEADER + "(\\d)" + SEPERATOR + "(\\d)" + FOOTER;
-        RegExpGen gen = regexGen(regex);
-        String qrCode = gen.generate(regexNumGen);
-        
-        String result = worker.findQRCode(genBufferWith(qrCode));
-
+        String qrCode = HEADER + gen().text().pattern("#d").get() + SEPERATOR + gen().text().pattern("#d").get() + FOOTER;
+        String result = qrScanner.findQRCode(genBufferWith(qrCode));
         assertEquals(qrCode.toLowerCase(), result);
     }
 
     @Test
-    @DisplayName("Successfully find QR when both numbers are one digit and the hex number is alphabetic")
+    @DisplayName("Successfully find QR when both id and checksum are one digit and the checksum is alphabetic")
     void testFindQRCode_2() {
-        String regex = HEADER + "(\\d)" + SEPERATOR + "([a-fA-F])" + FOOTER;
-        RegExpGen gen = regexGen(regex);
-        String qrCode = gen.generate(regexNumGen);
-        
-        String result = worker.findQRCode(genBufferWith(qrCode));
-
+        String qrCode = HEADER + gen().text().pattern("#d").get() + SEPERATOR + QRCodeTestUtils.genAlphaHexNumStr(1) + FOOTER;
+        String result = qrScanner.findQRCode(genBufferWith(qrCode));
         assertEquals(qrCode.toLowerCase(), result);
     }
 
     @Test
-    @DisplayName("Successfully find QR when both numbers are at least two numeric digits")
+    @DisplayName("Successfully find QR when both id and checksum are at least two numeric digits")
     void testFindQRCode_3() {
-        String regex = HEADER + "([\\d]{2,10})" + SEPERATOR + "([\\d]{2,8})" + FOOTER;
-        RegExpGen gen = regexGen(regex);
-        String qrCode = gen.generate(regexNumGen);
-        
-        String result = worker.findQRCode(genBufferWith(qrCode));
-
+        String qrCode = HEADER + gen().text().pattern("#d#d").get() + SEPERATOR + gen().text().pattern("#d#d").get() + FOOTER;
+        String result = qrScanner.findQRCode(genBufferWith(qrCode));
         assertEquals(qrCode.toLowerCase(), result);
     }
 
     @Test
-    @DisplayName("Successfully find QR when both numbers are at least 2 digits and the hex number contains alphabetic characters")
+    @DisplayName("Successfully find QR when both id and checksum are at least 2 digits and the checksum contains alphabetic characters")
     void testFindQRCode_4() {
-        String regex = HEADER + "([\\d]{2,10})" + SEPERATOR + "([0-9a-fA-F]{2,8})" + FOOTER;
-        RegExpGen gen = regexGen(regex);
-        String qrCode = gen.generate(regexNumGen);
-        
-        String result = worker.findQRCode(genBufferWith(qrCode));
-
+        String qrCode = HEADER + gen().text().pattern("#d#d").get() + SEPERATOR + QRCodeTestUtils.genAlphaHexNumStr(2) + FOOTER;
+        String result = qrScanner.findQRCode(genBufferWith(qrCode));
         assertEquals(qrCode.toLowerCase(), result);
     }
 
     @Test
     @DisplayName("Successfully find QR when studentId is max length")
     void testFindQRCode_5() {
-        String regex = HEADER + "([\\d]{10})" + SEPERATOR + "([0-9a-fA-F]{8})" + FOOTER;
-        RegExpGen gen = regexGen(regex);
-        String qrCode = gen.generate(regexNumGen);
-        
-        String result = worker.findQRCode(genBufferWith(qrCode));
-
+        String qrCode = HEADER + gen().text().pattern("#d".repeat(10)).get() + SEPERATOR + QRCodeTestUtils.genAlphaHexNumStr(8) + FOOTER;
+        String result = qrScanner.findQRCode(genBufferWith(qrCode));
         assertEquals(qrCode.toLowerCase(), result);
     }
 

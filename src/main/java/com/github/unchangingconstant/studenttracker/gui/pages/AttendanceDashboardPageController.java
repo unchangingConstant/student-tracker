@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
@@ -40,14 +40,14 @@ public class AttendanceDashboardPageController implements Controller {
 
     private final LiveAttendanceDashboardModel ongoingVisitsModel;
     private final StudentTableModel studentTableModel;
-    private final AttendanceRecordManager recordManager;
+    private final DatabaseManager recordManager;
     private final WindowManager windowController;
 
     @Inject
     public AttendanceDashboardPageController(
         LiveAttendanceDashboardModel ongoingVisitsModel,
         StudentTableModel studentTableModel, 
-        AttendanceRecordManager recordManager,
+        DatabaseManager recordManager,
         WindowManager windowController)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;

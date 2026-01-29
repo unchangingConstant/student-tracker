@@ -2,15 +2,12 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
-import com.github.unchangingconstant.studenttracker.app.entities.Student;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -30,7 +27,7 @@ public class LiveAttendanceDashboardModel {
     private final StudentTableModel studentTableModel;
 
     @Inject
-    public LiveAttendanceDashboardModel(AttendanceRecordManager attendanceService, StudentTableModel studentTableModel) {
+    public LiveAttendanceDashboardModel(DatabaseManager attendanceService, StudentTableModel studentTableModel) {
         // Populates table with data from RecordManager
         Map<Integer, OngoingVisit> initialData = attendanceService.getOngoingVisits();
         ongoingVisits = new SimpleMapProperty<>(FXCollections.observableHashMap());
@@ -43,7 +40,7 @@ public class LiveAttendanceDashboardModel {
                     student));
         });
         ongoingVisitList = new MapToListBinding<>(ongoingVisits);
-        AttendanceObserver<OngoingVisit> ongoingVisitObserver = attendanceService.getOngoingVisitsObserver();
+        DatabaseObserver<OngoingVisit> ongoingVisitObserver = attendanceService.getOngoingVisitsObserver();
         /*
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.

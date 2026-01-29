@@ -11,23 +11,23 @@ import com.google.inject.Singleton;
 import lombok.Getter;
 
 @Singleton
-public class AttendanceRecordManager {
+public class DatabaseManager {
 
     private final AttendanceDAO dao;
 
     @Getter
-    private final AttendanceObserver<OngoingVisit> ongoingVisitsObserver;
+    private final DatabaseObserver<OngoingVisit> ongoingVisitsObserver;
     @Getter
-    private final AttendanceObserver<Visit> visitsObserver;
+    private final DatabaseObserver<Visit> visitsObserver;
     @Getter
-    private final AttendanceObserver<Student> studentsObserver;
+    private final DatabaseObserver<Student> studentsObserver;
 
     @Inject
-    public AttendanceRecordManager(AttendanceDAO dao)  {
+    public DatabaseManager(AttendanceDAO dao)  {
         this.dao = dao;
-        this.ongoingVisitsObserver = new AttendanceObserver<>();
-        this.visitsObserver = new AttendanceObserver<>();
-        this.studentsObserver = new AttendanceObserver<>();
+        this.ongoingVisitsObserver = new DatabaseObserver<>();
+        this.visitsObserver = new DatabaseObserver<>();
+        this.studentsObserver = new DatabaseObserver<>();
     }
 
     /*
@@ -43,11 +43,9 @@ public class AttendanceRecordManager {
     }
 
     public void insertStudent(Student student) throws InvalidEntityException {
-        System.out.println(student);
         if (!Student.validate(student)) {
             throw new InvalidEntityException();
         }
-        System.out.println("Validated!");
         Integer studentId = dao.insertStudent(student);
         Student newStudent = Student.builder()
             .studentId(studentId)

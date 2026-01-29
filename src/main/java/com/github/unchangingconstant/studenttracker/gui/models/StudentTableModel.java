@@ -3,8 +3,8 @@ package com.github.unchangingconstant.studenttracker.gui.models;
 import java.util.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceObserver;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseObserver;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,7 +25,7 @@ public class StudentTableModel {
     private final MapToListBinding<Integer, StudentModel> studentList;
 
     @Inject
-    public StudentTableModel(AttendanceRecordManager recordManager) {
+    public StudentTableModel(DatabaseManager recordManager) {
         /**
          * Yes, this stays on the JavaFX thread. This model is unusable until the following code runs.
          * For this reason I have made all Service methods synchronized
@@ -36,7 +36,7 @@ public class StudentTableModel {
         this.studentList = new MapToListBinding<>(students);
 
         // Ensures model state is synced to database at all times
-        AttendanceObserver<Student> observer = recordManager.getStudentsObserver();
+        DatabaseObserver<Student> observer = recordManager.getStudentsObserver();
         /**
          * These Runnables will be called from the background thread and potentially
          * affect the JavaFX thread. So, Platform.runLater() is necessary here.

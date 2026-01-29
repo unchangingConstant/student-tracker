@@ -12,7 +12,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
-public class DAOModule extends AbstractModule {
+public class DatabaseManagerModule extends AbstractModule {
 
     @Provides
     @Singleton
@@ -30,7 +30,7 @@ public class DAOModule extends AbstractModule {
     @Singleton
     public Jdbi provideJdbi() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl("jdbc:sqlite:database.db");
+        dataSource.setUrl("JDBC:sqlite:database.db");
         return Jdbi.create(dataSource);
     }
 

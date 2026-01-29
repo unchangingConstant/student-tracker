@@ -3,9 +3,9 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 import java.time.Instant;
 import java.util.Comparator;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.NoSuchEntityException;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager.InvalidEntityException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.NoSuchEntityException;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.InvalidEntityException;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
@@ -65,14 +65,14 @@ public class DatabaseManagerPageController implements Controller {
     private final VisitTableModel visitTableModel;
 
     // Services / utils
-    private final AttendanceRecordManager recordManager;
+    private final DatabaseManager recordManager;
     private final WindowManager windowManager;
 
     @Inject
     public DatabaseManagerPageController(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
-        AttendanceRecordManager recordManager,
+        DatabaseManager recordManager,
         WindowManager windowManager)  {
         this.recordManager = recordManager;
         this.studentTableModel = studentTableModel;

@@ -9,12 +9,9 @@ import java.util.Optional;
 
 import org.instancio.Instancio;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
@@ -22,7 +19,7 @@ import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
-import com.github.unchangingconstant.studenttracker.guice.DAOModule;
+import com.github.unchangingconstant.studenttracker.guice.DatabaseManagerModule;
 import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
 
 /**
@@ -38,24 +35,43 @@ public class AttendanceDAOTest {
     private AttendanceDAO dao;
     private Jdbi jdbi;
 
+    // Can we centralize these somehow?
+    // @UseClassPathResource is possible but hard to implement how we want it
+    // Plus, having SQL written in the DAO works pretty well
     private final String STUDENT_TABLE = ResourceLoader.loadSQL("/schema/student_table");
     private final String VISIT_TABLE = ResourceLoader.loadSQL("/schema/visit_table");
     private final String ONGOING_VISIT_TABLE = ResourceLoader.loadSQL("/schema/ongoing_visit_table");
-    private final String INSERT_STUDENT = "INSERT INTO students (full_name, preferred_name, visit_time, date_added) VALUES (:fullName, :preferredName, :visitTime, :dateAdded)";
-    private final String INSERT_VISIT = "INSERT INTO visits (visit_id, student_id, start_time, end_time) VALUES (:visitId, :studentId, :startTime, :endTime)";
-    private final String SELECT_STUDENT = "SELECT * FROM students WHERE student_id = ?";
-
-
+    // THESE QUERIES ARE FOR TESTS ONLY! THEY ARE NOT LIKE THE DAO QUERIES, NOT INTERCHANGEABLE
+    // This is because these also insert the id, unlike the DAO methods, which assign ids upon insert
+    private final String INSERT_STUDENT = "INSERT INTO students (student_id, full_name, preferred_name, visit_time, date_added) VALUES (:studentId, :fullName, :preferredName, :visitTime, :dateAdded);";
+    private final String INSERT_VISIT = "INSERT INTO visits (visit_id, student_id, start_time, duration) VALUES (:visitId, :studentId, :startTime, :duration);";
+    private final String SELECT_STUDENT = "SELECT * FROM students WHERE student_id = ?;";
 
     @BeforeEach
     void setUp() {
         jdbi = sqliteExtension.getJdbi();
         jdbi.registerRowMapper(new RowToStudentMapper()).registerRowMapper(new RowToVisitMapper());
-        jdbi.withHandle(handle -> handle.execute(STUDENT_TABLE));
-        jdbi.withHandle(handle -> handle.execute(VISIT_TABLE));
-        jdbi.withHandle(handle -> handle.execute(ONGOING_VISIT_TABLE));
-        dao = (new DAOModule()).provideDatabaseDAO(jdbi); // Figure out how Guice fits into testing
+        jdbi.useHandle(handle -> handle.execute(STUDENT_TABLE));
+        jdbi.useHandle(handle -> handle.execute(VISIT_TABLE));
+        jdbi.useHandle(handle -> handle.execute(ONGOING_VISIT_TABLE));
+        dao = (new DatabaseManagerModule()).provideDatabaseDAO(jdbi); // Figure out how Guice fits into testing
     }
+
+    @AfterEach
+    void tearDown() {
+        jdbi.useHandle(handle -> handle.execute("DROP TABLE students;"));
+        jdbi.useHandle(handle -> handle.execute("DROP TABLE visits;"));
+        jdbi.useHandle(handle -> handle.execute("DROP TABLE ongoing_visits;"));
+    }
+
+//    @Test
+//    void smokeTest() {
+//        Student student = StudentTestUtil.student().create();
+//        int genId = jdbi.withHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+//        Student result = jdbi
+//            .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, genId).mapTo(Student.class).one());
+//        System.out.println(result);
+//    }
 
     /**
      * STUDENT TESTS START HERE
@@ -65,16 +81,15 @@ public class AttendanceDAOTest {
     void testFindStudent_1() {
         Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
-        dao.findStudent(expected.getStudentId());
-        assertEquals(expected, dao.findStudent(expected.getStudentId()));
+        assertEquals(Optional.of(expected), dao.findStudent(expected.getStudentId()));
     }
 
     @Test
-    @DisplayName("findStudent() returns null on non-existant ID")
+    @DisplayName("findStudent() returns empty Optional on non-existent ID")
     void testFindStudent_3() {
         Student expected = StudentTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
-        assertEquals(null, dao.findStudent(expected.getStudentId() + 1));
+        assertEquals(Optional.empty(), dao.findStudent(expected.getStudentId() + 1));
     }
 
     @Test
@@ -86,7 +101,7 @@ public class AttendanceDAOTest {
         sample.forEach(
                 student -> jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute()));
 
-        assertEquals(expected, dao.findStudent(2));
+        assertEquals(Optional.of(expected), dao.findStudent(2));
     }
 
     @Test
@@ -108,13 +123,11 @@ public class AttendanceDAOTest {
     }
 
     @Test
-    @DisplayName("getAllStudents returns empty map if query has no rows")
+    @DisplayName("getAllStudents returns empty map if dao returns empty map")
     void testGetAllStudents_2() {
         assertEquals(Instancio.ofMap(Integer.class, Student.class).size(0).create(), dao.getAllStudents());
     }
 
-    // TODO for the next method, at some point refactor to gather results using
-    // jdbi handle.
     @Test
     @DisplayName("insertStudent() inserts students correctly")
     void testInsertStudent_1() {
@@ -122,16 +135,16 @@ public class AttendanceDAOTest {
         Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
         Integer resultId = dao.insertStudent(expected);
         Student result = jdbi
-                .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
+            .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
         assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("deleteStudent() returns true on successful delete")
     void testDeleteStudent_1() {
-        Student s = StudentTestUtil.student().create();
-        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
-        assertTrue(dao.deleteStudent(s.getStudentId()));
+        Student student = StudentTestUtil.student().create();
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+        assertTrue(dao.deleteStudent(student.getStudentId()));
     }
 
     @Test
@@ -159,19 +172,23 @@ public class AttendanceDAOTest {
     }
 
     @Test
-    @DisplayName("deleteStudent() doesn't delete student when student has visits in the visits table")
+    @DisplayName("deleteStudent() deletes student and their corresponding visits from the visits table")
     void testDeleteStudent_4() {
-        Student s = StudentTestUtil.student().create();
-        Visit v = Instancio.of(Visit.class).set(field(Visit::getStudentId), s.getStudentId()).create();
+        Student student = StudentTestUtil.student().create();
+        Visit visit = Instancio.of(Visit.class).set(field(Visit::getStudentId), student.getStudentId()).create();
 
-        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
-        jdbi.useHandle(handle -> handle.createUpdate(INSERT_VISIT).bindBean(v).execute());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_VISIT).bindBean(visit).execute());
 
-        assertThrows(UnableToExecuteStatementException.class, () -> dao.deleteStudent(s.getStudentId()));
-        Student result = jdbi
-                .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, s.getStudentId()).mapTo(Student.class)
-                        .one());
-        assertEquals(s, result);
+        dao.deleteStudent(student.getStudentId());
+
+        List<Student> dbStudents = jdbi.withHandle(
+            handle -> handle.createQuery("SELECT * FROM students;").mapTo(Student.class).list());
+        List<Visit> dbVisits = jdbi.withHandle(
+            handle -> handle.createQuery("SELECT * FROM visits;").mapTo(Visit.class).list());
+
+        assertTrue(dbStudents.isEmpty());
+        assertTrue(dbVisits.isEmpty());
     }
 
     @Test

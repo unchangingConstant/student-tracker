@@ -12,7 +12,7 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceRecordManager;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.app.qrscan.util.QRScanUtils;
 import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
@@ -37,10 +37,10 @@ public class QRScanner {
 
     private final LinkedBlockingDeque<Character> keyCharBuffer = new LinkedBlockingDeque<>(26);
 
-    private final AttendanceRecordManager attendanceService;
+    private final DatabaseManager attendanceService;
 
     @Inject
-    public QRScanner(AttendanceRecordManager attendanceService, KeyLogger keyLogger) {
+    public QRScanner(DatabaseManager attendanceService, KeyLogger keyLogger) {
         this.attendanceService = attendanceService;
         keyLogger.addNativeKeyListener(new KeyEventHook());
     }

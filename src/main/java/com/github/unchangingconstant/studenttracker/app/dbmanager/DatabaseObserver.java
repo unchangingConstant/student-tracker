@@ -7,13 +7,13 @@ import java.util.function.Consumer;
 /**
  * Notifies subscribers of triggers events
  */
-public class AttendanceObserver<T> {
+public class DatabaseObserver<T> {
 
     private final List<Consumer<List<T>>> updateSubs;
     private final List<Consumer<List<T>>> deleteSubs;
     private final List<Consumer<List<T>>> insertSubs;
 
-    protected AttendanceObserver()   {
+    protected DatabaseObserver()   {
         updateSubs = new LinkedList<Consumer<List<T>>>();
         deleteSubs = new LinkedList<Consumer<List<T>>>();
         insertSubs = new LinkedList<Consumer<List<T>>>();
