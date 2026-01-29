@@ -62,10 +62,7 @@ public class EditableStudentTable extends EditableRowTable<StudentModel, Integer
                 return;
             }
             StudentModel student = getItems().get(newVal.intValue());
-            editedStudentModel.getStudentId().set(student.getStudentId().get());
-            editedStudentModel.getFullName().set(student.getFullName().get());
-            editedStudentModel.getPrefName().set(student.getPrefName().get());
-            editedStudentModel.getVisitTime().set(student.getVisitTime().get());
+            editedStudentModel.set(student);
         });
 
         fullLegalNameInput.textProperty().bindBidirectional(editedStudentModel.getFullName());

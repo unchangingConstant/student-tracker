@@ -2,10 +2,7 @@
 
 # Mock Data Generator for Student Visit Database
 # Optimized version - completes in under a minute
-# WRITTEN BY CLAUDE
-
-# chmod +x mockdb.sh
-# ./mockdb.sh
+# Written by CLAUDE
 
 set -e
 
@@ -21,22 +18,22 @@ echo "Creating database schema..."
 sqlite3 "$DB_FILE" <<'EOF'
 CREATE TABLE IF NOT EXISTS students (
     student_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    full_legal_name TEXT NOT NULL,
+    full_name TEXT NOT NULL,
     preferred_name TEXT NOT NULL,
-    subjects INTEGER NOT NULL,
+    visit_time INTEGER NOT NULL,
     date_added INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS visits (
     visit_id INTEGER PRIMARY KEY AUTOINCREMENT,
     start_time INTEGER NOT NULL,
-    end_time INTEGER NOT NULL,
+    duration INTEGER NOT NULL,
     student_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE RESTRICT
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS ongoing_visits (
     start_time INTEGER NOT NULL,
-    student_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE RESTRICT
+    student_id INTEGER NOT NULL UNIQUE,
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 EOF
 
@@ -109,14 +106,14 @@ echo "BEGIN TRANSACTION;" > "$SQL_FILE"
 echo "Generating 300 students..."
 for i in {1..300}; do
     RAND_SEED=$((SEED + i))
-    
+
     # Select name (deterministic based on seed)
     NAME_IDX=$((RAND_SEED % ${#NAMES[@]}))
     FULL_NAME="${NAMES[$NAME_IDX]}"
-    
+
     # Escape single quotes in names
     FULL_NAME="${FULL_NAME//\'/\'\'}"
-    
+
     # Most students have empty preferred name (80% chance)
     PREF_CHECK=$((RAND_SEED % 10))
     if [ $PREF_CHECK -lt 8 ]; then
@@ -126,24 +123,33 @@ for i in {1..300}; do
         PREF_NAME=$(echo "$FULL_NAME" | awk '{print $1}')
         PREF_NAME="${PREF_NAME//\'/\'\'}"
     fi
-    
-    # Number of subjects (1 or 2)
-    SUBJECTS=$(( (RAND_SEED % 2) + 1 ))
-    
+
+    # Visit time: 30 or 60 minutes
+    VISIT_TIME_CHECK=$((RAND_SEED % 2))
+    if [ $VISIT_TIME_CHECK -eq 0 ]; then
+        VISIT_TIME=30
+    else
+        VISIT_TIME=60
+    fi
+
     # Date added: random time within last 5 years
     DAYS_AGO=$(( (RAND_SEED * 17) % 1825 ))
     DATE_ADDED=$(( NOW_MS - (DAYS_AGO * 86400 * 1000) ))
-    
-    echo "INSERT INTO students (full_legal_name, preferred_name, subjects, date_added) VALUES ('$FULL_NAME', '$PREF_NAME', $SUBJECTS, $DATE_ADDED);" >> "$SQL_FILE"
+
+    echo "INSERT INTO students (full_name, preferred_name, visit_time, date_added) VALUES ('$FULL_NAME', '$PREF_NAME', $VISIT_TIME, $DATE_ADDED);" >> "$SQL_FILE"
 done
 
 # Store student info for visit generation
-declare -A STUDENT_SUBJECTS
+declare -A STUDENT_VISIT_TIME
 
 for i in {1..300}; do
     RAND_SEED=$((SEED + i))
-    SUBJECTS=$(( (RAND_SEED % 2) + 1 ))
-    STUDENT_SUBJECTS[$i]=$SUBJECTS
+    VISIT_TIME_CHECK=$((RAND_SEED % 2))
+    if [ $VISIT_TIME_CHECK -eq 0 ]; then
+        STUDENT_VISIT_TIME[$i]=30
+    else
+        STUDENT_VISIT_TIME[$i]=60
+    fi
 done
 
 # Generate visits for each student
@@ -152,50 +158,43 @@ VISIT_COUNT=0
 
 for STUDENT_ID in {1..300}; do
     RAND_SEED=$((SEED + STUDENT_ID))
-    SUBJECTS=${STUDENT_SUBJECTS[$STUDENT_ID]}
-    
-    # Base duration based on subjects
-    if [ "$SUBJECTS" -eq 2 ]; then
-        BASE_DURATION=60
-    else
-        BASE_DURATION=30
-    fi
-    
+    BASE_DURATION=${STUDENT_VISIT_TIME[$STUDENT_ID]}
+
     # Number of visits (5 to 150)
     NUM_VISITS=$(( ((RAND_SEED * 37) % 146) + 5 ))
-    
+
     # Generate visits spread over the past 2 years
     for j in $(seq 1 $NUM_VISITS); do
         VISIT_SEED=$((RAND_SEED * 1000 + j))
-        
+
         # Random time in past 2 years
         DAYS_AGO=$(( (VISIT_SEED * 13) % 730 ))
         HOUR_OFFSET=$(( (VISIT_SEED * 7) % 12 + 8 ))
         MINUTE_OFFSET=$(( (VISIT_SEED * 3) % 60 ))
-        
+
         START_TIME=$(( NOW_MS - (DAYS_AGO * 86400 * 1000) - ((24 - HOUR_OFFSET) * 3600 * 1000) - (MINUTE_OFFSET * 60 * 1000) ))
-        
-        # Duration with variance
+
+        # Duration with variance (around the base duration)
         OUTLIER_CHECK=$(( VISIT_SEED % 20 ))
         if [ $OUTLIER_CHECK -eq 0 ]; then
+            # Outlier: ±50% of base duration
             VARIANCE=$(( (VISIT_SEED % 100) - 50 ))
         else
-            VARIANCE=$(( (VISIT_SEED % 20) - 10 ))
+            # Normal: ±30% of base duration
+            VARIANCE=$(( (VISIT_SEED % 60) - 30 ))
         fi
-        
-        DURATION_MINUTES=$(( BASE_DURATION + (BASE_DURATION * VARIANCE / 100) ))
-        
-        # Ensure positive duration
-        if [ $DURATION_MINUTES -lt 5 ]; then
-            DURATION_MINUTES=5
+
+        DURATION=$(( BASE_DURATION + (BASE_DURATION * VARIANCE / 100) ))
+
+        # Ensure positive duration (minimum 5 minutes)
+        if [ $DURATION -lt 5 ]; then
+            DURATION=5
         fi
-        
-        END_TIME=$(( START_TIME + (DURATION_MINUTES * 60 * 1000) ))
-        
-        echo "INSERT INTO visits (start_time, end_time, student_id) VALUES ($START_TIME, $END_TIME, $STUDENT_ID);" >> "$SQL_FILE"
+
+        echo "INSERT INTO visits (start_time, duration, student_id) VALUES ($START_TIME, $DURATION, $STUDENT_ID);" >> "$SQL_FILE"
         VISIT_COUNT=$((VISIT_COUNT + 1))
     done
-    
+
     # Progress indicator every 50 students
     if [ $((STUDENT_ID % 50)) -eq 0 ]; then
         echo "  Generated visits for $STUDENT_ID students..."
@@ -211,24 +210,20 @@ for STUDENT_ID in {1..300}; do
     if [ $ONGOING_COUNT -ge $ONGOING_TARGET ]; then
         break
     fi
-    
+
     RAND_SEED=$((SEED + STUDENT_ID + 5000))
     CHECK=$(( RAND_SEED % 10 ))
-    
+
     if [ $CHECK -lt 2 ]; then
-        SUBJECTS=${STUDENT_SUBJECTS[$STUDENT_ID]}
-        
-        # Max minutes ago based on subjects
-        if [ "$SUBJECTS" -eq 2 ]; then
-            MAX_MINUTES=60
-        else
-            MAX_MINUTES=30
-        fi
-        
+        BASE_DURATION=${STUDENT_VISIT_TIME[$STUDENT_ID]}
+
+        # Max minutes ago based on visit_time
+        MAX_MINUTES=$BASE_DURATION
+
         # Random start time within the window
         MINUTES_AGO=$(( (RAND_SEED * 11) % (MAX_MINUTES + 1) ))
-        
-        # Add some outliers
+
+        # Add some outliers (10% chance of being outside the normal range)
         OUTLIER=$(( (RAND_SEED * 7) % 10 ))
         if [ $OUTLIER -eq 0 ]; then
             MINUTES_AGO=$(( MINUTES_AGO + MAX_MINUTES ))

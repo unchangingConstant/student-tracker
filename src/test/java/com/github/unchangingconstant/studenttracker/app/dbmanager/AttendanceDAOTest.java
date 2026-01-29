@@ -1,12 +1,17 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
+import static org.instancio.Instancio.gen;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.instancio.Select.field;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToOngoingVisitMapper;
 import org.instancio.Instancio;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
@@ -15,12 +20,13 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
 import com.github.unchangingconstant.studenttracker.guice.DatabaseManagerModule;
 import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
+
+import javax.swing.text.html.parser.Entity;
 
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
@@ -66,7 +72,7 @@ public class AttendanceDAOTest {
 
 //    @Test
 //    void smokeTest() {
-//        Student student = StudentTestUtil.student().create();
+//        Student student = EntityTestUtil.student().create();
 //        int genId = jdbi.withHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
 //        Student result = jdbi
 //            .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, genId).mapTo(Student.class).one());
@@ -79,7 +85,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("findStudent() maps query result to Student object")
     void testFindStudent_1() {
-        Student expected = StudentTestUtil.student().create();
+        Student expected = EntityTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
         assertEquals(Optional.of(expected), dao.findStudent(expected.getStudentId()));
     }
@@ -87,7 +93,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("findStudent() returns empty Optional on non-existent ID")
     void testFindStudent_3() {
-        Student expected = StudentTestUtil.student().create();
+        Student expected = EntityTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(expected).execute());
         assertEquals(Optional.empty(), dao.findStudent(expected.getStudentId() + 1));
     }
@@ -95,7 +101,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("findStudent() gets the right student")
     void testFindStudent_4() {
-        Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 2).create();
+        Student expected = EntityTestUtil.student().set(field(Student::getStudentId), 2).create();
         List<Student> sample = Instancio.createList(Student.class);
         sample.add(1, expected);
         sample.forEach(
@@ -107,9 +113,9 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("getAllStudents() maps query result to <studentId, student> map.")
     void testGetAllStudents_1() {
-        Student s1 = StudentTestUtil.student().create();
-        Student s2 = StudentTestUtil.student().create();
-        Student s3 = StudentTestUtil.student().create();
+        Student s1 = EntityTestUtil.student().create();
+        Student s2 = EntityTestUtil.student().create();
+        Student s3 = EntityTestUtil.student().create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1).execute());
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s2).execute());
@@ -132,7 +138,7 @@ public class AttendanceDAOTest {
     @DisplayName("insertStudent() inserts students correctly")
     void testInsertStudent_1() {
         // This sucks. Just hoping the dao assigns it an ID of "1"
-        Student expected = StudentTestUtil.student().set(field(Student::getStudentId), 1).create();
+        Student expected = EntityTestUtil.student().set(field(Student::getStudentId), 1).create();
         Integer resultId = dao.insertStudent(expected);
         Student result = jdbi
             .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, resultId).mapTo(Student.class).one());
@@ -142,7 +148,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("deleteStudent() returns true on successful delete")
     void testDeleteStudent_1() {
-        Student student = StudentTestUtil.student().create();
+        Student student = EntityTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
         assertTrue(dao.deleteStudent(student.getStudentId()));
     }
@@ -150,7 +156,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("deleteStudent() returns false on failed delete")
     void testDeleteStudent_2() {
-        Student s = StudentTestUtil.student().create();
+        Student s = EntityTestUtil.student().create();
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
         assertFalse(dao.deleteStudent(s.getStudentId() + 1));
     }
@@ -159,7 +165,7 @@ public class AttendanceDAOTest {
     @DisplayName("deleteStudent() deletes the correct entry")
     void testDeleteStudent_3() {
         List<Student> list = Instancio.createList(Student.class);
-        Student removed = StudentTestUtil.student().create();
+        Student removed = EntityTestUtil.student().create();
         list.add(1, removed); // Make removed element the 2nd element of the list
         list.forEach(
                 student -> jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute()));
@@ -174,7 +180,7 @@ public class AttendanceDAOTest {
     @Test
     @DisplayName("deleteStudent() deletes student and their corresponding visits from the visits table")
     void testDeleteStudent_4() {
-        Student student = StudentTestUtil.student().create();
+        Student student = EntityTestUtil.student().create();
         Visit visit = Instancio.of(Visit.class).set(field(Visit::getStudentId), student.getStudentId()).create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
@@ -195,22 +201,88 @@ public class AttendanceDAOTest {
     @DisplayName("updateStudent() returns false if student with studentId doesn't exist in the database")
     void testUpdateStudent_1() {
         // TODO insert multiple students into database for this test
-        Student s1 = StudentTestUtil.validStudent().create();
-        Student s2 = StudentTestUtil.validStudent().set(field(Student::getStudentId), Math.abs(s1.getStudentId() + 1)).create();
+        Student s1 = EntityTestUtil.validStudent().create();
+        Student s2 = EntityTestUtil.validStudent().set(field(Student::getStudentId), Math.abs(s1.getStudentId() + 1)).create();
 
         jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s1));
 
         assertFalse(dao.updateStudent(s2));
     }
 
-    /**
+    /*
      * VISIT TESTS START HERE
      */
     @Test
     @DisplayName("findVisit() gets the visit with the corresponding id")
     void testFindVisit_1() {
         Visit v = Instancio.create(Visit.class);
-        Student s = StudentTestUtil.student().create();
+        Student s = EntityTestUtil.student().create();
     }
 
+    @Test
+    @DisplayName("SmokeTest")
+    void testInsertVisit_1() {
+        Student student = EntityTestUtil.student().create();
+        // Database should assign a visitId of one
+        int visitId = 1;
+        Visit visit = EntityTestUtil.visit().set(field(Visit::getVisitId), visitId).set(field(Visit::getStudentId), student.getStudentId()).create();
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+
+        dao.insertVisit(visit);
+
+        Visit result = jdbi.withHandle(
+            handle -> handle.createQuery("SELECT * FROM visits WHERE visit_id = ?")
+            .bind(0, visitId).map(new RowToVisitMapper()).one());
+
+        assertEquals(result, visit);
+    }
+
+    /*
+     * ONGOING_VISIT TESTS START HERE
+     * TODO delete smoke tests, write some real tests
+     */
+    @Test
+    @DisplayName("Smoke test")
+    void testEndOngoingVisit_1() {
+        // TODO Create ongoing visit utils
+        Student student = EntityTestUtil.student().create();
+        OngoingVisit ov = OngoingVisit.builder().studentId(student.getStudentId()).startTime(Instancio.create(Instant.class)).build();
+        jdbi.useHandle(handle ->
+            handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+        jdbi.useHandle(handle ->
+            handle.createUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
+            .bindBean(ov).execute());
+
+        Visit visit = Visit.builder().studentId(student.getStudentId()).startTime(ov.getStartTime()).duration(gen().ints().min(1).get()).build();
+        System.out.println(visit);
+
+        dao.endOngoingVisit(visit);
+
+        List<OngoingVisit> table = jdbi.withHandle(handle ->
+            handle.createQuery("SELECT * FROM ongoing_visits").map(new RowToOngoingVisitMapper()).list());
+
+        assertTrue(table.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Smoke test")
+    void testEndOngoingVisit_2() {
+        // TODO Create ongoing visit utils
+        Student student = EntityTestUtil.student().create();
+        OngoingVisit ov = OngoingVisit.builder().studentId(student.getStudentId()).startTime(Instancio.create(Instant.class)).build();
+        jdbi.useHandle(handle ->
+                handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
+        jdbi.useHandle(handle ->
+                handle.createUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
+                        .bindBean(ov).execute());
+
+        Visit visit = Visit.builder().studentId(student.getStudentId()).startTime(ov.getStartTime()).duration(gen().ints().min(1).get()).build();
+        jdbi.useHandle(handle ->
+            handle.createUpdate("DELETE FROM ongoing_visits WHERE student_id = :studentId").bindBean(visit).execute());
+
+        List<OngoingVisit> table = jdbi.withHandle(handle ->
+                handle.createQuery("SELECT * FROM ongoing_visits").map(new RowToOngoingVisitMapper()).list());
+
+        assertTrue(table.isEmpty());
+    }
 }

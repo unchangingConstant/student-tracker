@@ -9,10 +9,7 @@ import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.customizer.BindList;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.jdbi.v3.sqlobject.statement.SqlScript;
-import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.sqlobject.statement.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
@@ -20,6 +17,7 @@ import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToOngoingVisitMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
 import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
+import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 // Read up on mappers, section 7 of JDBI docs
 public interface AttendanceDAO {
@@ -54,14 +52,6 @@ public interface AttendanceDAO {
     /*
      * VISIT METHODS
      */
-    @SqlQuery("SELECT * FROM visits WHERE visit_id = ?")
-    @RegisterRowMapper(RowToVisitMapper.class)
-    Optional<Visit> findVisit(Integer visitId);
-
-    @SqlQuery("SELECT * FROM visits")
-    @RegisterRowMapper(RowToVisitMapper.class)
-    @KeyColumn("visit_id")
-    Map<Integer, Visit> getAllVisits();
 
     @SqlQuery("SELECT * FROM visits WHERE student_id = ?")
     @RegisterRowMapper(RowToVisitMapper.class)
@@ -93,7 +83,13 @@ public interface AttendanceDAO {
     @SqlUpdate("INSERT INTO ongoing_visits (student_id, start_time) VALUES (:studentId, :startTime)")
     void insertOngoingVisit(@BindBean OngoingVisit ongoingVisit);
 
-    @SqlScript("DELETE FROM ongoing_visits WHERE student_id = :studentId; INSERT INTO visits (start_time, duration, student_id) VALUES (:startTime, :duration, :studentId)")
-    void endOngoingVisit(@BindBean Visit visit);
+    @SqlUpdate("DELETE FROM ongoing_visits WHERE student_id = ?;")
+    void deleteOngoingVisit(int studentId);
+
+    @Transaction
+    default int endOngoingVisit(Visit visit) {
+        deleteOngoingVisit(visit.getStudentId());
+        return insertVisit(visit);
+    }
 
 }

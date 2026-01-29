@@ -134,7 +134,8 @@ public class DatabaseManagerPageController implements Controller {
         Integer studentId = update.getStudentId().get();
         String fullName = update.getFullName().get();
         String prefName = update.getPrefName().get();
-        Integer subjects = update.getVisitTime().get();
+        Integer visitTime = update.getVisitTime().get();
+        Instant dateAdded = update.getDateAdded().get();
 
         ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
             @Override
@@ -144,7 +145,8 @@ public class DatabaseManagerPageController implements Controller {
                         .studentId(studentId)
                         .fullName(fullName)
                         .preferredName(prefName)
-                        .visitTime(subjects * 30).build());
+                        .visitTime(visitTime)
+                        .dateAdded(dateAdded).build());
                 } catch (InvalidEntityException e) {
                     e.printStackTrace();
                 }
@@ -165,8 +167,8 @@ public class DatabaseManagerPageController implements Controller {
             }
         );
         studentTable.setItems(sortedStudents);
-        studentTable.onDeleteActionProperty().set(student -> onDeleteAction(student));
-        studentTable.onSaveActionProperty().set(() -> onUpdateStudentAction());
+        studentTable.onDeleteActionProperty().set(this::onDeleteAction);
+        studentTable.onSaveActionProperty().set(this::onUpdateStudentAction);
         studentAdder.setOnSaveButtonAction(actionEvent -> onAddStudentAction());
     }
 
@@ -181,7 +183,7 @@ public class DatabaseManagerPageController implements Controller {
             });
         // Visit table now based off sorted list
         visitTable.setItems(sortedVisits);
-        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks
+        visitTable.currentStudentProperty().bind(visitTableModel.currentStudentProperty()); // this stinks (yes it does, think about it)
 
         // Binds selectableStudentList's currently selectedStudent to visitTableModel's currently selected student
         selectableStudentList.getFocusModel().focusedItemProperty().addListener((obs, oldVal, newVal) -> {

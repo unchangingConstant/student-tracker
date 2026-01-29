@@ -34,11 +34,12 @@ public class Student {
         boolean fullNameValid =
             student.getFullName() != null &&
             student.getFullName().matches(NAME_REGEX) &&
-            student.getFullName().length() <= 150;
+            student.getFullName().length() <= FULL_NAME_MAX_LEN &&
+            student.getFullName().length() >= FULL_NAME_MIN_LEN;
         boolean preferredNameValid =
             student.getPreferredName() != null &&
             student.getPreferredName().matches(NAME_REGEX) &&
-            student.getPreferredName().length() <= 150;
+            student.getPreferredName().length() <= PREFERRED_NAME_MAX_LEN;
         boolean visitTimeValid =
             student.getVisitTime() != null &&
             (student.getVisitTime().equals(30) ||

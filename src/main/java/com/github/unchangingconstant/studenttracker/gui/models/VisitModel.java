@@ -10,13 +10,13 @@ import lombok.Getter;
 @Getter
 public class VisitModel {
     
-    private final SimpleObjectProperty<Integer> visitId;
+    private final SimpleIntegerProperty visitId;
     private final SimpleObjectProperty<Instant> startTime;
     private final SimpleIntegerProperty duration;
     private final SimpleIntegerProperty studentId;
 
     public VisitModel(Integer visitId, Instant startTime, Integer duration, Integer studentId) {
-        this.visitId = new SimpleObjectProperty<>(visitId);
+        this.visitId = new SimpleIntegerProperty(visitId);
         this.startTime = new SimpleObjectProperty<>(startTime);
         this.duration = new SimpleIntegerProperty(duration);
         this.studentId = new SimpleIntegerProperty(studentId);
@@ -39,12 +39,13 @@ public class VisitModel {
     }
 
     /*
+     * TODO what if you actually want to compare all of the fields? Find a better solution maybe
      * Collection bindings will need this to know which entities are equal
      */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof VisitModel) {
-            return (((VisitModel) obj).getVisitId().get().equals(visitId.get()));
+            return (((VisitModel) obj).getVisitId().get() == visitId.get());
         }
         return false;
     }

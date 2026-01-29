@@ -15,12 +15,12 @@ import org.instancio.InstancioApi;
  * 
  * It's lengthy to do this code all the time, so it's a separate util class now
  */
-public class StudentTestUtil {
+public class EntityTestUtil {
 
     public static InstancioApi<Student> student() {
         return Instancio.of(Student.class)
             .generate(field(Student::getDateAdded), gen -> gen.temporal().instant()
-                    .truncatedTo(ChronoUnit.MILLIS));
+            .truncatedTo(ChronoUnit.MILLIS));
     }
 
     public static InstancioApi<Student> validStudent() {
@@ -31,6 +31,12 @@ public class StudentTestUtil {
                 gen -> gen.string().length(Student.PREFERRED_NAME_MIN_LEN, Student.PREFERRED_NAME_MAX_LEN))
             .generate(field(Student::getVisitTime),
                 gen -> gen.ints().range(0, 1).as(i -> Student.VISIT_TIME_ALLOWED_VALUES[i]));
+    }
+
+    public static InstancioApi<Visit> visit() {
+        return Instancio.of(Visit.class)
+            .generate(field(Visit::getStartTime), gen -> gen.temporal().instant()
+            .truncatedTo(ChronoUnit.MILLIS));
     }
 
 }

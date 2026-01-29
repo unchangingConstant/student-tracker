@@ -1,5 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
+import java.time.Instant;
 import java.util.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
@@ -85,10 +86,6 @@ public class DatabaseManager {
      * VISIT METHODS
      */
 
-    public Optional<Visit> findVisit(Integer visitId) {
-        return dao.findVisit(visitId);
-    }
-
     public void insertVisit(Visit visit) throws InvalidEntityException {
         if (!Visit.validate(visit)) {
             throw new InvalidEntityException();
@@ -136,7 +133,15 @@ public class DatabaseManager {
             .studentId(ongoingVisit.getStudentId())
             .startTime(ongoingVisit.getStartTime())
             .duration(duration).build();
-        dao.endOngoingVisit(endedVisit);
+
+        int visitId = dao.endOngoingVisit(endedVisit);
+
+        endedVisit = Visit.builder()
+            .visitId(visitId)
+            .studentId(ongoingVisit.getStudentId())
+            .startTime(ongoingVisit.getStartTime())
+            .duration(duration).build();
+
         ongoingVisitsObserver.triggerDelete(ongoingVisit);
         visitsObserver.triggerInsert(endedVisit);
     }

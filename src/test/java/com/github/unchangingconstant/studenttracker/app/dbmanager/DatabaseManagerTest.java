@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.Optional;
 
+import com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
-import com.github.unchangingconstant.studenttracker.app.entities.StudentTestUtil;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.InvalidEntityException;
 
 /* TODO
@@ -45,7 +45,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Service returns student if DAO was able to find the student with the given ID")
     void testFindStudent_1() throws Exception {
-        Optional<Student> expected = Optional.of(StudentTestUtil.student().create());
+        Optional<Student> expected = Optional.of(EntityTestUtil.student().create());
         int studentId = expected.get().getStudentId();
         when(dao.findStudent(studentId)).thenReturn(expected);
 
@@ -83,7 +83,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Encounters no errors if inserted student is valid")
     void testInsertStudent_1() throws Exception {
-        Student expected = StudentTestUtil.validStudent().create();
+        Student expected = EntityTestUtil.validStudent().create();
         when(dao.insertStudent(expected)).thenReturn(expected.getStudentId());
 
         manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
@@ -95,7 +95,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Throws error when fullName invalid")
     void testInsertStudent_2() {
-        Student longNameStudent = StudentTestUtil.validStudent()
+        Student longNameStudent = EntityTestUtil.validStudent()
             .generate(field(Student::getFullName), gen -> gen.string().minLength(151))
             .create();
         manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
@@ -107,7 +107,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Throws error when prefName invalid")
     void testInsertStudent_3() {
-        Student longNameStudent = StudentTestUtil.validStudent()
+        Student longNameStudent = EntityTestUtil.validStudent()
             .generate(field(Student::getPreferredName), gen -> gen.string().minLength(151))
             .create();
         manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
@@ -119,13 +119,13 @@ public class DatabaseManagerTest {
     // @Test
     // @DisplayName("Throws error when subjects invalid")
     // void testInsertStudent_4() {
-    //     Student s1 = StudentTestUtil.validStudent()
+    //     Student s1 = EntityTestUtil.validStudent()
     //         .generate(field(Student::getVisitTime), gen -> gen.ints().max(0))
     //         .create();
-    //     Student s2 = StudentTestUtil.validStudent()
+    //     Student s2 = EntityTestUtil.validStudent()
     //         .generate(field(Student::getVisitTime), gen -> gen.ints().min(3))
     //         .create();
-    //     Student s3 = StudentTestUtil.validStudent()
+    //     Student s3 = EntityTestUtil.validStudent()
     //         .set(field(Student::getVisitTime), null)
     //         .create();
     //     service.getStudentsObserver().subscribeToInserts(studentId -> trigger());

@@ -22,7 +22,7 @@ import javafx.util.Callback;
 /**
  * I have a feeling this will need to be editable some day
  */
-public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> implements Controller {
+public class EditableVisitTable extends EditableRowTable<VisitModel, Number> implements Controller {
 
     @FXML
     private TableColumn<VisitModel, String> startTimeColumn;
@@ -73,7 +73,7 @@ public class EditableVisitTable extends EditableRowTable<VisitModel, Integer> im
     }
 
     @Override
-    protected Callback<CellDataFeatures<VisitModel, Integer>, ObservableValue<Integer>> getControlCellValueFactory() {
+    protected Callback<CellDataFeatures<VisitModel, Number>, ObservableValue<Number>> getControlCellValueFactory() {
         return cellData -> cellData.getValue().getVisitId();
     }
     

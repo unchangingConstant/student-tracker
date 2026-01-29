@@ -45,6 +45,14 @@ public class StudentModel {
         visitTime.set(entity.getVisitTime());
     }
 
+    public void set(StudentModel model) {
+        studentId.set(model.getStudentId().get());
+        fullName.set(model.getFullName().get());
+        prefName.set(model.getPrefName().get());
+        dateAdded.set(model.getDateAdded().get());
+        visitTime.set(model.getVisitTime().get());
+    }
+
     /*
      * Collection bindings will need this to know which entities are equal
      */
