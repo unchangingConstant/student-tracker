@@ -44,9 +44,7 @@ public abstract class EditableRowTable<T, U> extends TableView<T> {
     public EditableRowTable()   {
         super();
         setupControlColumn();
-        onEditAction.set(index -> {
-            editedRowIndex.set(index);
-        });
+        onEditAction.set(editedRowIndex::set);
         // If a row is being edited, disable all action combos
         actionsDisabled.bind(editedRowIndex.isNotEqualTo(-1));
     }

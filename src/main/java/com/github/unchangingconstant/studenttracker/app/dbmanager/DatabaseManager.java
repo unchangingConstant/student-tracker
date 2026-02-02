@@ -1,6 +1,7 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;

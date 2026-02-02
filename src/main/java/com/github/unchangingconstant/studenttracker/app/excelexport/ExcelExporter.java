@@ -79,7 +79,8 @@ public class ExcelExporter {
         // Writes data to excel workbook
         // TODO first example of versioning perhaps being necessary?
         try (OutputStream os = Files.newOutputStream(Paths.get(exportName));
-                Workbook wb = new Workbook(os, "StudentTracker", "0.1")) {
+             Workbook wb = new Workbook(os, "StudentTracker", "0.1")
+        ) {
             Worksheet ws = wb.newWorksheet("StudentVisits");
             // Create field headers
             ws.value(0, 0, "Student Name");

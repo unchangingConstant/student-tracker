@@ -56,9 +56,7 @@ public class DatabaseObserver<T> {
     }
 
     private List<T> toList(T data) {
-        List<T> list = new LinkedList<>();
-        list.add(data);
-        return list;
+        return List.of(data);
     }
 
     private <D> void notifySubs(List<Consumer<D>> subs, D data) {
