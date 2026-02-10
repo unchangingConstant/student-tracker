@@ -1,13 +1,11 @@
 package com.github.unchangingconstant.studenttracker.app.excelexport;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +16,7 @@ import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseDAO;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,7 +29,7 @@ import static com.github.unchangingconstant.studenttracker.app.excelexport.util.
 @Singleton
 public class ExcelExporter {
 
-    private final AttendanceDAO dao;
+    private final DatabaseDAO dao;
 
     private static final Comparator<VisitExport> SORT_BY_TIME =
         new Comparator<VisitExport>() {
@@ -52,7 +50,7 @@ public class ExcelExporter {
         };
 
     @Inject
-    public ExcelExporter(AttendanceDAO dao) {
+    public ExcelExporter(DatabaseDAO dao) {
         this.dao = dao;
     }
 

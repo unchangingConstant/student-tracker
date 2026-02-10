@@ -7,7 +7,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.sqlite.SQLiteDataSource;
 
-import com.github.unchangingconstant.studenttracker.app.dbmanager.AttendanceDAO;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseDAO;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -16,14 +16,14 @@ public class DatabaseManagerModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public AttendanceDAO provideDatabaseDAO(Jdbi jdbi) {
+    public DatabaseDAO provideDatabaseDAO(Jdbi jdbi) {
         jdbi.getConfig(Handles.class).addListener(new HandleListener() {
             @Override
             public void handleCreated(Handle handle) {
                 handle.execute("PRAGMA foreign_keys = ON");
             }
         });
-        return jdbi.installPlugin(new SqlObjectPlugin()).onDemand(AttendanceDAO.class);
+        return jdbi.installPlugin(new SqlObjectPlugin()).onDemand(DatabaseDAO.class);
     }
 
     @Provides

@@ -1,7 +1,5 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
@@ -15,7 +13,7 @@ import lombok.Getter;
 @Singleton
 public class DatabaseManager {
 
-    private final AttendanceDAO dao;
+    private final DatabaseDAO dao;
 
     @Getter
     private final DatabaseObserver<OngoingVisit> ongoingVisitsObserver;
@@ -25,7 +23,7 @@ public class DatabaseManager {
     private final DatabaseObserver<Student> studentsObserver;
 
     @Inject
-    public DatabaseManager(AttendanceDAO dao)  {
+    public DatabaseManager(DatabaseDAO dao)  {
         this.dao = dao;
         this.ongoingVisitsObserver = new DatabaseObserver<>();
         this.visitsObserver = new DatabaseObserver<>();

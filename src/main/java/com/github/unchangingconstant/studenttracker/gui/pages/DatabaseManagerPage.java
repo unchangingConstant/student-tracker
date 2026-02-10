@@ -38,7 +38,7 @@ import javafx.scene.layout.HBox;
  * TODO Think about memory management. If this controller is garbage collected, do the listeners/bindings it adds
  * to the Singleton StudentTableModel persist? 
  */
-public class DatabaseManagerPageController implements Controller {
+public class DatabaseManagerPage implements Controller {
     
     @FXML
     private Label title;
@@ -69,7 +69,7 @@ public class DatabaseManagerPageController implements Controller {
     private final WindowManager windowManager;
 
     @Inject
-    public DatabaseManagerPageController(
+    public DatabaseManagerPage(
         StudentTableModel studentTableModel, 
         VisitTableModel visitTableModel, 
         DatabaseManager recordManager,

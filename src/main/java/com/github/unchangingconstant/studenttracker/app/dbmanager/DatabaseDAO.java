@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.unchangingconstant.studenttracker.util.ResourceLoader.loadSQL;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -20,7 +19,7 @@ import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisi
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 // Read up on mappers, section 7 of JDBI docs
-public interface AttendanceDAO {
+public interface DatabaseDAO {
 
     /*
      * STUDENT METHODS

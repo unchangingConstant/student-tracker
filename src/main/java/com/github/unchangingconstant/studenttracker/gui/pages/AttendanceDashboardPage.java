@@ -25,7 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
-public class AttendanceDashboardPageController implements Controller {
+public class AttendanceDashboardPage implements Controller {
 
     @FXML
     private LiveAttendanceView liveAttendanceView;
@@ -44,7 +44,7 @@ public class AttendanceDashboardPageController implements Controller {
     private final WindowManager windowController;
 
     @Inject
-    public AttendanceDashboardPageController(
+    public AttendanceDashboardPage(
         LiveAttendanceDashboardModel ongoingVisitsModel,
         StudentTableModel studentTableModel, 
         DatabaseManager recordManager,

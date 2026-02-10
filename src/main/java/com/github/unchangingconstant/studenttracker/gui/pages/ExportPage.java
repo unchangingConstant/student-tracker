@@ -28,7 +28,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.util.StringConverter;
 
-public class ExportPageController implements Controller {
+public class ExportPage implements Controller {
 
     @FXML
     private ListView<StudentModel> studentSelector;
@@ -47,8 +47,8 @@ public class ExportPageController implements Controller {
     private final WindowManager windowController;
 
     @Inject
-    public ExportPageController(StudentTableModel studentTableModel, ExcelExporter csvService,
-            WindowManager windowController) {
+    public ExportPage(StudentTableModel studentTableModel, ExcelExporter csvService,
+                      WindowManager windowController) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
         this.windowController = windowController;

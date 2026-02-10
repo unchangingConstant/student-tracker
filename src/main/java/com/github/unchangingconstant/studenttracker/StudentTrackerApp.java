@@ -19,6 +19,7 @@ public class StudentTrackerApp extends Application {
                         new QRScanModule()
                 );
         public static final String TITLE = "Student Tracker";
+        public static final String APP_ACRONYM = "STA";
 
         @Override
         public void start(Stage stage) throws Exception {

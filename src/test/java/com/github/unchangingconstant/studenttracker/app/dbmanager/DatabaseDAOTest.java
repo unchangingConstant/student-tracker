@@ -26,19 +26,17 @@ import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisi
 import com.github.unchangingconstant.studenttracker.guice.DatabaseManagerModule;
 import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
 
-import javax.swing.text.html.parser.Entity;
-
 /**
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's
  * happening here, you're gonna need to read up on that. i.e. RegisterExtension
  * annotation??? Huh????
  */
-public class AttendanceDAOTest {
+public class DatabaseDAOTest {
 
     @RegisterExtension // this annotation has something to do with the magic behind junit5 and stuff
     // Creates tool which creates in-mem sqlite database at test time
     private static final JdbiExtension sqliteExtension = JdbiExtension.sqlite().withPlugin(new SqlObjectPlugin());
-    private AttendanceDAO dao;
+    private DatabaseDAO dao;
     private Jdbi jdbi;
 
     // Can we centralize these somehow?

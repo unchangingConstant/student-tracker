@@ -8,7 +8,7 @@
 
 <?import com.github.unchangingconstant.studenttracker.gui.components.*?>
 
-<VBox fx:controller="com.github.unchangingconstant.studenttracker.gui.pages.AttendanceDashboardPageController" 
+<VBox fx:controller="com.github.unchangingconstant.studenttracker.gui.pages.AttendanceDashboardPage"
     xmlns:fx="http://javafx.com/fxml" alignment="TOP_CENTER" fillWidth="true">
     <stylesheets>
         <URL value="@attendance_dashboard_page.css"/>

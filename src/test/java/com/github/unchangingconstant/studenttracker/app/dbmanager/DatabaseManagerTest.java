@@ -29,7 +29,7 @@ import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManage
 public class DatabaseManagerTest {
 
     @Mock
-    private AttendanceDAO dao;
+    private DatabaseDAO dao;
 
     @InjectMocks
     private DatabaseManager manager;
