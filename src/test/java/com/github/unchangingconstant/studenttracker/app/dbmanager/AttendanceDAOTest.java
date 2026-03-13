@@ -70,15 +70,6 @@ public class AttendanceDAOTest {
         jdbi.useHandle(handle -> handle.execute("DROP TABLE ongoing_visits;"));
     }
 
-//    @Test
-//    void smokeTest() {
-//        Student student = EntityTestUtil.student().create();
-//        int genId = jdbi.withHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(student).execute());
-//        Student result = jdbi
-//            .withHandle(handle -> handle.createQuery(SELECT_STUDENT).bind(0, genId).mapTo(Student.class).one());
-//        System.out.println(result);
-//    }
-
     /**
      * STUDENT TESTS START HERE
      */
