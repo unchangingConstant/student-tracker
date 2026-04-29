@@ -1,17 +1,20 @@
 /* Styles to be applied across the entire application */
+/* https://moldstud.com/articles/p-exploring-javafx-css-styling-practical-examples-and-tips-for-developers */
+* {
+    -primary-color: #FFFFFF;
+    -tertiary-color: #313131;
 
-.root  {
     -fx-font-size: 20;
-    -fx-text-fill: #313131;
+    -fx-text-fill: -tertiary-color;
 }
 
 .header {
-    -fx-background-color:#313131;
+    -fx-background-color:-tertiary-color;
     -fx-pref-height: 30;
 }
 
 .header .title {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: -primary-color;
     -fx-text-alignment: center;
     -fx-font-weight: bolder;
 }
