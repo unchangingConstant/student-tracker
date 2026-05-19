@@ -10,3 +10,6 @@ mock/database.db
 exports
 # bruh
 .idea
+# This will go untracked unti I figure out hwo it fits into the project
+.claude
+CLAUDE.md

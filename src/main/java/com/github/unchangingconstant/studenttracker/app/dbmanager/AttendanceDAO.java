@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.github.unchangingconstant.studenttracker.util.ResourceLoader.loadSQL;
 import org.jdbi.v3.sqlobject.config.KeyColumn;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -14,9 +13,9 @@ import org.jdbi.v3.sqlobject.statement.*;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
-import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToOngoingVisitMapper;
-import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToStudentMapper;
-import com.github.unchangingconstant.studenttracker.app.mappers.domain.RowToVisitMapper;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToOngoingVisitMapper;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToStudentMapper;
+import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToVisitMapper;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 // Read up on mappers, section 7 of JDBI docs

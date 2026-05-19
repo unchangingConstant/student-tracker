@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.gui.pages;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.concurrent.Executor;
 
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
@@ -15,7 +16,6 @@ import com.github.unchangingconstant.studenttracker.gui.models.LiveAttendanceDas
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 
 import javafx.application.Platform;
@@ -42,17 +42,20 @@ public class AttendanceDashboardPageController implements Controller {
     private final StudentTableModel studentTableModel;
     private final DatabaseManager recordManager;
     private final WindowManager windowController;
+    private final Executor executor;
 
     @Inject
     public AttendanceDashboardPageController(
         LiveAttendanceDashboardModel ongoingVisitsModel,
         StudentTableModel studentTableModel, 
         DatabaseManager recordManager,
-        WindowManager windowController)  {
+        WindowManager windowController,
+        Executor executor)  {
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;
         this.recordManager = recordManager;
         this.windowController = windowController;
+        this.executor = executor;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class AttendanceDashboardPageController implements Controller {
 
     public void onStartVisitAction(StudentModel selectedStudent) {
         Integer selectedStudentId = selectedStudent.getStudentId().get();
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        executor.execute(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
                 recordManager.startOngoingVisit(OngoingVisit.builder()
@@ -99,7 +102,7 @@ public class AttendanceDashboardPageController implements Controller {
     public void onEndOngoingVisit(Integer studentId) {
         LiveVisitModel endedVisit = ongoingVisitsModel.get(studentId);
         Instant startTime = endedVisit.getStartTime().get();
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        executor.execute(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
                 recordManager.endOngoingVisit(OngoingVisit.builder()

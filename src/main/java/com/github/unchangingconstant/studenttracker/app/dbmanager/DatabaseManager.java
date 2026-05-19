@@ -100,11 +100,11 @@ public class DatabaseManager {
     }
 
     public void deleteVisit(Integer visitId)   {
-        if (dao.deleteVisit(visitId)) {
-            Visit visit = Visit.builder().visitId(visitId).build();
-            visitsObserver.triggerDelete(visit);
+        if (!dao.deleteVisit(visitId)) {
+            throw new NoSuchElementException();
         }
-        throw new NoSuchElementException();
+        Visit visit = Visit.builder().visitId(visitId).build();
+        visitsObserver.triggerDelete(visit);
     }
 
     public List<Visit> findVisitsWithStudentId(Integer studentId) {

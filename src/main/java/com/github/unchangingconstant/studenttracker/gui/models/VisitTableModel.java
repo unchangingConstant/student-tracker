@@ -7,9 +7,10 @@ import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseObserv
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.gui.utils.MapToListBinding;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import java.util.concurrent.Executor;
 
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -22,19 +23,21 @@ import javafx.collections.ObservableList;
 public class VisitTableModel {
     
     private final DatabaseManager attendanceService;
+    private final Executor executor;
 
     private final SimpleMapProperty<Integer, VisitModel> visits;
     private final MapToListBinding<Integer, VisitModel> visitList;
-    
+
     private final SimpleIntegerProperty currentStudent;
     public final SimpleIntegerProperty currentStudentProperty() {return currentStudent;}
 
     @Inject
-    public VisitTableModel(DatabaseManager attendanceService) {
+    public VisitTableModel(DatabaseManager attendanceService, Executor executor) {
         this.currentStudent = new SimpleIntegerProperty(-1);
         this.visits = new SimpleMapProperty<>(FXCollections.observableHashMap());
         this.visitList = new MapToListBinding<>(visits);
         this.attendanceService = attendanceService;
+        this.executor = executor;
         setupCurrentStudentProperty();
 
         DatabaseObserver<Visit> obs = attendanceService.getVisitsObserver();
@@ -80,7 +83,7 @@ public class VisitTableModel {
         currentStudent.addListener((obs, oldVal, newVal) -> {
             visits.clear();
             if (!newVal.equals(-1)) {
-                ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+                executor.execute(new ServiceTask<Void>() {
                     @Override
                     protected Void call() throws Exception {
                     List<Visit> studentVisits = attendanceService.findVisitsWithStudentId(newVal.intValue());

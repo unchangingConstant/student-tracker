@@ -33,7 +33,7 @@ public class QRCodeTestUtils {
         if (length == 0) return "";
 
         StringBuilder base = new StringBuilder("0".repeat(length));
-        String randHex = Integer.toHexString(RANDOM.nextInt(16 ^ length));
+        String randHex = Integer.toHexString(RANDOM.nextInt((int) Math.pow(16, length)));
         base.replace(0, randHex.length(), randHex);
         int mandatoryAlphaCharIndex = RANDOM.nextInt(length);
         base.replace(

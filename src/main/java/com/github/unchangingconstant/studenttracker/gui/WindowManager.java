@@ -5,6 +5,7 @@ import java.net.URL;
 
 import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import javafx.stage.Stage;
@@ -12,6 +13,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+/*
+        RESPONSIBILITIES OF THE WIN MANAGER (Ideally):
+
+        -   Create windows
+            -   Load the FXMLs to create the scene and stage to be presented
+        -   Organize windows
+        -   Provide general facilities for opening windows
+
+        WINDOW ORGANIZATION
+
+        -   A tree format:
+            -   Each window, except for the root one, has a parent
+            -   If the parent closes, all of its children close
+
+        WINDOW OPTIMIZATION
+
+        -   Don't keep windows in memory after they're closed
+            -   Or maybe this is fine? To an extent... for snappier UI
+
+     */
 /**
  * Will manage all GUI windows and serve as the entry point to the GUI
  */
@@ -21,8 +42,11 @@ public class WindowManager {
     private Stage recordManager;
     private Stage exportPage;
 
+    private final Injector appContext;
+
     @Inject
-    public WindowManager() {
+    public WindowManager(Injector appContext) {
+        this.appContext = appContext;
     }
 
     public void openMainPage(Stage stage) {
@@ -50,7 +74,7 @@ public class WindowManager {
         URL location = getClass().getResource(url);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(location);
-        fxmlLoader.setControllerFactory(StudentTrackerApp.appContext::getInstance);
+        fxmlLoader.setControllerFactory(appContext::getInstance);
         try {
             return fxmlLoader.load();
         } catch (IOException e) {

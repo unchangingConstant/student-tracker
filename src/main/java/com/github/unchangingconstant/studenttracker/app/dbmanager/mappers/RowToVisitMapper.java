@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.mappers.domain;
+package com.github.unchangingconstant.studenttracker.app.dbmanager.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 
 public class RowToVisitMapper implements RowMapper<Visit> {
 
-        @Override // time to hang myself for writing this
+        @Override
         public Visit map(ResultSet rs, StatementContext ctx) throws SQLException {
                 return Visit.builder()
                         .visitId(rs.getInt("visit_id"))

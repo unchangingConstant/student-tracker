@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.mappers.domain;
+package com.github.unchangingconstant.studenttracker.app.dbmanager.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

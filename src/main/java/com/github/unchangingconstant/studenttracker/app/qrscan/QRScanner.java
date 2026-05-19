@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.app.qrscan;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +15,6 @@ import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.app.qrscan.util.QRScanUtils;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,10 +38,12 @@ public class QRScanner {
     private final LinkedBlockingDeque<Character> keyCharBuffer = new LinkedBlockingDeque<>(26);
 
     private final DatabaseManager attendanceService;
+    private final Executor executor;
 
     @Inject
-    public QRScanner(DatabaseManager attendanceService, KeyLogger keyLogger) {
+    public QRScanner(DatabaseManager attendanceService, KeyLogger keyLogger, Executor executor) {
         this.attendanceService = attendanceService;
+        this.executor = executor;
         keyLogger.addNativeKeyListener(new KeyEventHook());
     }
 
@@ -78,7 +80,7 @@ public class QRScanner {
         }
 
         // Keeps the service from being called by the jnativehook thread
-        ThreadManager.mainBackgroundExecutor().submit(() -> {
+        executor.execute(() -> {
             Optional<OngoingVisit> potentialOngoingVisit = attendanceService.findOngoingVisit(id);
             Instant now = Instant.now();
             if (potentialOngoingVisit.isEmpty()) {

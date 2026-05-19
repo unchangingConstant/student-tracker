@@ -18,8 +18,9 @@ import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel
 import com.github.unchangingconstant.studenttracker.gui.models.VisitModel;
 import com.github.unchangingconstant.studenttracker.gui.models.VisitTableModel;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
+
+import java.util.concurrent.Executor;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -67,17 +68,20 @@ public class DatabaseManagerPageController implements Controller {
     // Services / utils
     private final DatabaseManager recordManager;
     private final WindowManager windowManager;
+    private final Executor executor;
 
     @Inject
     public DatabaseManagerPageController(
-        StudentTableModel studentTableModel, 
-        VisitTableModel visitTableModel, 
+        StudentTableModel studentTableModel,
+        VisitTableModel visitTableModel,
         DatabaseManager recordManager,
-        WindowManager windowManager)  {
+        WindowManager windowManager,
+        Executor executor)  {
         this.recordManager = recordManager;
         this.studentTableModel = studentTableModel;
         this.visitTableModel = visitTableModel;
         this.windowManager = windowManager;
+        this.executor = executor;
     }
 
     @Override
@@ -91,7 +95,7 @@ public class DatabaseManagerPageController implements Controller {
     }
 
     public void onDeleteAction(Integer studentId) {
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        executor.execute(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
                 try {
@@ -110,7 +114,7 @@ public class DatabaseManagerPageController implements Controller {
         String prefName = studentAdder.prefNameProperty().get();
         Integer visitTime = studentAdder.visitTimeProperty().get();
 
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        executor.execute(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
             try {
@@ -137,7 +141,7 @@ public class DatabaseManagerPageController implements Controller {
         Integer visitTime = update.getVisitTime().get();
         Instant dateAdded = update.getDateAdded().get();
 
-        ThreadManager.mainBackgroundExecutor().submit(new ServiceTask<Void>() {
+        executor.execute(new ServiceTask<Void>() {
             @Override
             protected Void call() throws Exception {
                 try {

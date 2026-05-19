@@ -25,6 +25,8 @@ import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManage
 /* TODO
  * Figure out how you'll test the Observer system. Should it be a different aspect of the program?
  * Or should it be a more separate component?
+ * TODO
+ *  Test that the observer is called with the CORRECT ARGUMENTS a well
  */
 public class DatabaseManagerTest {
 

@@ -23,11 +23,19 @@
     -fx-text-fill: #FFFFFF;
 }
 
-.table-row-cell:over {
+.table-row-cell:over  {
+    -fx-background-color: #bd4c4c;
+}
+
+.table-row-cell:over > .table-column:even {
     -fx-background-color: #cd5c5c;
 }
 
 .table-row-cell:almostDone {
+    -fx-background-color: #eac540;
+}
+
+.table-row-cell:almostDone > .table-column:even {
     -fx-background-color: #fad550;
 }
 

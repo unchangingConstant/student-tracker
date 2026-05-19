@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.guice.DatabaseManagerModule;
 import com.github.unchangingconstant.studenttracker.guice.QRScanModule;
+import com.github.unchangingconstant.studenttracker.guice.ThreadsModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -16,7 +17,8 @@ public class StudentTrackerApp extends Application {
         public static final Injector appContext = 
                 Guice.createInjector(
                         new DatabaseManagerModule(),
-                        new QRScanModule()
+                        new QRScanModule(),
+                        new ThreadsModule()
                 );
         public static final String TITLE = "Student Tracker";
 

@@ -12,8 +12,9 @@ import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentModel;
 import com.github.unchangingconstant.studenttracker.gui.models.StudentTableModel;
 import com.github.unchangingconstant.studenttracker.gui.utils.ServiceTask;
-import com.github.unchangingconstant.studenttracker.threads.ThreadManager;
 import com.google.inject.Inject;
+
+import java.util.concurrent.Executor;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -45,13 +46,15 @@ public class ExportPageController implements Controller {
     private final StudentTableModel studentTableModel;
     private final ExcelExporter csvService;
     private final WindowManager windowController;
+    private final Executor executor;
 
     @Inject
     public ExportPageController(StudentTableModel studentTableModel, ExcelExporter csvService,
-            WindowManager windowController) {
+            WindowManager windowController, Executor executor) {
         this.studentTableModel = studentTableModel;
         this.csvService = csvService;
         this.windowController = windowController;
+        this.executor = executor;
     }
 
     @Override
@@ -151,7 +154,7 @@ public class ExportPageController implements Controller {
         });
 
         // TODO Handle exceptions
-        ThreadManager.mainBackgroundExecutor().submit(exportTask);
+        executor.execute(exportTask);
     }
 
     private void onCancelButtonPress() {
