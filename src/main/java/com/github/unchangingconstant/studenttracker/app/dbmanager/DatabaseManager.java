@@ -24,11 +24,15 @@ public class DatabaseManager {
     private final DatabaseObserver<Student> studentsObserver;
 
     @Inject
-    public DatabaseManager(AttendanceDAO dao)  {
+    public DatabaseManager(
+            AttendanceDAO dao,
+            DatabaseObserver<OngoingVisit> ongoingVisitsObserver,
+            DatabaseObserver<Visit> visitsObserver,
+            DatabaseObserver<Student> studentsObserver)  {
         this.dao = dao;
-        this.ongoingVisitsObserver = new DatabaseObserver<>();
-        this.visitsObserver = new DatabaseObserver<>();
-        this.studentsObserver = new DatabaseObserver<>();
+        this.ongoingVisitsObserver = ongoingVisitsObserver;
+        this.visitsObserver = visitsObserver;
+        this.studentsObserver = studentsObserver;
     }
 
     /*

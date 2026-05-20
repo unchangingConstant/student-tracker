@@ -403,6 +403,8 @@ public class AttendanceDAOTest {
         assertEquals(List.of(v1), result);
     }
 
+    // TODO use models to shorten code?
+    // Look at Baeldung's Instancio ref
     @Test
     @DisplayName("getMultipleStudentsVisits() returns all visits for all specified students")
     void testGetMultipleStudentsVisits_2() {

@@ -1,5 +1,9 @@
 package com.github.unchangingconstant.studenttracker.guice;
 
+import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseObserver;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.HandleListener;
 import org.jdbi.v3.core.Handles;
@@ -32,6 +36,21 @@ public class DatabaseManagerModule extends AbstractModule {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl("JDBC:sqlite:database.db");
         return Jdbi.create(dataSource);
+    }
+
+    @Provides
+    public DatabaseObserver<OngoingVisit> provideOngoingVisitDatabaseObserver() {
+        return new DatabaseObserver<>();
+    }
+
+    @Provides
+    public DatabaseObserver<Visit> provideVisitDatabaseObserver() {
+        return new DatabaseObserver<>();
+    }
+
+    @Provides
+    public DatabaseObserver<Student> provideStudentDatabaseObserver() {
+        return new DatabaseObserver<>();
     }
 
 }

@@ -1,37 +1,49 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
+import static org.instancio.Instancio.gen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.instancio.Select.field;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Map;
 import java.util.Optional;
 
 import com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil;
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.InvalidEntityException;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /* TODO
  * Figure out how you'll test the Observer system. Should it be a different aspect of the program?
  * Or should it be a more separate component?
  * TODO
- *  Test that the observer is called with the CORRECT ARGUMENTS a well
+ *  Test that the observer is called with the CORRECT ARGUMENTS as well
  */
+@ExtendWith(MockitoExtension.class)
 public class DatabaseManagerTest {
 
     @Mock
     private AttendanceDAO dao;
+    @Mock
+    private DatabaseObserver<OngoingVisit> ongoingVisitDatabaseObserver;
+    @Mock
+    private DatabaseObserver<Visit> visitDatabaseObserver;
+    @Mock
+    private DatabaseObserver<Student> studentDatabaseObserver;
 
     @InjectMocks
     private DatabaseManager manager;
@@ -40,7 +52,6 @@ public class DatabaseManagerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         triggered = false;
     }
 
@@ -57,7 +68,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Service returns empty optional if DAO was not able to find the student with the given ID")
     void testGetStudent_2() {
-        Integer studentId = Instancio.gen().ints().min(1).get();
+        Integer studentId = gen().ints().min(1).get();
         when(dao.findStudent(studentId)).thenReturn(Optional.empty());
 
         assertEquals(Optional.empty(), manager.findStudent(studentId));
@@ -84,14 +95,16 @@ public class DatabaseManagerTest {
 
     @Test
     @DisplayName("Encounters no errors if inserted student is valid")
-    void testInsertStudent_1() throws Exception {
-        Student expected = EntityTestUtil.validStudent().create();
+    void testInsertStudent_1() throws InvalidEntityException {
+        Student expected = EntityTestUtil.validStudent()
+                .generate(field(Student::getStudentId), gen -> gen().ints().min(1))
+                .create();
         when(dao.insertStudent(expected)).thenReturn(expected.getStudentId());
 
-        manager.getStudentsObserver().subscribeToInserts(studentId -> trigger());
-
         manager.insertStudent(expected);
-        assertTrue(triggered); // Some of this weirdness will go on while we test event triggers
+
+        verify(dao).insertStudent(expected);
+        verify(studentDatabaseObserver).triggerInsert(expected);
     }
 
     @Test
@@ -154,7 +167,7 @@ public class DatabaseManagerTest {
     @Test
     @DisplayName("Student is successfully deleted if it's in the database")
     void testDeleteStudent_1()    {
-        Integer deleted = Instancio.gen().ints().min(1).get();
+        Integer deleted = gen().ints().min(1).get();
         when(dao.deleteStudent(deleted)).thenReturn(true);
         manager.getStudentsObserver().subscribeToDeletes((studentId) -> trigger());
 

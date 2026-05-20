@@ -13,7 +13,7 @@ public class DatabaseObserver<T> {
     private final List<Consumer<List<T>>> deleteSubs;
     private final List<Consumer<List<T>>> insertSubs;
 
-    protected DatabaseObserver()   {
+    public DatabaseObserver()   {
         updateSubs = new LinkedList<Consumer<List<T>>>();
         deleteSubs = new LinkedList<Consumer<List<T>>>();
         insertSubs = new LinkedList<Consumer<List<T>>>();
