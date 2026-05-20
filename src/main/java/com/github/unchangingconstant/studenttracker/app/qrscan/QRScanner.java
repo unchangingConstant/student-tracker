@@ -84,11 +84,21 @@ public class QRScanner {
             Optional<OngoingVisit> potentialOngoingVisit = attendanceService.findOngoingVisit(id);
             Instant now = Instant.now();
             if (potentialOngoingVisit.isEmpty()) {
-                attendanceService.startOngoingVisit(OngoingVisit.builder().studentId(id).startTime(now).build());
+                try {
+                    attendanceService.startOngoingVisit(OngoingVisit.builder().studentId(id).startTime(now).build());
+                } catch (DatabaseManager.InvalidEntityException e) {
+                    // TODO handle this
+                    throw new RuntimeException(e);
+                }
             } else {
                 OngoingVisit ongoingVisit = potentialOngoingVisit.get();
                 Instant startTime = ongoingVisit.getStartTime();
-                attendanceService.endOngoingVisit(ongoingVisit, (int) ChronoUnit.MINUTES.between(startTime, now));
+                try {
+                    attendanceService.endOngoingVisit(ongoingVisit, (int) ChronoUnit.MINUTES.between(startTime, now));
+                } catch (DatabaseManager.InvalidEntityException e) {
+                    // TODO handle this too
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

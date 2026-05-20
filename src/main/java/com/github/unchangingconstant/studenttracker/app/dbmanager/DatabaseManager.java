@@ -127,16 +127,24 @@ public class DatabaseManager {
         return dao.findOngoingVisit(studentId);
     }
 
-    public void startOngoingVisit(OngoingVisit ongoingVisit) {
+    public void startOngoingVisit(OngoingVisit ongoingVisit) throws InvalidEntityException {
+        if (!OngoingVisit.validate(ongoingVisit)) {
+            throw new InvalidEntityException();
+        }
         dao.insertOngoingVisit(ongoingVisit);
         ongoingVisitsObserver.triggerInsert(ongoingVisit);
     }
 
-    public void endOngoingVisit(OngoingVisit ongoingVisit, Integer duration) {
+    public void endOngoingVisit(OngoingVisit ongoingVisit, Integer duration) throws InvalidEntityException {
+
         Visit endedVisit = Visit.builder()
             .studentId(ongoingVisit.getStudentId())
             .startTime(ongoingVisit.getStartTime())
             .duration(duration).build();
+
+        if (!Visit.validate(endedVisit)) {
+            throw new InvalidEntityException();
+        }
 
         int visitId = dao.endOngoingVisit(endedVisit);
 

@@ -347,6 +347,17 @@ public class AttendanceDAOTest {
         assertEquals(List.of(v1), result);
     }
 
+    @Test
+    @DisplayName("findVisitsWithStudentId() returns empty list for non-existent student")
+    void testFindVisitsWithStudentId_4() {
+        Student s = student().create();
+        Visit v = visit().set(field(Visit::getStudentId), s.getStudentId()).create();
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_STUDENT).bindBean(s).execute());
+        jdbi.useHandle(handle -> handle.createUpdate(INSERT_VISIT).bindBean(v).execute());
+
+        assertTrue(dao.findVisitsWithStudentId(s.getStudentId() + 1).isEmpty());
+    }
+
     /*
      * DELETE VISIT TESTS
      */

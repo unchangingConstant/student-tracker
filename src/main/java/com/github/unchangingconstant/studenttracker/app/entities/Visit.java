@@ -10,8 +10,12 @@ import lombok.Value;
 public class Visit {
 
     Integer visitId;
+
     Integer studentId;
+
     Instant startTime;
+
+    public static final int MIN_DURATION = 0;
     Integer duration;
 
     public static boolean validate(Visit visit) {
