@@ -1,6 +1,6 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
-import static com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil.*;
+import static com.github.unchangingconstant.studenttracker.testutils.EntityTestUtil.*;
 import static org.instancio.Instancio.gen;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.instancio.Select.field;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil;
+import com.github.unchangingconstant.studenttracker.testutils.EntityTestUtil;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToOngoingVisitMapper;
 import org.instancio.Instancio;
@@ -27,8 +27,6 @@ import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToS
 import com.github.unchangingconstant.studenttracker.app.dbmanager.mappers.RowToVisitMapper;
 import com.github.unchangingconstant.studenttracker.guice.DatabaseManagerModule;
 import com.github.unchangingconstant.studenttracker.util.ResourceLoader;
-
-import javax.swing.text.html.parser.Entity;
 
 /*
  * Turns out, JUnit5 has a lot of magic to it. To understand everything that's

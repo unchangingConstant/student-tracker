@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.github.unchangingconstant.studenttracker.StudentTrackerApp;
+import com.github.unchangingconstant.studenttracker.gui.pages.AttendanceDashboardPageController;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -35,6 +36,7 @@ import javafx.scene.Scene;
      */
 /**
  * Will manage all GUI windows and serve as the entry point to the GUI
+ * TODO Create page nodes the same way you created the component nodes
  */
 @Singleton
 public class WindowManager {
@@ -50,7 +52,8 @@ public class WindowManager {
     }
 
     public void openMainPage(Stage stage) {
-        Parent root = loadFXML("/view/pages/attendance_dashboard_page.fxml");
+        // TODO This smells. Using the app context as a Window factory. Or does it?
+        Parent root = appContext.getInstance(AttendanceDashboardPageController.class);
         Scene scene = provideScene(root, 500, 500);
         stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);

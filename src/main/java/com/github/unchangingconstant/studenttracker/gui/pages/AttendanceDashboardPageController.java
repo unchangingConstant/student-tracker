@@ -7,6 +7,7 @@ import java.util.concurrent.Executor;
 
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.gui.ComponentUtils;
 import com.github.unchangingconstant.studenttracker.gui.Controller;
 import com.github.unchangingconstant.studenttracker.gui.WindowManager;
 import com.github.unchangingconstant.studenttracker.gui.components.LiveAttendanceView;
@@ -24,8 +25,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.VBox;
 
-public class AttendanceDashboardPageController implements Controller {
+public class AttendanceDashboardPageController extends VBox implements Controller {
 
     @FXML
     private LiveAttendanceView liveAttendanceView;
@@ -51,11 +53,13 @@ public class AttendanceDashboardPageController implements Controller {
         DatabaseManager recordManager,
         WindowManager windowController,
         Executor executor)  {
+        super();
         this.ongoingVisitsModel = ongoingVisitsModel;
         this.studentTableModel = studentTableModel;
         this.recordManager = recordManager;
         this.windowController = windowController;
         this.executor = executor;
+        ComponentUtils.hookIntoFXML(this,"/view/pages/attendance_dashboard_page.fxml");
     }
 
     @Override

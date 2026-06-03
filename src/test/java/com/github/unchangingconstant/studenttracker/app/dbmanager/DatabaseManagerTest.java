@@ -1,9 +1,8 @@
 package com.github.unchangingconstant.studenttracker.app.dbmanager;
 
-import static com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil.*;
+import static com.github.unchangingconstant.studenttracker.testutils.EntityTestUtil.*;
 import static org.instancio.Instancio.gen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.instancio.Select.field;
@@ -14,7 +13,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.github.unchangingconstant.studenttracker.app.entities.EntityTestUtil;
+import com.github.unchangingconstant.studenttracker.testutils.EntityTestUtil;
 import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
 import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import org.instancio.Instancio;
@@ -22,14 +21,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import com.github.unchangingconstant.studenttracker.app.entities.Student;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.InvalidEntityException;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager.NoSuchEntityException;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /* TODO

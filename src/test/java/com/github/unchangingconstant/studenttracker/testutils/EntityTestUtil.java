@@ -1,8 +1,12 @@
-package com.github.unchangingconstant.studenttracker.app.entities;
+package com.github.unchangingconstant.studenttracker.testutils;
 
 import static org.instancio.Select.field;
 
 import java.time.temporal.ChronoUnit;
+
+import com.github.unchangingconstant.studenttracker.app.entities.OngoingVisit;
+import com.github.unchangingconstant.studenttracker.app.entities.Student;
+import com.github.unchangingconstant.studenttracker.app.entities.Visit;
 import org.instancio.Instancio;
 import org.instancio.InstancioApi;
 
@@ -14,6 +18,10 @@ import org.instancio.InstancioApi;
  * have nanosecond-precision.
  * 
  * It's lengthy to do this code all the time, so it's a separate util class now
+ *
+ * TODO think of caching students? Calling this all the time has to be consuming
+ * a lot time. On that note:
+ * TODO Do some profiling for this project
  */
 public class EntityTestUtil {
 

@@ -1,4 +1,4 @@
-package com.github.unchangingconstant.studenttracker.app.qrscan;
+package com.github.unchangingconstant.studenttracker.testutils;
 
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingDeque;

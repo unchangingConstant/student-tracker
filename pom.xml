@@ -111,6 +111,20 @@
       <version>5.20.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- Source: https://mvnrepository.com/artifact/org.testfx/testfx-core -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-core</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Source: https://mvnrepository.com/artifact/org.testfx/testfx-junit5 -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>

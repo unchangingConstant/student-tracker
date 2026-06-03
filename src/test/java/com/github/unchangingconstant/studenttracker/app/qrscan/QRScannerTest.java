@@ -3,6 +3,7 @@ package com.github.unchangingconstant.studenttracker.app.qrscan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.instancio.Instancio.gen;
 
+import com.github.unchangingconstant.studenttracker.testutils.QRCodeTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 import static com.github.unchangingconstant.studenttracker.app.entities.StudentQRCode.*;
 import com.github.unchangingconstant.studenttracker.app.dbmanager.DatabaseManager;
 
-import static com.github.unchangingconstant.studenttracker.app.qrscan.QRCodeTestUtils.genBufferWith;
+import static com.github.unchangingconstant.studenttracker.testutils.QRCodeTestUtils.genBufferWith;
 
 
 public class QRScannerTest {
