@@ -44,16 +44,16 @@ public class WindowManager {
     private Stage recordManager;
     private Stage exportPage;
 
-    private final Injector appContext;
+    private final Injector controllerFactory;
 
     @Inject
-    public WindowManager(Injector appContext) {
-        this.appContext = appContext;
+    public WindowManager(Injector controllerFactory) {
+        this.controllerFactory = controllerFactory;
     }
 
     public void openMainPage(Stage stage) {
         // TODO This smells. Using the app context as a Window factory. Or does it?
-        Parent root = appContext.getInstance(AttendanceDashboardPageController.class);
+        Parent root = controllerFactory.getInstance(AttendanceDashboardPageController.class);
         Scene scene = provideScene(root, 500, 500);
         stage.setScene(scene);
         stage.setTitle(StudentTrackerApp.TITLE);
@@ -73,11 +73,12 @@ public class WindowManager {
         exportPage.close();
     }
 
+    // TODO Remove. All components now handle their own FXML logic
     private Parent loadFXML(String url) {
         URL location = getClass().getResource(url);
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(location);
-        fxmlLoader.setControllerFactory(appContext::getInstance);
+        fxmlLoader.setControllerFactory(controllerFactory::getInstance);
         try {
             return fxmlLoader.load();
         } catch (IOException e) {
